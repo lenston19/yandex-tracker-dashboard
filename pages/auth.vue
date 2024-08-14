@@ -1,33 +1,44 @@
 <script setup lang="ts">
-import { useAuthStore } from '~/store/auth';
+import { storeToRefs } from "pinia";
+import { useSiteSettingsStore } from "~/store/site-settings";
 
 definePageMeta({
-	layout: 'empty'
+	layout: "empty",
+	middleware: [
+		'empty-organization-id'
+	]
 })
 
-const route = useRoute();
-const router = useRouter();
-const authStore = useAuthStore()
+const route = useRoute()
+const router = useRouter()
+const siteSettingsStore = useSiteSettingsStore()
+const { accessToken } = storeToRefs(siteSettingsStore)
+const toast = useToast()
 
 onMounted(() => {
-	const accessToken = new URLSearchParams(route.hash.slice(1)).get('access_token')
-	if (accessToken) {
-		authStore.setAccessToken(accessToken)
+	const accessTokenFromRoute = new URLSearchParams(route.hash.slice(1)).get(
+		"access_token"
+	)
+	if (accessTokenFromRoute) {
+		siteSettingsStore.setAccessToken(accessTokenFromRoute)
+		if (accessToken.value) {
+			toast.add({ title: "Авторизован" })
+		} else {
+			toast.add({ title: "Ошибка" })
+		}
 	}
-});
+})
 </script>
 
 <template>
-
 	<div class="flex flex-col items-center">
-		<div v-if="authStore.accessToken" class="text-2xl">
-			Успешно
-		</div>
-		<div v-else class="text-2xl">
-			Отсутствует токен
-		</div>
+		<div v-if="accessToken" class="text-2xl">Успешно</div>
+		<div v-else class="text-2xl loading">
+			Загрузка
+	</div>
 
 		<UButton
+			v-if="accessToken"
 			label="К настройкам"
 			color="primary"
 			class="mt-4 w-fit"
@@ -36,5 +47,20 @@ onMounted(() => {
 	</div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.loading:after {
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+	-webkit-animation: ellipsis steps(3, end) 1.4s infinite;
+	animation: ellipsis steps(3, end) 1.4s infinite;
+	content: "\2026";
+	width: 0px;
+}
+
+@keyframes ellipsis {
+	to {
+		width: 40px;
+	}
+}
 </style>

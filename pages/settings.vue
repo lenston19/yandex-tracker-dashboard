@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import OrganizationWidget from '~/components/settings/widgets/OrganizationWidget.vue'
-import UserWidget from '~/components/settings/widgets/UserWidget.vue'
+import OrganizationWidget from "~/components/settings/widgets/OrganizationWidget.vue"
+import UserWidget from "~/components/settings/widgets/UserWidget.vue"
 </script>
 
 <template>
@@ -10,5 +10,4 @@ import UserWidget from '~/components/settings/widgets/UserWidget.vue'
 	</div>
 </template>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
