@@ -41,10 +41,18 @@ export default defineNuxtConfig({
 	},
 	proxy: {
 		proxies: {
-			'^/yandex/.*': {
+			'^/tracker/.*': {
 				target: process.env.YANDEX_API ?? 'https://api.tracker.yandex.net/v2',
-				rewrite: (path: string) => path.replace(/^\/yandex/, '')
-			}
+				rewrite: (path: string) => path.replace(/^\/tracker/, '')
+			},
+			'^/info/.*': {
+				target: 'https://login.yandex.ru/info',
+				rewrite: (path: string) => path.replace(/^\/info/, '')
+			},
+			'^/avatar/.*': {
+				target: 'https://avatars.yandex.net/get-yapic',
+				rewrite: (path: string) => path.replace(/^\/avatar/, '')
+			},
 		}
 	},
 	ui: {
