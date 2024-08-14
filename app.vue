@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { Settings } from 'luxon';
+import { Settings } from 'luxon'
 
-Settings.defaultZone = 'Europe/Moscow';
-Settings.defaultLocale = 'ru';
+Settings.defaultZone = 'Europe/Moscow'
+Settings.defaultLocale = 'ru'
 </script>
 
 <template>
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
+	<UNotifications />
 </template>
