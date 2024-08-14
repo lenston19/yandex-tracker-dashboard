@@ -36,6 +36,9 @@ export default defineNuxtConfig({
 		'@nuxt-alt/proxy',
 		'@nuxt/ui',
 	],
+	colorMode: {
+		preference: 'dark'
+	},
 	proxy: {
 		proxies: {
 			'^/yandex/.*': {
