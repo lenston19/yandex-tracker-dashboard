@@ -1,21 +1,19 @@
 <script setup lang="ts">
-const count = ref<number>(0)
+import WeekTimeWidget from "~/components/widgets/WeekTimeWidget.vue"
+import DayTimeWidget from "~/components/widgets/DayTimeWidget.vue"
+import MonthTimeWidget from "~/components/widgets/MonthTimeWidget.vue"
+
+definePageMeta({
+	middleware: ['auth']
+})
 </script>
 
 <template>
-	<div class="grid grid-cols-3 gap-4">
-		<div class="...">01</div>
-		<div class="...">02</div>
-		<div class="...">03</div>
-		<div class="col-span-2 ...">04</div>
-		<div class="...">05</div>
-		<div class="...">06</div>
-		<div class="col-span-2 ...">07</div>
+	<div class="grid grid-cols-4 gap-4">
+		<WeekTimeWidget class="col-span-4" />
+		<DayTimeWidget class="col-span-4 md:col-span-2" />
+		<MonthTimeWidget class="col-span-4 md:col-span-2" />
 	</div>
 </template>
 
-<style lang="scss">
-.home {
-
-}
-</style>
+<style lang="scss"></style>

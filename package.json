@@ -12,6 +12,7 @@
   "dependencies": {
     "@nuxt-alt/proxy": "^2.2.3",
     "@nuxt/ui": "^2.18.4",
+    "@nuxtjs/color-mode": "^3.4.2",
     "@pinia/nuxt": "^0.4.11",
     "chart.js": "^4.4.2",
     "luxon": "^3.5.0",

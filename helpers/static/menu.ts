@@ -1,5 +1,5 @@
 export const pages = [
-	{
+	[{
 		label: 'Дашборд',
 		icon: 'i-heroicons-home',
 		to: {
@@ -19,12 +19,15 @@ export const pages = [
 		to: {
 			name: 'monthly-report'
 		}
-	},
-	{
-		label: 'Настройки',
-		icon: 'i-heroicons-cog',
-		to: {
-			name: 'settings'
+	}],
+	[
+		{
+			label: 'Настройки',
+			icon: 'i-heroicons-cog',
+			to: {
+				name: 'settings'
+			}
 		}
-	}
+	]
+
 ]

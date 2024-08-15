@@ -1,15 +1,13 @@
-import { storeToRefs } from "pinia";
-import { useAuthStore } from "~/store/auth";
-import { useSiteSettingsStore } from "~/store/site-settings";
+import { storeToRefs } from "pinia"
+import { useSiteSettingsStore } from "~/store/site-settings"
 
 export const $api = $fetch.create({
 	onRequest: ({ options }) => {
-			const { organizationId } = storeToRefs(useSiteSettingsStore())
-			const { accessToken } = storeToRefs(useAuthStore())
+			const { organizationId, accessToken } = storeToRefs(useSiteSettingsStore())
 
 			options.headers = {
 				'Authorization': `OAuth ${accessToken.value}`,
 				'X-Cloud-Org-ID': organizationId.value
 			}
-		}
+		},
 	})

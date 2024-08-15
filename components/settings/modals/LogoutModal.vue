@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useAuthStore } from '~/store/auth';
-import { useSiteSettingsStore } from '~/store/site-settings';
+import { useAuthStore } from "~/store/auth"
+import { useSiteSettingsStore } from "~/store/site-settings"
 
 const siteSettingsStore = useSiteSettingsStore()
 const authStore = useAuthStore()
@@ -21,9 +21,7 @@ const logout = () => {
 	<UModal v-model="model">
 		<UCard>
 			<template #header>
-				<div class="text-xl">
-					Выйти из аккаунта?
-				</div>
+				<div class="text-xl">Выйти из аккаунта?</div>
 			</template>
 			<template #footer>
 				<div class="flex gap-4 justify-end">
@@ -35,5 +33,4 @@ const logout = () => {
 	</UModal>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
