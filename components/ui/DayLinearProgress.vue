@@ -15,11 +15,19 @@ const props = withDefaults(
 	}
 )
 
+enum DayLinearColor {
+	GREEN = 'green',
+	RED = 'red',
+	YELLOW = 'yellow'
+}
+
 const computedColor = computed(() => {
-	switch (true) {
-		case props.hours !== null && props.hours < 2: return "red"
-		case props.hours !== null && props.hours < props.max: return "yellow"
-		default: return "green"
+	if (props.hours === null) {
+		return DayLinearColor.GREEN
+	} else if (props.hours < 2) {
+		return DayLinearColor.RED
+	} else if (props.hours < props.max) {
+		return DayLinearColor.YELLOW
 	}
 })
 
@@ -38,7 +46,7 @@ const hoursPlural = computed(() => {
 	>
 		<template v-if="hours !== null && hours >= 0" #indicator="{ percent }">
 			<div class="text-sm text-right">
-				{{ hoursPlural }} ({{ Math.round(percent) }}%)
+				{{ hoursPlural }} ({{ Number.isNaN(percent) ? 0 : Math.floor(percent) }}%)
 			</div>
 		</template>
 	</UProgress>

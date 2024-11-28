@@ -1,5 +1,4 @@
 import { defineStore, storeToRefs } from 'pinia'
-import { useLazyAsyncData } from '#app'
 import { ref } from '#imports'
 import yandexTrackerApi from '~/api/yandex-tracker.api'
 import { useAuthStore } from '~/store/auth'
@@ -70,11 +69,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 		return worklogs
 	}
 
-	const {
-		data: worklogsWeek,
-		refresh: refreshWorklogsWeek,
-		status: requestStatus
-	} = useLazyAsyncData('worklogs-week-items', async () => {
+	const { data: _, refresh: refreshWorklogsWeek, status: requestStatus } = useLazyAsyncData('worklogs-week-items', async () => {
 		if (!login.value) {
 			return [] as Yandex.Worklog[]
 		}
@@ -104,7 +99,6 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
 		return response._data
 	}, {
-		default: () => [] as Yandex.Worklog[],
 		server: false,
 		immediate: false
 	})

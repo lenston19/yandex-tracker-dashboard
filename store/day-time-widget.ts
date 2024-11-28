@@ -1,5 +1,4 @@
 import { defineStore, storeToRefs } from 'pinia'
-import { useLazyAsyncData } from '#app'
 import { ref } from '#imports'
 import yandexTrackerApi from '~/api/yandex-tracker.api'
 import { useAuthStore } from '~/store/auth'
@@ -63,7 +62,6 @@ export const useDayTimeWidgetStore = defineStore('day-time-widget', () => {
 
 		return response._data
 	}, {
-		default: () => [] as Yandex.Worklog[],
 		server: false,
 		immediate: false
 	})

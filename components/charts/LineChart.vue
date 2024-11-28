@@ -42,7 +42,11 @@ const options = computed(() => ({
 </script>
 
 <template>
-	<Line :data="data" :options="options" />
+	<Line
+		:key="JSON.stringify(data)"
+		:data="data"
+		:options="options"
+	/>
 </template>
 
 <style lang="scss"></style>

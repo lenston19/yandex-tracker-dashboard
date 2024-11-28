@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { DateTime } from "luxon"
-import { DateDuration } from "~/types/base";
 
 definePageMeta({
 	middleware: ['auth']

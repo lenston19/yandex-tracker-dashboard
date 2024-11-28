@@ -56,7 +56,10 @@ export default defineNuxtConfig({
 		}
 	},
 	ui: {
-		global: true
+		global: true,
+		icons: {
+			dynamic: true
+		}
 	},
 	pinia: {
 		autoImports: [
