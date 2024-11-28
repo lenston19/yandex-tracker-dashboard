@@ -1,23 +1,22 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import { useSiteSettingsStore } from '~/store/site-settings'
+import YTInput from '~/components/ui/YTInput.vue'
 
 const siteSettingsStore = useSiteSettingsStore()
-const { organizationId } = storeToRefs(siteSettingsStore)
 const model = defineModel<boolean>()
-const organizationIdModel = ref<string>('')
+const organizationId = ref<string>('')
 const error = ref<string>('')
 
 const saveId = () => {
-	if (organizationIdModel.value.length === 0) {
+	if (organizationId.value.length === 0) {
 		error.value = 'Поле должно быть обязательно заполнено'
 	} else {
-		siteSettingsStore.setOrganizationId(organizationIdModel.value)
+		siteSettingsStore.setOrganizationId(organizationId.value)
 		model.value = false
 	}
 }
 
-watch(organizationIdModel, (newVal: string) => {
+watch(organizationId, (newVal: string) => {
 	if (newVal.length > 0) {
 		error.value = ''
 	} else {
@@ -25,12 +24,8 @@ watch(organizationIdModel, (newVal: string) => {
 	}
 })
 
-watch(organizationId, () => {
-	organizationIdModel.value = organizationId.value
-})
-
 onMounted(() => {
-	organizationIdModel.value = organizationId.value
+	organizationId.value = siteSettingsStore.organizationId
 })
 </script>
 
@@ -42,14 +37,15 @@ onMounted(() => {
 					Для дальнейшей работы с приложением нужен ID организации
 				</div>
 			</template>
-			<UFormGroup label="Идентификатор" :error="error">
-				<UInput
-					v-model="organizationIdModel"
-					required
-					size="sm"
-					color="white"
-				/>
-			</UFormGroup>
+			<YTInput
+				v-model="organizationId"
+				label="Идентификатор"
+				:error-text="error"
+				required
+				size="sm"
+				color="white"
+			/>
+
 			<div class="mt-3">
 				<a
 					href="https://tracker.yandex.ru/admin/orgs"

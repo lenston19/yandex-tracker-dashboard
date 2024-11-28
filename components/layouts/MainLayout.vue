@@ -32,7 +32,7 @@ const getUserAccessToken = () => {
 <template>
 	<div class="main-layout">
 		<div
-			class="border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 py-2"
+			class="border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 py-2 min-h-[61px]"
 		>
 			<template v-if="organizationId && login">
 				<UButton

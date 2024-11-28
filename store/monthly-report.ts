@@ -1,5 +1,4 @@
 import { defineStore, storeToRefs } from 'pinia'
-import { useLazyAsyncData } from '#app'
 import { ref } from '#imports'
 import yandexTrackerApi from '~/api/yandex-tracker.api'
 import { useAuthStore } from '~/store/auth'
@@ -106,9 +105,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 
 		return response._data
 	}, {
-		default: () => [] as Yandex.Worklog[],
 		server: false,
-		immediate: false
 	})
 
 	watchEffect(() => {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import { DateTime } from "luxon";
 import { storeToRefs } from "pinia";
 import LineChart from "~/components/charts/LineChart.vue"
@@ -35,10 +34,6 @@ const getColorByAverage = computed(() => {
 		case averageHoursByMonth.value < 8: return 'yellow'
 		default: return 'primary'
 	}
-})
-
-onMounted(async () => {
-	await monthlyReportStore.refreshChartData()
 })
 </script>
 
@@ -89,5 +84,3 @@ onMounted(async () => {
 		<LineChart :data="monthChartData" />
 	</UCard>
 </template>
-
-<style lang="scss"></style>

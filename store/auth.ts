@@ -1,5 +1,4 @@
 import { defineStore, storeToRefs } from 'pinia'
-import { useLazyAsyncData } from '#app'
 import { ref } from '#imports'
 import yandexTrackerApi from '~/api/yandex-tracker.api'
 import yandexInfoApi from '~/api/yandex-info.api'
@@ -13,25 +12,13 @@ export const useAuthStore = defineStore('auth', () => {
 	const userName = computed(() => mySelf.value?.display || '')
 	const login = computed(() => mySelf.value?.login || '')
 
-	const {
-		data: mySelf,
-		refresh: refreshMySelf
-	} = useLazyAsyncData('my-self', async () => {
-		if (!organizationId.value) {
-			return null
-		}
+	const { data: mySelf, refresh: refreshMySelf } = useLazyAsyncData('my-self', async () => {
 		const response = await yandexTrackerApi.mySelf()
-		if (!response) {
-			return null
+		if (response) {
+			await fetchAvatar()
 		}
-		await fetchAvatar()
 		return response
-	},
-	{
-		default: () => null,
-		immediate: false,
-	}
-)
+	}, { server: false })
 
 	watchEffect(() => {
 		if (organizationId.value && accessToken.value) {
@@ -43,7 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
 		const responseUser = await yandexInfoApi.fetchUser()
 		if (responseUser?.default_avatar_id) {
 			const responseUserAvatar = await yandexAvatarApi.fetchUserAvatar(responseUser?.default_avatar_id)
-			userAvatarUrl.value = window.URL.createObjectURL(new Blob([responseUserAvatar], { type: "image/jpeg" })) || ''
+			userAvatarUrl.value = URL.createObjectURL(new Blob([responseUserAvatar], { type: "image/jpeg" })) || ''
 		}
 	}
 
@@ -60,4 +47,4 @@ export const useAuthStore = defineStore('auth', () => {
 		refreshMySelf,
 		clearState,
 	}
-})
+},{ persist: true })

@@ -15,5 +15,3 @@ definePageMeta({
 		<MonthTimeWidget class="col-span-4 md:col-span-2" />
 	</div>
 </template>
-
-<style lang="scss"></style>
