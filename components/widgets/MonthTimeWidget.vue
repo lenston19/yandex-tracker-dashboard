@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia"
 import { useMonthTimeWidgetStore } from "~/store/month-time-widget";
 import { useSiteSettingsStore } from "~/store/site-settings";
-import { formatRUB } from "~/helpers/static/format-money";
+import { formatRUB } from "~/helpers/utils/format-money";
 
 const monthTimeWidgetStore = useMonthTimeWidgetStore()
 

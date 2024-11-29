@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
 import SettingsGoldModal from "~/components/settings/modals/SettingsGoldModal.vue"
-import { formatRUB } from "~/helpers/static/format-money"
+import { formatRUB } from "~/helpers/utils/format-money"
 import { useSiteSettingsStore } from "~/store/site-settings"
 
 const { gold } = storeToRefs(useSiteSettingsStore())
