@@ -1,12 +1,23 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
 import { useMonthTimeWidgetStore } from "~/store/month-time-widget";
+import { useSiteSettingsStore } from "~/store/site-settings";
+import { formatRUB } from "~/helpers/static/format-money";
 
 const monthTimeWidgetStore = useMonthTimeWidgetStore()
+
 const { totalHours, requestStatus } = storeToRefs(monthTimeWidgetStore)
+const { needHoursInCurrentMonth, gold } = storeToRefs(useSiteSettingsStore())
+
+const currentRuble = computed(() => totalHours.value * gold.value)
+const maxRuble = computed(() => needHoursInCurrentMonth.value * gold.value)
+
+const isLoading = computed(() => requestStatus.value !== 'success')
 
 onMounted(async () => {
-	await monthTimeWidgetStore.refreshWorklogsMonth()
+	if (!totalHours.value) {
+		await monthTimeWidgetStore.refreshWorklogsMonth()
+	}
 })
 </script>
 
@@ -15,19 +26,39 @@ onMounted(async () => {
 		<template #header>
 			<div class="text-xl">Сводка месяца</div>
 		</template>
-		<DayLinearProgress
-			v-if="requestStatus === 'success'"
-			:hours="totalHours"
-			:max="totalHours"
-		/>
-		<DayLinearProgress
-			v-else
-			:hours="null"
-		/>
-		<template v-if="requestStatus === 'success'" #footer>
+		<div class="space-y-3">
+			<DayLinearProgress
+				v-if="!isLoading"
+				:hours="totalHours"
+				:max="needHoursInCurrentMonth"
+				show-max
+			/>
+			<DayLinearProgress
+				v-else
+				:hours="null"
+			/>
+
+			<UProgress
+				v-if="gold"
+				:value="!!currentRuble ? currentRuble : undefined"
+				:min="0"
+				:max="maxRuble"
+				color="blue"
+				animation="swing"
+			>
+				<template #indicator>
+					<div v-if="!isLoading" class="text-sm text-right font-bold">
+						{{ formatRUB(currentRuble) }} / {{ formatRUB(maxRuble) }}
+					</div>
+					<USkeleton v-else class="ml-auto w-[100px] h-6"/>
+				</template>
+			</UProgress>
+		</div>
+		<template #footer>
 			<div class="flex items-center gap-4 justify-end">
 				<UButton
 					icon="i-heroicons-arrow-path"
+					:loading="requestStatus !== 'success'"
 					@click="monthTimeWidgetStore.refreshWorklogsMonth"
 				/>
 			</div>

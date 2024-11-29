@@ -1,32 +1,23 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useSiteSettingsStore } from '~/store/site-settings'
-import YTInput from '~/components/ui/YTInput.vue'
+import { string, object } from 'yup'
 
-const siteSettingsStore = useSiteSettingsStore()
+const { organizationId } = storeToRefs(useSiteSettingsStore())
 const model = defineModel<boolean>()
-const organizationId = ref<string>('')
-const error = ref<string>('')
 
-const saveId = () => {
-	if (organizationId.value.length === 0) {
-		error.value = 'Поле должно быть обязательно заполнено'
-	} else {
-		siteSettingsStore.setOrganizationId(organizationId.value)
-		model.value = false
-	}
+const schema = object({
+	id: string().required('Поле обязательное')
+})
+
+const state = reactive({
+	id: !!organizationId.value ? organizationId.value : ''
+})
+
+const save = () => {
+	organizationId.value = state.id
+	model.value = false
 }
-
-watch(organizationId, (newVal: string) => {
-	if (newVal.length > 0) {
-		error.value = ''
-	} else {
-		error.value = 'Поле должно быть обязательно заполнено'
-	}
-})
-
-onMounted(() => {
-	organizationId.value = siteSettingsStore.organizationId
-})
 </script>
 
 <template>
@@ -37,29 +28,33 @@ onMounted(() => {
 					Для дальнейшей работы с приложением нужен ID организации
 				</div>
 			</template>
-			<YTInput
-				v-model="organizationId"
-				label="Идентификатор"
-				:error-text="error"
-				required
-				size="sm"
-				color="white"
-			/>
-
-			<div class="mt-3">
-				<a
-					href="https://tracker.yandex.ru/admin/orgs"
-					target="_blank"
-					class="text-base text-primary underline"
+			<UForm
+				:schema="schema"
+				:state="state"
+				@submit="save"
+				class="space-y-4"
+			>
+				<UFormGroup
+					label="Идентификатор"
+					name="id"
 				>
-					Ключ можно найти здесь :)
-				</a>
-			</div>
+					<UInput v-model="state.id" color="primary" variant="outline" />
+				</UFormGroup>
 
-
-			<template #footer>
-				<UButton @click="saveId" label="Сохранить" />
-			</template>
+				<div class="flex justify-between">
+					<UButton
+						to="https://tracker.yandex.ru/admin/orgs"
+						target="_blank"
+						variant="link"
+						class="p-0"
+						label="Ключ можно найти здесь :)"
+					/>
+					<UButton
+						label="Сохранить"
+						type="submit"
+					/>
+				</div>
+			</UForm>
 		</UCard>
 	</UModal>
 </template>

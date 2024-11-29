@@ -4,3 +4,8 @@ export const hoursPluralize = [
 	'часов',
 	'ч.'
 ]
+export const moneyPluralize = [
+	'рубль',
+	'рубля',
+	'рублей'
+]

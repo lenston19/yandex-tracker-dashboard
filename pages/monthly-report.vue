@@ -9,7 +9,7 @@ definePageMeta({
 })
 
 const monthlyReportStore = useMonthlyReportStore()
-const { monthChartData, monthParams } = storeToRefs(monthlyReportStore)
+const { monthChartData, monthParams, requestStatus } = storeToRefs(monthlyReportStore)
 
 const title = computed(() =>
 	DateTime.fromISO(monthParams.value.from).toFormat("LLLL yyyy")
@@ -35,6 +35,14 @@ const getColorByAverage = computed(() => {
 		default: return 'primary'
 	}
 })
+
+const isLoading = computed(() => requestStatus.value !== 'success')
+
+onMounted(async () => {
+	if (!monthChartData.value.datasets.length) {
+		await monthlyReportStore.refreshChartData()
+	}
+})
 </script>
 
 <template>
@@ -47,17 +55,20 @@ const getColorByAverage = computed(() => {
 				<UButton
 					icon="i-heroicons-arrow-left"
 					variant="link"
+					:loading="isLoading"
 					@click="monthlyReportStore.prevMonth"
 				/>
 				<UButton
 					icon="i-heroicons-arrow-right"
 					variant="link"
+					:loading="isLoading"
 					@click="monthlyReportStore.nextMonth"
 				/>
 			</div>
 			<UButton
 				icon="i-heroicons-arrow-path"
 				variant="link"
+				:loading="isLoading"
 				@click="monthlyReportStore.refreshChartData"
 			/>
 		</div>
@@ -68,19 +79,25 @@ const getColorByAverage = computed(() => {
 				<div class="text-xl">
 					Сводка
 				</div>
-				<div>
+				<div class="flex gap-3">
 					Средняя за промежуток
 					<UBadge
-						class="ml-3"
+						v-if="!isLoading"
 						:color="getColorByAverage"
 						variant="subtle"
 					>
 						{{ averageHoursByMonth }} ч
 					</UBadge>
+					<USkeleton v-else class="w-[90px] h-[25px]"/>
 				</div>
 
 			</div>
 		</template>
-		<LineChart :data="monthChartData" />
+		<LineChart
+			v-if="!isLoading"
+			:data="monthChartData"
+			class="max-h-48"
+		/>
+		<USkeleton v-else class="w-full h-48"/>
 	</UCard>
 </template>

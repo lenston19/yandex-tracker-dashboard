@@ -13,7 +13,7 @@ export const useMonthTimeWidgetStore = defineStore('month-time-widget', () => {
 	const allWorklogs = ref<Yandex.Worklog[]>([])
 
 	const fetchMoreWorklog = async (body: YandexTrackerApi.worklogList.GET.RequestDTO, totalPages: number) => {
-		let counter = 1
+		let counter = 2
 		let worklogs: Yandex.Worklog[] = []
 		while (counter <= totalPages) {
 			const iterResponse = await yandexTrackerApi.worklogList(body, {
@@ -31,10 +31,11 @@ export const useMonthTimeWidgetStore = defineStore('month-time-widget', () => {
 	}
 
 	const {
-		data: worklogsMonth,
+		data: _,
 		refresh: refreshWorklogsMonth,
 		status: requestStatus
 	} = useLazyAsyncData('worklogs-month-items', async () => {
+		allWorklogs.value = []
 		if (!login.value) {
 			return [] as Yandex.Worklog[]
 		}
@@ -67,14 +68,15 @@ export const useMonthTimeWidgetStore = defineStore('month-time-widget', () => {
 	})
 
 	const totalHours = computed(() => {
-		if (worklogsMonth.value) {
-			return calculateTimeByPeriod(calculateHours(worklogsMonth.value))
+		if (allWorklogs.value) {
+			return calculateTimeByPeriod(calculateHours(allWorklogs.value))
 		}
 		return 0
 	})
 
 	return {
 		totalHours,
+		allWorklogs,
 		requestStatus,
 		refreshWorklogsMonth,
 	}
