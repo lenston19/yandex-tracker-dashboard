@@ -22,10 +22,7 @@ const dialog = ref<boolean>(false)
 			<UButton
 				@click="dialog = true"
 				:label="siteSettingsStore.organizationId ? 'Изменить' : 'Добавить'"
-			>
-			</UButton>
+			/>
 		</template>
 	</UCard>
 </template>
-
-<style scoped lang="scss"></style>
