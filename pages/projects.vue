@@ -76,44 +76,53 @@ const people = [
 		role: "Member",
 	},
 ]
+const showPage = ref<boolean>(false)
 </script>
 
 <template>
-	<div class="flex items-center justify-between mb-5">
-		<div class="text-xl capitalize">
-			{{ title }}
-		</div>
-		<div class="flex items-center gap-4">
-			<div class="flex items-center">
+	<div
+		v-if="!showPage"
+		class="text-2xl w-full flex items-center justify-center"
+	>
+		Страница в разработке
+	</div>
+	<template v-else>
+		<div class="flex items-center justify-between mb-5">
+			<div class="text-xl capitalize">
+				{{ title }}
+			</div>
+			<div class="flex items-center gap-4">
+				<div class="flex items-center">
+					<UButton
+						icon="i-heroicons-arrow-left"
+						variant="link"
+					/>
+					<UButton
+						icon="i-heroicons-arrow-right"
+						variant="link"
+					/>
+				</div>
 				<UButton
-					icon="i-heroicons-arrow-left"
-					variant="link"
-				/>
-				<UButton
-					icon="i-heroicons-arrow-right"
+					icon="i-heroicons-arrow-path"
 					variant="link"
 				/>
 			</div>
-			<UButton
-				icon="i-heroicons-arrow-path"
-				variant="link"
-			/>
 		</div>
-	</div>
-	<div class="grid grid-cols-1 gap-12">
-		<UCard v-for="item in 4" :key="item">
-			<template #header>
-				<div class="text-xl">Проект {{ item }}</div>
-			</template>
-			<UTable :columns="columns" :rows="people">
-				<template #expand="{ row }">
-					<div class="p-4">
-						<pre>{{ row }}</pre>
-					</div>
+		<div class="grid grid-cols-1 gap-12">
+			<UCard v-for="item in 4" :key="item">
+				<template #header>
+					<div class="text-xl">Проект {{ item }}</div>
 				</template>
-			</UTable>
-		</UCard>
-	</div>
+				<UTable :columns="columns" :rows="people">
+					<template #expand="{ row }">
+						<div class="p-4">
+							<pre>{{ row }}</pre>
+						</div>
+					</template>
+				</UTable>
+			</UCard>
+		</div>
+	</template>
 </template>
 
 <style lang="scss"></style>

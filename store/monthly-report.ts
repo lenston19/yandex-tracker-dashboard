@@ -56,7 +56,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 	}
 
 	const fetchMoreWorklog = async (body: YandexTrackerApi.worklogList.GET.RequestDTO, totalPages: number) => {
-		let counter = 1
+		let counter = 2
 		let worklogs: Yandex.Worklog[] = []
 		while (counter <= totalPages) {
 			const iterResponse = await yandexTrackerApi.worklogList(body, {
@@ -149,6 +149,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 		allWorklogs,
 		nextMonth,
 		prevMonth,
+		requestStatus,
 		monthChartData,
 		chartData,
 		refreshChartData,
