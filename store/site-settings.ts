@@ -7,7 +7,7 @@ export const useSiteSettingsStore = defineStore('site-settings', () => {
 	const accessToken = ref<string>('')
 
 	const hoursInDay = ref<number>(8)
-	const gold = ref<number>(850)
+	const gold = ref<number>(0)
 
 	const isNeedOrganizationId = computed(() => organizationId.value === '')
 

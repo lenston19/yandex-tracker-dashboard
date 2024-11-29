@@ -10,8 +10,8 @@ definePageMeta({
 
 <template>
 	<div class="grid grid-cols-4 gap-4">
-		<WeekTimeWidget class="col-span-4" />
-		<DayTimeWidget class="col-span-4 md:col-span-2" />
-		<MonthTimeWidget class="col-span-4 md:col-span-2" />
+		<WeekTimeWidget class="col-span-4 h-fit" />
+		<DayTimeWidget class="col-span-4 md:col-span-2 h-fit" />
+		<MonthTimeWidget class="col-span-4 md:col-span-2 h-fit" />
 	</div>
 </template>
