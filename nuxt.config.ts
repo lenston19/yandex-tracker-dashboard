@@ -56,10 +56,10 @@ export default defineNuxtConfig({
 		}
 	},
 	ui: {
-		global: true,
-		icons: {
-			dynamic: true
-		}
+		global: true
+	},
+	icon: {
+		provider: 'iconify'
 	},
 	pinia: {
 		autoImports: [
