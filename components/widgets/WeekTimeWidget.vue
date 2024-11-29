@@ -13,10 +13,15 @@ const title = computed(() => {
 	- ${dateTo.toFormat("dd.MM.yyyy")}`
 })
 
+const isLoading = computed(() => requestStatus.value !== 'success')
+
 onMounted(async () => {
-	await weekTimeWidgetStore.refreshWorklogsWeek()
+	if (!weekTotalHours.value) {
+		await weekTimeWidgetStore.refreshWorklogsWeek()
+	}
 })
 </script>
+
 <template>
 	<UCard>
 		<template #header>
@@ -45,26 +50,30 @@ onMounted(async () => {
 				/>
 			</template>
 		</div>
-		<template v-if="requestStatus === 'success'" #footer>
+		<template #footer>
 			<div class="flex items-center justify-between">
 				<div v-if="currentWeek?.length" class="text-lg">
 					Всего: <b>{{ weekTotalHours.toFixed(2) }}ч / 40ч </b>
 				</div>
+				<USkeleton v-else class="h-6 w-[160px]" />
 				<div class="flex items-center gap-4 ml-auto">
 					<div class="flex items-center">
 						<UButton
 							icon="i-heroicons-arrow-left"
 							variant="link"
+							:loading="isLoading"
 							@click="weekTimeWidgetStore.prevWeek"
 						/>
 						<UButton
 							icon="i-heroicons-arrow-right"
 							variant="link"
+							:loading="isLoading"
 							@click="weekTimeWidgetStore.nextWeek"
 						/>
 					</div>
 					<UButton
 						icon="i-heroicons-arrow-path"
+						:loading="isLoading"
 						@click="weekTimeWidgetStore.refreshWorklogsWeek"
 					/>
 				</div>

@@ -11,7 +11,9 @@ const today = computed(() => {
 })
 
 onMounted(async () => {
-	await dayTimeWidgetStore.refreshWorklogsDay()
+	if (!totalHours.value) {
+		await dayTimeWidgetStore.refreshWorklogsDay()
+	}
 })
 </script>
 
@@ -24,10 +26,11 @@ onMounted(async () => {
 		</template>
 		<DayLinearProgress v-if="requestStatus === 'success'" :hours="totalHours" />
 		<DayLinearProgress v-else :hours="null" loading />
-		<template v-if="requestStatus === 'success'" #footer>
+		<template #footer>
 			<div class="flex justify-end items-center gap-4">
 				<UButton
 					icon="i-heroicons-arrow-path"
+					:loading="requestStatus !== 'success'"
 					@click="dayTimeWidgetStore.refreshWorklogsDay"
 				/>
 			</div>
