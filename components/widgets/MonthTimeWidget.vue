@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia"
 import { useMonthTimeWidgetStore } from "~/store/month-time-widget";
 import { useSiteSettingsStore } from "~/store/site-settings";
-import { formatRUB } from "~/helpers/static/format-money";
+import { formatRUB } from "~/helpers/utils/format-money";
 
 const monthTimeWidgetStore = useMonthTimeWidgetStore()
 
@@ -10,7 +10,7 @@ const { totalHours, requestStatus } = storeToRefs(monthTimeWidgetStore)
 const { needHoursInCurrentMonth, gold } = storeToRefs(useSiteSettingsStore())
 
 const currentRuble = computed(() => totalHours.value * gold.value)
-const maxRuble = computed(() => needHoursInCurrentMonth.value * gold.value)
+const maxRuble = computed(() => needHoursInCurrentMonth.value ? needHoursInCurrentMonth.value * gold.value : currentRuble.value)
 
 const isLoading = computed(() => requestStatus.value !== 'success')
 
@@ -65,5 +65,3 @@ onMounted(async () => {
 		</template>
 	</UCard>
 </template>
-
-<style scoped></style>
