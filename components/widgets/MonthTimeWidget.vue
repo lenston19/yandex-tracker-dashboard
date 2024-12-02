@@ -40,7 +40,7 @@ onMounted(async () => {
 
 			<UProgress
 				v-if="gold"
-				:value="!!currentRuble ? currentRuble : undefined"
+				:value="currentRuble"
 				:min="0"
 				:max="maxRuble"
 				color="blue"
