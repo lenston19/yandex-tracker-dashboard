@@ -61,7 +61,7 @@ onMounted(async () => {
 		</div>
 		<template #footer>
 			<div class="flex items-center justify-between">
-				<div v-if="currentWeek?.length" class="text-lg">
+				<div v-if="!isLoading" class="text-lg flex flex-wrap gap-1">
 					Всего: <span class="text-md italic font-semibold">{{ currentHoursInWeek }} / {{ maxHoursInWeek }} </span>
 				</div>
 				<USkeleton v-else class="h-6 w-[160px]" />
