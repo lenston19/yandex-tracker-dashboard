@@ -14,3 +14,11 @@ export interface LineChartData {
 		data: number[]
 	}[]
 }
+
+export interface PieChartData {
+	labels: string[]
+	datasets: {
+		backgroundColor: string[]
+		data: number[]
+	}[]
+}

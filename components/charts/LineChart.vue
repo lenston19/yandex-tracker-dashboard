@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useWindowSize } from "@vueuse/core";
 import {
 	Chart as ChartJS,
 	CategoryScale,
@@ -22,6 +23,8 @@ defineProps<{
 	data: LineChartData
 }>()
 
+const { width } = useWindowSize()
+
 const options = computed(() => ({
 	responsive: true,
 	scales: {
@@ -38,15 +41,21 @@ const options = computed(() => ({
 			},
 		},
 	},
+	plugins: {
+		legend: {
+			display: false
+		}
+	},
 }))
 </script>
 
 <template>
-	<Line
-		:key="JSON.stringify(data)"
-		:data="data"
-		:options="options"
-	/>
+	<ClientOnly>
+		<Line
+			:key="JSON.stringify(data) + width"
+			:data="data"
+			:options="options"
+			class="max-h-48"
+		/>
+	</ClientOnly>
 </template>
-
-<style lang="scss"></style>
