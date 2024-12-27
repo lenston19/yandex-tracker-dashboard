@@ -42,7 +42,14 @@ onMounted(async () => {
 					:key="`day-${day.weekday}-${day.hours}`"
 					:hours="day.hours"
 					:max="hoursInDay"
-				/>
+				>
+				<template #header>
+					<div class="text-lg capitalize">
+						{{ day.weekday }}
+					</div>
+					<UDivider />
+				</template>
+			</DayLinearProgress>
 			</template>
 			<template v-else-if="requestStatus === 'pending'">
 				<DayLinearProgress

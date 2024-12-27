@@ -45,7 +45,10 @@ const maxPlural = computed(() => {
 </script>
 
 <template>
-	<UProgress
+	<div class="flex flex-col gap-4">
+		<slot v-if="$slots.header" name="header" />
+
+		<UProgress
 		:value="hours"
 		:min="min"
 		:max="computedMax"
@@ -69,6 +72,5 @@ const maxPlural = computed(() => {
 			/>
 		</template>
 	</UProgress>
+	</div>
 </template>
-
-<style scoped></style>
