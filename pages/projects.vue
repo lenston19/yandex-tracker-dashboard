@@ -1,128 +1,66 @@
 <script setup lang="ts">
 import { DateTime } from "luxon"
+import { storeToRefs } from "pinia";
+import { useProjectsStore } from "~/store/projects";
+import GroupedWorklogsTable from '~/components/worklogs/GroupedWorklogsTable.vue'
 
 definePageMeta({
 	middleware: ['auth']
 })
 
+const projectsStore = useProjectsStore()
+
+const { queueWorklogs, isLoading } = storeToRefs(projectsStore)
+
 const title = computed(() =>
 	DateTime.now().startOf("month").toFormat("LLLL yyyy")
 )
-
-const columns = [
-	{
-		key: "id",
-		label: "ID",
-	},
-	{
-		key: "name",
-		label: "Name",
-	},
-	{
-		key: "title",
-		label: "Title",
-	},
-	{
-		key: "email",
-		label: "Email",
-	},
-	{
-		key: "role",
-		label: "Role",
-	},
-]
-
-const people = [
-	{
-		id: 1,
-		name: "Lindsay Walton",
-		title: "Front-end Developer",
-		email: "lindsay.walton@example.com",
-		role: "Member",
-	},
-	{
-		id: 2,
-		name: "Courtney Henry",
-		title: "Designer",
-		email: "courtney.henry@example.com",
-		role: "Admin",
-	},
-	{
-		id: 3,
-		name: "Tom Cook",
-		title: "Director of Product",
-		email: "tom.cook@example.com",
-		role: "Member",
-	},
-	{
-		id: 4,
-		name: "Whitney Francis",
-		title: "Copywriter",
-		email: "whitney.francis@example.com",
-		role: "Admin",
-	},
-	{
-		id: 5,
-		name: "Leonard Krasner",
-		title: "Senior Designer",
-		email: "leonard.krasner@example.com",
-		role: "Owner",
-	},
-	{
-		id: 6,
-		name: "Floyd Miles",
-		title: "Principal Designer",
-		email: "floyd.miles@example.com",
-		role: "Member",
-	},
-]
-const showPage = ref<boolean>(false)
 </script>
 
 <template>
-	<div
-		v-if="!showPage"
-		class="text-2xl w-full flex items-center justify-center"
-	>
-		Страница в разработке
-	</div>
-	<template v-else>
-		<div class="flex items-center justify-between mb-5">
-			<div class="text-xl capitalize">
-				{{ title }}
-			</div>
-			<div class="flex items-center gap-4">
-				<div class="flex items-center">
-					<UButton
-						icon="i-heroicons-arrow-left"
-						variant="link"
-					/>
-					<UButton
-						icon="i-heroicons-arrow-right"
-						variant="link"
-					/>
-				</div>
+	<div class="flex items-center justify-between mb-5">
+		<div class="text-xl capitalize">
+			{{ title }}
+		</div>
+		<div class="flex items-center gap-4">
+			<div class="flex items-center">
 				<UButton
-					icon="i-heroicons-arrow-path"
+					icon="i-heroicons-arrow-left"
 					variant="link"
+					@click="projectsStore.prev"
+				/>
+				<UButton
+					icon="i-heroicons-arrow-right"
+					variant="link"
+					@click="projectsStore.next"
 				/>
 			</div>
+			<UButton
+				icon="i-heroicons-arrow-path"
+				variant="link"
+				@click="projectsStore.refresh"
+			/>
 		</div>
-		<div class="grid grid-cols-1 gap-12">
-			<UCard v-for="item in 4" :key="item">
-				<template #header>
-					<div class="text-xl">Проект {{ item }}</div>
-				</template>
-				<UTable :columns="columns" :rows="people">
-					<template #expand="{ row }">
-						<div class="p-4">
-							<pre>{{ row }}</pre>
-						</div>
-					</template>
-				</UTable>
+	</div>
+	<div class="grid grid-cols-1 gap-12">
+		<template v-if="!isLoading">
+			<UCard
+				class="col-span-1"
+				v-for="queue in queueWorklogs"
+				:key="queue.queueName"
+			>
+				<GroupedWorklogsTable
+					:title="queue.queueName"
+					:rows="queue.worklogs"
+					:page-count="10"
+					showTotal
+				/>
 			</UCard>
-		</div>
-	</template>
+		</template>
+		<template v-else>
+			<UCard  v-for="_ in 3">
+				<USkeleton class="h-24 w-full"/>
+			</UCard>
+		</template>
+	</div>
 </template>
-
-<style lang="scss"></style>

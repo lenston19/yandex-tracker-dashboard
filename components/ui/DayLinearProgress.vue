@@ -70,5 +70,3 @@ const maxPlural = computed(() => {
 		</template>
 	</UProgress>
 </template>
-
-<style scoped></style>

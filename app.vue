@@ -9,5 +9,8 @@ Settings.defaultLocale = 'ru'
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
-	<UNotifications />
+	<ClientOnly>
+		<UNotifications />
+		<UModals />
+	</ClientOnly>
 </template>

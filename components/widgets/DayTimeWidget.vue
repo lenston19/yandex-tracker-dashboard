@@ -5,7 +5,7 @@ import { useDayTimeWidgetStore } from "~/store/day-time-widget";
 import { useSiteSettingsStore } from "~/store/site-settings";
 
 const dayTimeWidgetStore = useDayTimeWidgetStore()
-const { totalHours, requestStatus } = storeToRefs(dayTimeWidgetStore)
+const { totalHours, isLoading } = storeToRefs(dayTimeWidgetStore)
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
 const today = computed(() => {
@@ -14,7 +14,7 @@ const today = computed(() => {
 
 onMounted(async () => {
 	if (!totalHours.value) {
-		await dayTimeWidgetStore.refreshWorklogsDay()
+		await dayTimeWidgetStore.refresh()
 	}
 })
 </script>
@@ -26,14 +26,14 @@ onMounted(async () => {
 				Сегодня - <span class="italic">{{ today }}</span>
 			</div>
 		</template>
-		<DayLinearProgress v-if="requestStatus === 'success'" :hours="totalHours" :max="hoursInDay" />
+		<DayLinearProgress v-if="!isLoading" :hours="totalHours" :max="hoursInDay" />
 		<DayLinearProgress v-else :hours="null" loading />
 		<template #footer>
 			<div class="flex justify-end items-center gap-4">
 				<UButton
 					icon="i-heroicons-arrow-path"
-					:loading="requestStatus !== 'success'"
-					@click="dayTimeWidgetStore.refreshWorklogsDay"
+					:loading="isLoading"
+					@click="dayTimeWidgetStore.refresh"
 				/>
 			</div>
 		</template>

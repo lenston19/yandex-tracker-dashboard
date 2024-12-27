@@ -3,30 +3,19 @@ import { DateTime } from "luxon";
 import { storeToRefs } from "pinia";
 import LineChart from "~/components/charts/LineChart.vue"
 import { useMonthlyReportStore } from "~/store/monthly-report";
+import { pluralize } from "~/helpers/utils/pluralize";
+import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords";
 
 definePageMeta({
 	middleware: ['auth']
 })
 
 const monthlyReportStore = useMonthlyReportStore()
-const { monthChartData, monthParams, requestStatus } = storeToRefs(monthlyReportStore)
+const { monthChartData, params, isLoading, averageHoursByMonth } = storeToRefs(monthlyReportStore)
 
 const title = computed(() =>
-	DateTime.fromISO(monthParams.value.from).toFormat("LLLL yyyy")
+	DateTime.fromISO(params.value.from).toFormat("LLLL yyyy")
 )
-
-const averageHoursByMonth = computed(() => {
-	let count = 0
-	const total = monthChartData.value.datasets[0].data.reduce((acc, item) => {
-		if (item > 0.25) {
-			acc += item
-			count += 1
-		}
-		return acc
-	}, 0)
-	const result = +(total / count).toFixed(2)
-	return isNaN(result) ? 0 : result
-})
 
 const getColorByAverage = computed(() => {
 	switch (true) {
@@ -36,11 +25,9 @@ const getColorByAverage = computed(() => {
 	}
 })
 
-const isLoading = computed(() => requestStatus.value !== 'success')
-
 onMounted(async () => {
 	if (!monthChartData.value.datasets.length) {
-		await monthlyReportStore.refreshChartData()
+		await monthlyReportStore.refresh()
 	}
 })
 </script>
@@ -56,20 +43,20 @@ onMounted(async () => {
 					icon="i-heroicons-arrow-left"
 					variant="link"
 					:loading="isLoading"
-					@click="monthlyReportStore.prevMonth"
+					@click="monthlyReportStore.prev"
 				/>
 				<UButton
 					icon="i-heroicons-arrow-right"
 					variant="link"
 					:loading="isLoading"
-					@click="monthlyReportStore.nextMonth"
+					@click="monthlyReportStore.next"
 				/>
 			</div>
 			<UButton
 				icon="i-heroicons-arrow-path"
 				variant="link"
 				:loading="isLoading"
-				@click="monthlyReportStore.refreshChartData"
+				@click="monthlyReportStore.refresh"
 			/>
 		</div>
 	</div>
@@ -86,7 +73,7 @@ onMounted(async () => {
 						:color="getColorByAverage"
 						variant="subtle"
 					>
-						{{ averageHoursByMonth }} ч
+						{{ pluralize(averageHoursByMonth, hoursPluralize) }}
 					</UBadge>
 					<USkeleton v-else class="w-[90px] h-[25px]"/>
 				</div>
