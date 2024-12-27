@@ -5,15 +5,16 @@ import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords";
 import { pluralize } from "~/helpers/utils/pluralize";
 import { useSiteSettingsStore } from "~/store/site-settings";
 import { useWeekTimeWidgetStore } from "~/store/week-time-widget";
+import DayLinearProgress from '~/components/ui/DayLinearProgress.vue'
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
-const { currentWeek, weekParams, weekTotalHours, requestStatus } = storeToRefs(weekTimeWidgetStore)
+const { currentWeek, params, weekTotalHours, isLoading } = storeToRefs(weekTimeWidgetStore)
 
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
 const title = computed(() => {
-	const dateFrom = DateTime.fromISO(weekParams.value.from)
-	const dateTo = DateTime.fromISO(weekParams.value.to)
+	const dateFrom = DateTime.fromISO(params.value.from)
+	const dateTo = DateTime.fromISO(params.value.to)
 	return `Неделя ${dateFrom.toFormat("dd.MM.yyyy")}
 	- ${dateTo.toFormat("dd.MM.yyyy")}`
 })
@@ -21,11 +22,9 @@ const title = computed(() => {
 const maxHoursInWeek = computed(() => pluralize(hoursInDay.value ? hoursInDay.value * 5 : 40, hoursPluralize))
 const currentHoursInWeek = computed(() => pluralize(+weekTotalHours.value.toFixed(2), hoursPluralize))
 
-const isLoading = computed(() => requestStatus.value !== 'success')
-
 onMounted(async () => {
 	if (!weekTotalHours.value) {
-		await weekTimeWidgetStore.refreshWorklogsWeek()
+		await weekTimeWidgetStore.refresh()
 	}
 })
 </script>
@@ -36,22 +35,25 @@ onMounted(async () => {
 			<div class="text-xl">{{ title }}</div>
 		</template>
 		<div class="grid md:grid-cols-7 grid-cols-1 gap-4">
-			<template v-if="requestStatus === 'success' && currentWeek.length">
-				<DayLinearProgress
+			<template v-if="!isLoading && currentWeek.length">
+				<div
 					v-for="day in currentWeek"
 					:key="`day-${day.weekday}-${day.hours}`"
-					:hours="day.hours"
-					:max="hoursInDay"
+					class="flex flex-col gap-4"
 				>
-				<template #header>
 					<div class="text-lg capitalize">
 						{{ day.weekday }}
 					</div>
 					<UDivider />
-				</template>
-			</DayLinearProgress>
+					<DayLinearProgress
+						:hours="day.hours"
+						:max="hoursInDay"
+						class="cursor-pointer"
+						@click="weekTimeWidgetStore.openDetailDayDialog(day)"
+					/>
+				</div>
 			</template>
-			<template v-else-if="requestStatus === 'pending'">
+			<template v-else-if="isLoading">
 				<DayLinearProgress
 					v-for="day in 7"
 					:key="`day-${day}`"
@@ -78,19 +80,19 @@ onMounted(async () => {
 							icon="i-heroicons-arrow-left"
 							variant="link"
 							:loading="isLoading"
-							@click="weekTimeWidgetStore.prevWeek"
+							@click="weekTimeWidgetStore.prev"
 						/>
 						<UButton
 							icon="i-heroicons-arrow-right"
 							variant="link"
 							:loading="isLoading"
-							@click="weekTimeWidgetStore.nextWeek"
+							@click="weekTimeWidgetStore.next"
 						/>
 					</div>
 					<UButton
 						icon="i-heroicons-arrow-path"
 						:loading="isLoading"
-						@click="weekTimeWidgetStore.refreshWorklogsWeek"
+						@click="weekTimeWidgetStore.refresh"
 					/>
 				</div>
 			</div>

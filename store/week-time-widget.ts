@@ -1,14 +1,11 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref } from '#imports'
-import yandexTrackerApi from '~/api/yandex-tracker.api'
-import { useAuthStore } from '~/store/auth'
 import { DateTime } from 'luxon'
 import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
-import { YandexTrackerApi } from '~/types/yandex-tracker/yandex-tracker.api'
-import { calculateHours, calculateTimeByPeriod } from '~/helpers/utils/time'
-import { DateDuration } from '~/types/base'
-
-interface Weekday {
+import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
+import DayInfoModal from '~/components/widgets/modals/DayInfoModal.vue'
+import { useWorklogsStore } from '~/store/worklogs'
+export interface Weekday {
 	weekday: string;
 	monthDay: string;
 	hours: number;
@@ -16,101 +13,20 @@ interface Weekday {
 }
 
 export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
-	const { login } = storeToRefs(useAuthStore())
-
-	const weekParams = ref<DateDuration>({
-		from: DateTime.now().startOf('week').toISO(),
-		to: DateTime.now().endOf('week').toISO()
-	})
-
-	const allWorklogs = ref<Yandex.Worklog[]>([])
+	const worklogsStore = useWorklogsStore('week', 'week-time-widget')
+	const { worklogsModel, isLoading, params } = storeToRefs(worklogsStore)
 
 	const currentWeek = ref<Weekday[]>([]);
 	const weekTotalHours = ref<number>(0)
 
-	const nextWeek = async () => {
-		const fromDateTime = DateTime.fromISO(weekParams.value.from).plus({ week: 1 }).toISO()
-		const toDateTime = DateTime.fromISO(weekParams.value.to).plus({ week: 1 }).toISO()
-		if (fromDateTime === null || toDateTime === null) {
-			return
-		}
-		weekParams.value.from = fromDateTime
-		weekParams.value.to = toDateTime
-		await refreshWorklogsWeek();
-	}
-
-	const prevWeek = async () => {
-		const fromDateTime = DateTime.fromISO(weekParams.value.from).minus({ week: 1 }).toISO()
-		const toDateTime = DateTime.fromISO(weekParams.value.to).minus({ week: 1 }).toISO()
-		if (fromDateTime === null || toDateTime === null) {
-			return
-		}
-
-		weekParams.value.from = fromDateTime
-		weekParams.value.to = toDateTime
-		await refreshWorklogsWeek();
-	}
-
-	const fetchMoreWorklog = async (body: YandexTrackerApi.worklogList.GET.RequestDTO, totalPages: number) => {
-		let counter = 1
-		let worklogs: Yandex.Worklog[] = []
-		while (counter <= totalPages) {
-			const iterResponse = await yandexTrackerApi.worklogList(body, {
-				page: String(counter)
-			})
-			if (iterResponse.status === 200 && iterResponse._data) {
-				worklogs = [
-					...worklogs,
-					...iterResponse._data
-				]
-			}
-			counter++
-		}
-		return worklogs
-	}
-
-	const { data: _, refresh: refreshWorklogsWeek, status: requestStatus } = useLazyAsyncData('worklogs-week-items', async () => {
-		if (!login.value) {
-			return [] as Yandex.Worklog[]
-		}
-		clearState()
-		const body = {
-			createdBy: login.value,
-			createdAt: {
-				from: weekParams.value.from,
-				to: weekParams.value.to,
-			},
-		}
-
-		const response = await yandexTrackerApi.worklogList(body)
-
-		if (!response._data) {
-			return [] as Yandex.Worklog[]
-		}
-
-		const totalPages = response.headers.get('X-Total-Pages')
-		const totalCount = response.headers.get('X-Total-Count')
-		let responseAllWorklogs: Yandex.Worklog[] = []
-		if (totalPages && (totalCount && +totalCount > 50)) {
-			responseAllWorklogs = await fetchMoreWorklog(body, +totalPages)
-		}
-
-		allWorklogs.value = [...response._data, ...responseAllWorklogs]
-
-		return response._data
-	}, {
-		server: false,
-		immediate: false
-	})
-
 	const calcWeekStats = () => {
 		clearState()
-		let iterateDay = DateTime.fromISO(weekParams.value.from);
-		while (iterateDay.hasSame(DateTime.fromISO(weekParams.value.from), 'week')) {
-			const dayItems = allWorklogs.value.filter((item: Yandex.Worklog) =>
+		let iterateDay = DateTime.fromISO(params.value.from);
+		while (iterateDay.hasSame(DateTime.fromISO(params.value.from), 'week')) {
+			const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) =>
 				DateTime.fromISO(item.start).hasSame(iterateDay, 'day')
 			);
-			const dayHours = calculateTimeByPeriod(calculateHours(dayItems));
+			const dayHours = formatHoursToFixed(calculateTotalHours(dayItems));
 			weekTotalHours.value = weekTotalHours.value + dayHours;
 
 			currentWeek.value.push({
@@ -129,18 +45,25 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 	}
 
 	watchEffect(() => {
-		if (requestStatus.value === 'success' && allWorklogs.value.length) {
+		if (!isLoading.value && worklogsModel.value.length) {
 			calcWeekStats()
 		}
 	})
 
+	const modal = useModal()
+
+	function openDetailDayDialog (day: Weekday) {
+		modal.open(DayInfoModal, { day })
+	}
+
 	return {
-		weekParams,
-		nextWeek,
-		prevWeek,
+		params,
+		next: worklogsStore.next,
+		prev: worklogsStore.prev,
 		weekTotalHours,
 		currentWeek,
-		requestStatus,
-		refreshWorklogsWeek,
+		isLoading,
+		refresh: worklogsStore.refresh,
+		openDetailDayDialog,
 	}
 })

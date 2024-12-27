@@ -6,17 +6,15 @@ import { formatRUB } from "~/helpers/utils/format-money";
 
 const monthTimeWidgetStore = useMonthTimeWidgetStore()
 
-const { totalHours, requestStatus } = storeToRefs(monthTimeWidgetStore)
+const { totalHours, isLoading } = storeToRefs(monthTimeWidgetStore)
 const { needHoursInCurrentMonth, gold } = storeToRefs(useSiteSettingsStore())
 
 const currentRuble = computed(() => totalHours.value * gold.value)
 const maxRuble = computed(() => needHoursInCurrentMonth.value ? needHoursInCurrentMonth.value * gold.value : currentRuble.value)
 
-const isLoading = computed(() => requestStatus.value !== 'success')
-
 onMounted(async () => {
 	if (!totalHours.value) {
-		await monthTimeWidgetStore.refreshWorklogsMonth()
+		await monthTimeWidgetStore.refresh()
 	}
 })
 </script>
@@ -58,8 +56,8 @@ onMounted(async () => {
 			<div class="flex items-center gap-4 justify-end">
 				<UButton
 					icon="i-heroicons-arrow-path"
-					:loading="requestStatus !== 'success'"
-					@click="monthTimeWidgetStore.refreshWorklogsMonth"
+					:loading="isLoading"
+					@click="monthTimeWidgetStore.refresh"
 				/>
 			</div>
 		</template>
