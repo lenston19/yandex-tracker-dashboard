@@ -17,6 +17,7 @@ export const useQueuesStore = defineStore('queues', () => {
 
 			return await yandexTrackerApi.queuesList()
 		}, {
+			default: () => [] as Yandex.Queue[],
 			server: false
 		})
 

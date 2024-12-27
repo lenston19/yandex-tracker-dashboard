@@ -2,16 +2,20 @@ import { defineStore, storeToRefs } from 'pinia'
 import { ref } from '#imports'
 import { DateTime } from 'luxon'
 import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
-import { LineChartData } from '~/types/base'
+import { PieChartData, LineChartData } from '~/types/base'
 import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
 import { useWorklogsStore } from '~/store/worklogs'
+import { useQueuesStore } from './queues'
+import { collectWorklogsByQueue } from '~/helpers/utils/collecting'
 
 export const useMonthlyReportStore = defineStore('monthly-report', () => {
 	const worklogsStore = useWorklogsStore('month', 'monthly-report')
+	const queueStore = useQueuesStore()
 
-	const { params, worklogsModel, isLoading } = storeToRefs(worklogsStore)
+	const { queuesModel, isLoading: isLoadingQueue } = storeToRefs(queueStore)
+	const { params, worklogsModel, isLoading: isLoadingWorklog } = storeToRefs(worklogsStore)
 
-	const monthChartData = ref<LineChartData>({
+	const monthLineChartData = ref<LineChartData>({
 		labels: [],
 		datasets: [
 			{
@@ -25,14 +29,62 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 		]
 	})
 
+	const monthPieChartData = ref<PieChartData>({
+		labels: [],
+		datasets: [
+			{
+				backgroundColor: [],
+				data: []
+			}
+		]
+	})
+
+	const isLoading = computed(() => isLoadingQueue.value || isLoadingWorklog.value)
+
 	watchEffect(() => {
-		if (!isLoading.value && worklogsModel.value.length) {
-			calcMonthStats()
+		if (!isLoading.value) {
+			if (worklogsModel.value.length) {
+				calcLineMonthStats()
+				if (queuesModel.value.length) {
+					calcPieMonthStats()
+				}
+			}
 		}
 	})
 
-	const calcMonthStats = () => {
-		clearState()
+	const calcPieMonthStats = () => {
+		clearPieState()
+		const labels: string[] = [];
+		const data: number[] = [];
+		const backgroundColor: string[] = [];
+
+		const colorPicker = createPastelColorPicker()
+
+		collectWorklogsByQueue(queuesModel.value, worklogsModel.value)
+			.forEach((item) => {
+				const hours = item.worklogs.reduce((acc, worklog) => {
+					acc += formatHoursToFixed(calculateTotalHours(worklog.items))
+					return acc
+				}, 0);
+
+				labels.push(item.queueName);
+				data.push(hours);
+				backgroundColor.push(colorPicker.getNextColor());
+			});
+
+		const newData = {
+			labels,
+			datasets: [{
+				data,
+				backgroundColor,
+			}]
+		}
+
+		monthPieChartData.value = newData;
+	}
+
+	const calcLineMonthStats = () => {
+		clearLineState()
 		const fromDateTime = DateTime.fromISO(params.value.from);
 		const toDateTime = DateTime.fromISO(params.value.to);
 
@@ -52,18 +104,25 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 			iterateDay = iterateDay.plus({ day: 1 });
 		}
 
-		monthChartData.value.labels = labels;
-		monthChartData.value.datasets[0].data = data;
+		monthLineChartData.value.labels = labels;
+		monthLineChartData.value.datasets[0].data = data;
 	};
 
-	const clearState = () => {
-		monthChartData.value.labels = [];
-		monthChartData.value.datasets[0].data = [];
+
+	const clearLineState = () => {
+		monthLineChartData.value.labels = [];
+		monthLineChartData.value.datasets[0].data = [];
+	}
+
+	const clearPieState = () => {
+		monthPieChartData.value.labels = [];
+		monthPieChartData.value.datasets[0].data = [];
+		monthPieChartData.value.datasets[0].backgroundColor = [];
 	}
 
 	const averageHoursByMonth = computed(() => {
 		let count = 0
-		const total = monthChartData.value.datasets[0].data.reduce((acc, item) => {
+		const total = monthLineChartData.value.datasets[0].data.reduce((acc, item) => {
 			if (item > 0.25) {
 				acc += item
 				count += 1
@@ -74,13 +133,61 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 		return isNaN(result) ? 0 : result
 	})
 
+	function refresh () {
+		worklogsStore.refresh()
+		queueStore.refresh()
+	}
+
 	return {
 		params,
 		next: worklogsStore.next,
 		prev: worklogsStore.prev,
 		isLoading,
-		monthChartData,
-		refresh: worklogsStore.refresh,
+		monthLineChartData,
+		monthPieChartData,
+		refresh,
 		averageHoursByMonth
 	}
 })
+
+
+function createPastelColorPicker() {
+  const colors = [
+    "#7F8C8D", // Серый
+    "#1ABC9C", // Бирюзовый
+    "#2ECC71", // Зеленый
+    "#3498DB", // Голубой
+    "#9B59B6", // Фиолетовый
+    "#E67E22", // Оранжевый
+    "#E74C3C", // Красный
+    "#34495E", // Темно-синий
+    "#F1C40F", // Желтый
+    "#95A5A6", // Светло-серый
+    "#16A085", // Морская волна
+    "#27AE60", // Темно-зеленый
+    "#2980B9", // Синий
+    "#8E44AD", // Темно-фиолетовый
+    "#D35400", // Темно-оранжевый
+    "#C0392B", // Темно-красный
+    "#BDC3C7", // Светло-серый
+    "#7DCEA0", // Светло-зеленый
+    "#73C6B6", // Светло-бирюзовый
+    "#85C1E9"  // Светло-голубой
+  ];
+  const usedColors = new Set<string>();
+
+  return {
+    getNextColor: (): string => {
+      for (const color of colors) {
+        if (!usedColors.has(color)) {
+          usedColors.add(color);
+          return color;
+        }
+      }
+      throw new Error("Все цвета использованы");
+    },
+    resetColors: (): void => {
+      usedColors.clear();
+    }
+  };
+}
