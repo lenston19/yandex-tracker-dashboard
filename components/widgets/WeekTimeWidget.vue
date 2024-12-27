@@ -39,7 +39,8 @@ onMounted(async () => {
 				<div
 					v-for="day in currentWeek"
 					:key="`day-${day.weekday}-${day.hours}`"
-					class="flex flex-col gap-4"
+					class="flex flex-col gap-4 cursor-pointer"
+					@click="weekTimeWidgetStore.openDetailDayDialog(day)"
 				>
 					<div class="text-lg capitalize">
 						{{ day.weekday }}
@@ -48,8 +49,6 @@ onMounted(async () => {
 					<DayLinearProgress
 						:hours="day.hours"
 						:max="hoursInDay"
-						class="cursor-pointer"
-						@click="weekTimeWidgetStore.openDetailDayDialog(day)"
 					/>
 				</div>
 			</template>
