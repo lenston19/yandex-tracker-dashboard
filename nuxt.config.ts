@@ -65,5 +65,10 @@ export default defineNuxtConfig({
 		autoImports: [
 			['defineStore', 'definePiniaStore']
 		]
+	},
+	piniaPersistedstate: {
+		cookieOptions: {
+			maxAge: 60 * 60 * 24 * 30 * 12
+		}
 	}
 })
