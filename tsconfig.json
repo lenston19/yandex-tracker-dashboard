@@ -1,9 +1,11 @@
 {
-	// https://nuxt.com/docs/guide/concepts/typescript
-	"extends": "./.nuxt/tsconfig.json",
-	"compilerOptions": {
-		"types": [
-			"@types/luxon"
-		]
-	}
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "types": [
+      "@types/luxon"
+    ]
+  }
 }
