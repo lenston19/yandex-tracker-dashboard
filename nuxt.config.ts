@@ -32,15 +32,6 @@ export default defineNuxtConfig({
 		}
 	},
 	vite: {
-		build: {
-			rollupOptions: {
-				output: {
-					chunkFileNames: '[name]-[hash].js',
-					entryFileNames: '[name]-[hash].js',
-					assetFileNames: '[name]-[hash][extname]',
-				},
-			},
-		},
 		optimizeDeps: {
 			entries: ['~/components/**/*.vue']
 		},
