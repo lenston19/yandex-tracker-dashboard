@@ -2,6 +2,7 @@
 import SettingsGoldModal from "~/components/settings/modals/SettingsGoldModal.vue"
 import { formatRUB } from "~/helpers/utils/format-money"
 import { useSiteSettingsStore } from "~/stores/site-settings"
+import UiCard from '~/components/ui/UiCard.vue'
 
 const { gold } = storeToRefs(useSiteSettingsStore())
 
@@ -11,11 +12,7 @@ const dialog = ref<boolean>(false)
 <template>
 	<SettingsGoldModal v-model="dialog" />
 
-	<UCard>
-		<template #header>
-			<div class="text-xl">Ставка</div>
-		</template>
-
+	<UiCard title="Ставка">
 		<div class="text-accent overflow-hidden truncate">
 			{{ formatRUB(gold) || "Пусто" }}
 		</div>
@@ -26,5 +23,5 @@ const dialog = ref<boolean>(false)
 				label="Изменить"
 			/>
 		</template>
-	</UCard>
+	</UiCard>
 </template>

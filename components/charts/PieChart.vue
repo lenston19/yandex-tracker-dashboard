@@ -5,7 +5,7 @@ import {
 } from "chart.js"
 import { Pie } from 'vue-chartjs'
 import { PieChartData } from "~/types/base"
-import EmptyState from "~/components/ui/EmptyState.vue"
+import UiEmptyState from "~/components/ui/UiEmptyState.vue"
 
 ChartJS.register(
 	ArcElement,
@@ -39,6 +39,6 @@ const hasData = computed(() => {
 			}"
 			class="max-h-48"
 		/>
-		<EmptyState v-else />
+		<UiEmptyState v-else />
 	</ClientOnly>
 </template>

@@ -10,7 +10,7 @@ import {
 } from "chart.js"
 import { Line } from "vue-chartjs"
 import { LineChartData } from "~/types/base"
-import EmptyState from "~/components/ui/EmptyState.vue"
+import UiEmptyState from "~/components/ui/UiEmptyState.vue"
 
 ChartJS.register(
 	CategoryScale,
@@ -68,6 +68,6 @@ const hasData = computed(() => {
 			:options="options"
 			class="max-h-48"
 		/>
-		<EmptyState v-else />
+		<UiEmptyState v-else />
 	</ClientOnly>
 </template>

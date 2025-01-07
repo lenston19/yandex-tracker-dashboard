@@ -5,7 +5,7 @@ import {
 } from "~/helpers/utils/time"
 import WorklogsTable from "~/components/worklogs/WorklogsTable.vue"
 import { CollectedWorklog } from "~/helpers/utils/collecting"
-import BasePagination from "../ui/BasePagination.vue"
+import UiPagination from "~/components/ui/UiPagination.vue"
 
 const props = withDefaults(
 	defineProps<{
@@ -89,7 +89,7 @@ const calcByProject = (rows: CollectedWorklog[]) => {
 			</template>
 		</UTable>
 
-		<BasePagination
+		<UiPagination
 			v-model="page"
 			:total="rows.length"
 			:page-count="pageCount"

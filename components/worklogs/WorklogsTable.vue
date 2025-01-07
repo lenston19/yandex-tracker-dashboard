@@ -2,6 +2,7 @@
 import { DateTime } from "luxon"
 import { calculateWorklogTimeByDay } from "~/helpers/utils/time"
 import { Yandex } from "~/types/yandex-tracker/yandex-tracker.entity"
+import UiPagination from "~/components/ui/UiPagination.vue"
 
 const props = defineProps<{
 	worklogs: Yandex.Worklog[]
@@ -81,7 +82,7 @@ const columns = [
 		</template>
 	</UTable>
 
-	<BasePagination
+	<UiPagination
 		v-model="page"
 		:total="rows.length"
 		color="violet"

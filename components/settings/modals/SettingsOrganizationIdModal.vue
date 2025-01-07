@@ -2,6 +2,7 @@
 import { storeToRefs } from 'pinia'
 import { useSiteSettingsStore } from '~/stores/site-settings'
 import { string, object } from 'yup'
+import UiCard from '~/components/ui/UiCard.vue'
 
 const { organizationId } = storeToRefs(useSiteSettingsStore())
 const model = defineModel<boolean>()
@@ -25,12 +26,7 @@ const save = () => {
 		v-model="model"
 		prevent-close
 	>
-		<UCard>
-			<template #header>
-				<div class="text-xl">
-					Для дальнейшей работы с приложением нужен ID организации
-				</div>
-			</template>
+		<UiCard title="Для дальнейшей работы с приложением нужен ID организации">
 			<UForm
 				:schema="schema"
 				:state="state"
@@ -62,7 +58,7 @@ const save = () => {
 					/>
 				</div>
 			</UForm>
-		</UCard>
+		</UiCard>
 	</UModal>
 </template>
 

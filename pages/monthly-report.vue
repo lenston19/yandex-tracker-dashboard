@@ -6,6 +6,7 @@ import { useMonthlyReportStore } from "~/stores/monthly-report"
 import { pluralize } from "~/helpers/utils/pluralize"
 import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
 import { HEROICONS } from "~/helpers/static/heroicons"
+import UiCard from '~/components/ui/UiCard.vue'
 
 definePageMeta({
 	middleware: ['auth']
@@ -72,34 +73,20 @@ onMounted(async () => {
 			:refresh="monthlyReportStore.refresh"
 		/>
 		<div class="grid grid-cols-2 gap-4">
-			<UCard class="col-span-2">
-				<template #header>
-					<div class="flex flex-col gap-4">
-						<div class="text-xl">
-							Динамика рабочего времени по дням
-						</div>
-					</div>
-				</template>
+			<UiCard
+				title="Динамика рабочего времени по дням"
+				class="col-span-2"
+			>
 				<LineChart
 					:loading="isLoading"
 					:data="monthLineChartData"
 				/>
-			</UCard>
-			<UCard
+			</UiCard>
+			<UiCard
+				title="Статистика"
 				class="col-span-2 lg:col-span-1"
-				:ui="{
-					body: {
-						padding: '',
-					},
-				}"
+				no-padding-body
 			>
-				<template #header>
-					<div class="flex flex-col gap-4">
-						<div class="text-xl">
-							Статистика
-						</div>
-					</div>
-				</template>
 				<div class="flex justify-center">
 					<UTable
 						v-if="!isLoading"
@@ -139,18 +126,16 @@ onMounted(async () => {
 					/>
 				</div>
 
-			</UCard>
-			<UCard class="col-span-2 lg:col-span-1">
-				<template #header>
-					<div class="text-xl">
-						Занятость на проектах
-					</div>
-				</template>
+			</UiCard>
+			<UiCard
+				title="Занятость на проектах"
+				class="col-span-2 lg:col-span-1"
+			>
 				<PieChart
 					:loading="isLoading"
 					:data="monthPieChartData"
 				/>
-			</UCard>
+			</UiCard>
 		</div>
 	</div>
 </template>

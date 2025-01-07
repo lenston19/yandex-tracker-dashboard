@@ -2,7 +2,9 @@
 import { useMonthTimeWidgetStore } from "~/stores/month-time-widget"
 import { useSiteSettingsStore } from "~/stores/site-settings"
 import { formatRUB } from "~/helpers/utils/format-money"
-import { HEROICONS } from "~/helpers/static/heroicons"
+import WorklogActions from "~/components/worklogs/WorklogActions.vue"
+import UiCard from '~/components/ui/UiCard.vue'
+import DayLinearProgress from '~/components/widgets/ui/DayLinearProgress.vue'
 
 const monthTimeWidgetStore = useMonthTimeWidgetStore()
 
@@ -20,10 +22,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<UCard>
-		<template #header>
-			<div class="text-xl">Сводка месяца</div>
-		</template>
+	<UiCard title="Сводка месяца">
 		<div class="space-y-3">
 			<DayLinearProgress
 				v-if="!isLoading"
@@ -59,13 +58,11 @@ onMounted(async () => {
 			</UProgress>
 		</div>
 		<template #footer>
-			<div class="flex items-center gap-4 justify-end">
-				<UButton
-					:icon="HEROICONS.ARROW_PATH"
-					:loading="isLoading"
-					@click="monthTimeWidgetStore.refresh"
-				/>
-			</div>
+			<WorklogActions
+				class="w-fit ml-auto"
+				:refresh="monthTimeWidgetStore.refresh"
+				:loading="isLoading"
+			/>
 		</template>
-	</UCard>
+	</UiCard>
 </template>

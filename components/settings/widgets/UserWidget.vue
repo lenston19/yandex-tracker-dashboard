@@ -2,6 +2,8 @@
 import LogoutModal from "~/components/settings/modals/LogoutModal.vue"
 import { useAuthStore } from "~/stores/auth"
 import { HEROICONS } from "~/helpers/static/heroicons"
+import UiCard from '~/components/ui/UiCard.vue'
+
 const authStore = useAuthStore()
 
 const { userName, mySelf, userAvatarUrl, isLoading } = storeToRefs(authStore)
@@ -12,11 +14,11 @@ const dialog = ref<boolean>(false)
 <template>
 	<LogoutModal v-model="dialog" />
 
-	<UCard v-if="mySelf">
+	<UiCard v-if="mySelf">
 		<template #header>
 			<div class="flex items-center gap-4">
-			<div class="text-xl">
-				Пользователь
+				<div class="text-xl">
+					Пользователь
 				</div>
 				<UButton
 					:icon="HEROICONS.ARROW_PATH"
@@ -45,7 +47,5 @@ const dialog = ref<boolean>(false)
 				:icon="HEROICONS.ARROW_RIGHT_START_ON_RECTANGLE"
 			/>
 		</template>
-	</UCard>
+	</UiCard>
 </template>
-
-<style scoped lang="scss"></style>

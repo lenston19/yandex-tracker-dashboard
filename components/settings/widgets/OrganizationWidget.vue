@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SettingsOrganizationIdModal from "~/components/settings/modals/SettingsOrganizationIdModal.vue"
 import { useSiteSettingsStore } from "~/stores/site-settings"
+import UiCard from '~/components/ui/UiCard.vue'
 
 const siteSettingsStore = useSiteSettingsStore()
 const dialog = ref<boolean>(false)
@@ -9,11 +10,7 @@ const dialog = ref<boolean>(false)
 <template>
 	<SettingsOrganizationIdModal v-model="dialog" />
 
-	<UCard>
-		<template #header>
-			<div class="text-xl">ID Организации</div>
-		</template>
-
+	<UiCard title="ID Организации">
 		<div class="text-accent overflow-hidden truncate">
 			{{ siteSettingsStore.organizationId || "Пусто" }}
 		</div>
@@ -24,5 +21,5 @@ const dialog = ref<boolean>(false)
 				:label="siteSettingsStore.organizationId ? 'Изменить' : 'Добавить'"
 			/>
 		</template>
-	</UCard>
+	</UiCard>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSiteSettingsStore } from '~/stores/site-settings'
 import { number, object } from 'yup'
+import UiCard from '~/components/ui/UiCard.vue'
 
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
@@ -25,7 +26,7 @@ const save = () => {
 
 <template>
 	<UModal v-model="model">
-		<UCard>
+		<UiCard>
 			<template #header>
 				<div class="flex flex-col gap-3">
 					<div class="text-lg">
@@ -63,6 +64,6 @@ const save = () => {
 					type="submit"
 				/>
 			</UForm>
-		</UCard>
+		</UiCard>
 	</UModal>
 </template>
