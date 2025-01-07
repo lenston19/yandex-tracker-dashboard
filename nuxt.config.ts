@@ -35,9 +35,9 @@ export default defineNuxtConfig({
 		build: {
 			rollupOptions: {
 				output: {
-					chunkFileNames: 'chunks/[name]-[hash].js',
-					entryFileNames: 'entries/[name]-[hash].js',
-					assetFileNames: 'assets/[name]-[hash][extname]',
+					chunkFileNames: '[name]-[hash].js',
+					entryFileNames: '[name]-[hash].js',
+					assetFileNames: '[name]-[hash][extname]',
 				},
 			},
 		},
