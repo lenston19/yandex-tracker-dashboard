@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useSiteSettingsStore } from '~/store/site-settings'
+import { useSiteSettingsStore } from '~/stores/site-settings'
 import { number, object } from 'yup'
-import { storeToRefs } from 'pinia';
 
 const { gold } = storeToRefs(useSiteSettingsStore())
 
@@ -43,7 +42,12 @@ const save = () => {
 					label="Ставка"
 					name="money"
 				>
-					<UInput v-model.number="state.money" type="number" color="primary" variant="outline" />
+					<UInput
+						v-model.number="state.money"
+						type="number"
+						color="primary"
+						variant="outline"
+					/>
 				</UFormGroup>
 				<UButton
 					label="Сохранить"

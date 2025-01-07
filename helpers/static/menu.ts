@@ -1,21 +1,23 @@
+import { HEROICONS } from "~/helpers/static/heroicons"
+
 export const pages = [
 	[{
 		label: 'Дашборд',
-		icon: 'i-heroicons-home',
+		icon: HEROICONS.HOME,
 		to: {
 			name: 'index'
 		}
 	},
 	{
 		label: 'Проекты',
-		icon: 'i-heroicons-folder',
+		icon: HEROICONS.FOLDER,
 		to: {
 			name: 'projects'
 		}
 	},
 	{
 		label: 'Месячный отчет',
-		icon: 'i-heroicons-chart-bar',
+		icon: HEROICONS.CHART_BAR,
 		to: {
 			name: 'monthly-report'
 		}
@@ -23,7 +25,7 @@ export const pages = [
 	[
 		{
 			label: 'Настройки',
-			icon: 'i-heroicons-cog',
+			icon: HEROICONS.COG,
 			to: {
 				name: 'settings'
 			}

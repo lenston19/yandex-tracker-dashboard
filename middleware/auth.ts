@@ -1,5 +1,4 @@
-import { storeToRefs } from "pinia"
-import { useSiteSettingsStore } from "~/store/site-settings"
+import { useSiteSettingsStore } from "~/stores/site-settings"
 
 export default defineNuxtRouteMiddleware(() => {
 	const { organizationId, accessToken } = storeToRefs(useSiteSettingsStore())

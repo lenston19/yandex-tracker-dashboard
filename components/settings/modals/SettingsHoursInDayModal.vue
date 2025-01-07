@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useSiteSettingsStore } from '~/store/site-settings'
+import { useSiteSettingsStore } from '~/stores/site-settings'
 import { number, object } from 'yup'
-import { storeToRefs } from 'pinia';
 
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
@@ -33,7 +32,8 @@ const save = () => {
 						Введите количество часов, которые вы работаете в день
 					</div>
 					<div class="text-sm">
-						* С помощью этой функции вам будет видно в виджете месяца <span class="italic">(на главной)</span>, сколько вам необходимо часов в этом месяце
+						* С помощью этой функции вам будет видно в виджете месяца <span class="italic">(на главной)</span>, сколько
+						вам необходимо часов в этом месяце
 					</div>
 					<div class="text-sm">
 						** <strong>0</strong> - Отключает эту функцию
@@ -51,7 +51,12 @@ const save = () => {
 					label="Часы"
 					name="hours"
 				>
-					<UInput v-model.number="state.hours" type="number" color="primary" variant="outline" />
+					<UInput
+						v-model.number="state.hours"
+						type="number"
+						color="primary"
+						variant="outline"
+					/>
 				</UFormGroup>
 				<UButton
 					label="Сохранить"

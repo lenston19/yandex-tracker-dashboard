@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useWindowSize } from "@vueuse/core";
+import { useWindowSize } from "@vueuse/core"
 import {
 	Chart as ChartJS,
 	CategoryScale,
@@ -9,7 +9,8 @@ import {
 	Tooltip,
 } from "chart.js"
 import { Line } from "vue-chartjs"
-import { LineChartData } from "~/types/base";
+import { LineChartData } from "~/types/base"
+import EmptyState from "~/components/ui/EmptyState.vue"
 
 ChartJS.register(
 	CategoryScale,
@@ -19,8 +20,9 @@ ChartJS.register(
 	Tooltip
 )
 
-defineProps<{
+const props = defineProps<{
 	data: LineChartData
+	loading: boolean
 }>()
 
 const { width } = useWindowSize()
@@ -47,15 +49,25 @@ const options = computed(() => ({
 		}
 	},
 }))
+
+const hasData = computed(() => {
+	return props.data.datasets.at(0)?.data.reduce((acc, hours) => acc + hours, 0)
+})
 </script>
 
 <template>
 	<ClientOnly>
+		<USkeleton
+			v-if="loading"
+			class="w-full h-48"
+		/>
 		<Line
+			v-else-if="hasData"
 			:key="JSON.stringify(data) + width"
 			:data="data"
 			:options="options"
 			class="max-h-48"
 		/>
+		<EmptyState v-else />
 	</ClientOnly>
 </template>

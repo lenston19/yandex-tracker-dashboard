@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useSiteSettingsStore } from "~/store/site-settings";
+import { useSiteSettingsStore } from "~/stores/site-settings"
 
 definePageMeta({
 	layout: "empty",
@@ -32,10 +31,14 @@ onMounted(() => {
 
 <template>
 	<div class="flex flex-col items-center">
-		<div v-if="accessToken" class="text-2xl">Успешно</div>
-		<div v-else class="text-2xl loading">
-			Загрузка
-	</div>
+		<div
+			class="text-2xl"
+			:class="{
+				'loading': accessToken
+			}"
+		>
+			{{ accessToken ? 'Успешно' : 'Загрузка' }}
+		</div>
 
 		<UButton
 			v-if="accessToken"

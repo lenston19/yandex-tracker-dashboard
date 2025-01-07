@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { collectWorklogs } from "~/helpers/utils/collecting";
-import { Weekday } from "~/store/week-time-widget";
-import GroupedWorklogsTable from "~/components/worklogs/GroupedWorklogsTable.vue";
-import { pluralize } from "~/helpers/utils/pluralize";
-import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords";
+import { collectWorklogs } from "~/helpers/utils/collecting"
+import { Weekday } from "~/stores/week-time-widget"
+import GroupedWorklogsTable from "~/components/worklogs/GroupedWorklogsTable.vue"
+import { pluralize } from "~/helpers/utils/pluralize"
+import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
 
 const props = defineProps<{
-	day: Weekday;
-}>();
+	day: Weekday
+}>()
 
 const worklogs = computed(() => {
-	return collectWorklogs(props.day.items).result;
-});
+	return collectWorklogs(props.day.items).result
+})
 
 const dayTotalHours = computed(() =>
 	pluralize(props.day.hours, hoursPluralize)
-);
+)
 
-function close() {
-	useModal().close();
+function close () {
+	useModal().close()
 }
 </script>
 
@@ -50,7 +50,10 @@ function close() {
 			<GroupedWorklogsTable :rows="worklogs" />
 			<template #footer>
 				<div class="flex justify-end">
-					<UButton @click="close()" label="Закрыть" />
+					<UButton
+						@click="close()"
+						label="Закрыть"
+					/>
 				</div>
 			</template>
 		</UCard>

@@ -1,7 +1,7 @@
 // @ts-ignore
 export default defineNuxtConfig({
 	compatibilityDate: '2024-08-09',
-app: {
+	app: {
 		head: {
 			htmlAttrs: {
 				lang: 'ru'
@@ -24,7 +24,7 @@ app: {
 			],
 		}
 	},
-  typescript: {
+	typescript: {
 		tsConfig: {
 			compilerOptions: {
 				verbatimModuleSyntax: false
@@ -83,11 +83,6 @@ app: {
 	},
 	icon: {
 		provider: 'iconify'
-	},
-	pinia: {
-		autoImports: [
-			['defineStore', 'definePiniaStore']
-		]
 	},
 	piniaPersistedstate: {
 		cookieOptions: {
