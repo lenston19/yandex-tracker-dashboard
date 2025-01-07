@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSiteSettingsStore } from "~/stores/site-settings"
+import { useAuthStore } from "~/stores/auth"
 
 definePageMeta({
 	layout: "empty",
@@ -11,17 +12,20 @@ definePageMeta({
 const route = useRoute()
 const router = useRouter()
 const siteSettingsStore = useSiteSettingsStore()
+const authStore = useAuthStore()
 const { accessToken } = storeToRefs(siteSettingsStore)
 const toast = useToast()
 
-onMounted(() => {
+onMounted(async () => {
 	const accessTokenFromRoute = new URLSearchParams(route.hash.slice(1)).get(
 		"access_token"
 	)
 	if (accessTokenFromRoute) {
 		siteSettingsStore.setAccessToken(accessTokenFromRoute)
+
 		if (accessToken.value) {
 			toast.add({ title: "Авторизован" })
+			await authStore.refreshMySelf()
 		} else {
 			toast.add({ title: "Ошибка" })
 		}
@@ -34,7 +38,7 @@ onMounted(() => {
 		<div
 			class="text-2xl"
 			:class="{
-				'loading': accessToken
+				'loading': !accessToken
 			}"
 		>
 			{{ accessToken ? 'Успешно' : 'Загрузка' }}
