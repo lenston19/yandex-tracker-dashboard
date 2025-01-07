@@ -3,6 +3,7 @@ import SettingsHoursInDayModal from "~/components/settings/modals/SettingsHoursI
 import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
 import { pluralize } from "~/helpers/utils/pluralize"
 import { useSiteSettingsStore } from "~/stores/site-settings"
+import UiCard from '~/components/ui/UiCard.vue'
 
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
@@ -18,11 +19,7 @@ const dialog = ref<boolean>(false)
 <template>
 	<SettingsHoursInDayModal v-model="dialog" />
 
-	<UCard>
-		<template #header>
-			<div class="text-xl">Часов в день</div>
-		</template>
-
+	<UiCard title="Часов в день">
 		<div class="text-accent overflow-hidden truncate">
 			{{ hoursPlural || "Выключено" }}
 		</div>
@@ -33,5 +30,5 @@ const dialog = ref<boolean>(false)
 				label="Изменить"
 			/>
 		</template>
-	</UCard>
+	</UiCard>
 </template>

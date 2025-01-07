@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', () => {
 	const userName = computed(() => mySelf.value?.display || '')
 	const login = computed(() => mySelf.value?.login || '')
 
-	const { data: mySelf, refresh: refreshMySelf } = useLazyAsyncData('my-self', async () => {
+	const { data: mySelf, refresh: refreshMySelf, status } = useLazyAsyncData('my-self', async () => {
 		const response = await yandexTrackerApi.mySelf()
 		if (response) {
 			await fetchAvatar()
@@ -41,6 +41,8 @@ export const useAuthStore = defineStore('auth', () => {
 		userAvatarUrl.value = ''
 	}
 
+	const isLoading = computed(() => status.value === 'pending')
+
 	return {
 		mySelf,
 		login,
@@ -48,5 +50,6 @@ export const useAuthStore = defineStore('auth', () => {
 		userAvatarUrl,
 		refreshMySelf,
 		clearState,
+		isLoading
 	}
 }, { persist: true })

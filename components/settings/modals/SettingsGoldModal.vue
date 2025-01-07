@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSiteSettingsStore } from '~/stores/site-settings'
 import { number, object } from 'yup'
+import UiCard from '~/components/ui/UiCard.vue'
 
 const { gold } = storeToRefs(useSiteSettingsStore())
 
@@ -25,13 +26,7 @@ const save = () => {
 
 <template>
 	<UModal v-model="model">
-		<UCard>
-			<template #header>
-				<div class="text-lg">
-					Введите ставку
-				</div>
-			</template>
-
+		<UiCard title="Введите ставку">
 			<UForm
 				:schema="schema"
 				:state="state"
@@ -54,6 +49,6 @@ const save = () => {
 					type="submit"
 				/>
 			</UForm>
-		</UCard>
+		</UiCard>
 	</UModal>
 </template>

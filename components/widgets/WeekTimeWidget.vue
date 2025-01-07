@@ -4,8 +4,9 @@ import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
 import { pluralize } from "~/helpers/utils/pluralize"
 import { useSiteSettingsStore } from "~/stores/site-settings"
 import { useWeekTimeWidgetStore } from "~/stores/week-time-widget"
-import DayLinearProgress from '~/components/ui/DayLinearProgress.vue'
-import WorklogActions from "~/components/ui/WorklogActions.vue"
+import DayLinearProgress from '~/components/widgets/ui/DayLinearProgress.vue'
+import WorklogActions from "~/components/worklogs/WorklogActions.vue"
+import UiCard from '~/components/ui/UiCard.vue'
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
 const { currentWeek, params, weekTotalHours, isLoading } = storeToRefs(weekTimeWidgetStore)
@@ -30,10 +31,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<UCard>
-		<template #header>
-			<div class="text-xl">{{ title }}</div>
-		</template>
+	<UiCard :title="title">
 		<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
 			<template v-if="isLoading">
 				<DayLinearProgress
@@ -83,5 +81,5 @@ onMounted(async () => {
 				/>
 			</div>
 		</template>
-	</UCard>
+	</UiCard>
 </template>

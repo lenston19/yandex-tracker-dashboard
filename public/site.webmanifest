@@ -1,5 +1,5 @@
 {
-	"start_url": "/settings",
+	"start_url": "/",
 	"display": "standalone",
 	"name": "YandexTracker Dashboard",
 	"icons": [

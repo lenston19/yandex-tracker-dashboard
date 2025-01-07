@@ -2,7 +2,8 @@
 import { DateTime } from "luxon"
 import { useProjectsStore } from "~/stores/projects"
 import GroupedWorklogsTable from '~/components/worklogs/GroupedWorklogsTable.vue'
-import EmptyState from "~/components/ui/EmptyState.vue"
+import UiEmptyState from "~/components/ui/UiEmptyState.vue"
+import UiCard from '~/components/ui/UiCard.vue'
 
 definePageMeta({
 	middleware: ['auth']
@@ -28,13 +29,13 @@ const title = computed(() =>
 		/>
 		<div class="grid grid-cols-1 gap-12">
 			<template v-if="isLoading">
-				<UCard v-for="_ in 3">
+				<UiCard v-for="_ in 3">
 					<USkeleton class="h-24 w-full" />
-				</UCard>
+				</UiCard>
 			</template>
-			<EmptyState v-else-if="!queueWorklogs.length" />
+			<UiEmptyState v-else-if="!queueWorklogs.length" />
 			<template v-else>
-				<UCard
+				<UiCard
 					class="col-span-1"
 					v-for="queue in queueWorklogs"
 					:key="queue.queueName"
@@ -45,7 +46,7 @@ const title = computed(() =>
 						:page-count="10"
 						showTotal
 					/>
-				</UCard>
+				</UiCard>
 			</template>
 		</div>
 	</div>

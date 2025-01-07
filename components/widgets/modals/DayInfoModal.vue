@@ -4,6 +4,7 @@ import { Weekday } from "~/stores/week-time-widget"
 import GroupedWorklogsTable from "~/components/worklogs/GroupedWorklogsTable.vue"
 import { pluralize } from "~/helpers/utils/pluralize"
 import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
+import UiCard from '~/components/ui/UiCard.vue'
 
 const props = defineProps<{
 	day: Weekday
@@ -26,13 +27,9 @@ function close () {
 	<UModal :ui="{
 		width: 'w-full sm:max-w-4xl'
 	}">
-		<UCard
+		<UiCard
 			class="min-w-full  md:min-w-[800px]"
-			:ui="{
-				body: {
-					padding: '',
-				},
-			}"
+			no-padding-body
 		>
 			<template #header>
 				<div class="flex justify-between">
@@ -56,6 +53,6 @@ function close () {
 					/>
 				</div>
 			</template>
-		</UCard>
+		</UiCard>
 	</UModal>
 </template>
