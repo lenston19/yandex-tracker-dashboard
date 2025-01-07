@@ -17,10 +17,13 @@ export const useAuthStore = defineStore('auth', () => {
 			await fetchAvatar()
 		}
 		return response
-	}, { server: false })
+	}, {
+		server: false,
+		immediate: false
+	})
 
 	watchEffect(() => {
-		if (organizationId.value && accessToken.value) {
+		if (organizationId.value && !!accessToken.value && !mySelf.value) {
 			refreshMySelf()
 		}
 	})

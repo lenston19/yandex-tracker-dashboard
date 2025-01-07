@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { HEROICONS } from "~/helpers/static/heroicons"
+import WorklogActions, { type WorklogActionsProps } from "~/components/ui/WorklogActions.vue"
 
 defineProps<{
 	title: string,
-	next: () => Promise<void> | void
-	prev: () => Promise<void> | void
-	refresh: () => Promise<void> | void
-	loading: boolean
-}>()
+} & WorklogActionsProps>()
 </script>
 
 <template>
@@ -15,27 +11,11 @@ defineProps<{
 		<div class="text-xl capitalize">
 			{{ title }}
 		</div>
-		<div class="flex items-center gap-4">
-			<div class="flex items-center">
-				<UButton
-					:icon="HEROICONS.ARROW_LEFT"
-					variant="link"
-					:loading="loading"
-					@click="prev"
-				/>
-				<UButton
-					:icon="HEROICONS.ARROW_RIGHT"
-					variant="link"
-					:loading="loading"
-					@click="next"
-				/>
-			</div>
-			<UButton
-				:icon="HEROICONS.ARROW_PATH"
-				variant="link"
-				:loading="loading"
-				@click="refresh"
-			/>
-		</div>
+		<WorklogActions
+			:loading="loading"
+			:next="next"
+			:prev="prev"
+			:refresh="refresh"
+		/>
 	</div>
 </template>

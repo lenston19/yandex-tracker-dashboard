@@ -39,17 +39,12 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 
 	const isLoading = computed(() => isLoadingQueue.value || isLoadingWorklog.value)
 
-	watchEffect(() => {
-		if (!isLoading.value) {
-			calcLineMonthStats()
-			calcPieMonthStats()
-		}
+	watch(isLoading, () => {
+		calcPieMonthStats()
+		calcLineMonthStats()
 	})
 
 	const calcPieMonthStats = () => {
-		if (!queuesModel.value.length) {
-			calcPieMonthStats()
-		}
 		clearPieState()
 		const labels: string[] = []
 		const data: number[] = []
@@ -82,10 +77,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 	}
 
 	const calcLineMonthStats = () => {
-		if (!worklogsModel.value.length) {
-			clearLineState()
-			return
-		}
+		clearLineState()
 
 		const fromDateTime = DateTime.fromISO(params.value.from)
 		const toDateTime = DateTime.fromISO(params.value.to)

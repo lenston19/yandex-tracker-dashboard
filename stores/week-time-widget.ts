@@ -52,7 +52,9 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 	const modal = useModal()
 
 	function openDetailDayDialog (day: Weekday) {
-		modal.open(DayInfoModal, { day })
+		if (day.hours > 0) {
+			modal.open(DayInfoModal, { day })
+		}
 	}
 
 	return {
