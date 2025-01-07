@@ -42,15 +42,14 @@ onMounted(async () => {
 					:hours="null"
 				/>
 			</template>
-			<EmptyState
-				v-else-if="!currentWeek.length"
-				class="col-span-5"
-			/>
 			<template v-else>
 				<div
 					v-for="day in currentWeek"
 					:key="`day-${day.weekday}-${day.hours}`"
-					class="flex flex-col gap-0 cursor-pointer"
+					class="flex flex-col gap-0"
+					:class="{
+						'cursor-pointer': day.hours > 0
+					}"
 					@click="weekTimeWidgetStore.openDetailDayDialog(day)"
 				>
 					<div class="text-sm font-bold -mb-5 capitalize">
@@ -62,8 +61,6 @@ onMounted(async () => {
 					/>
 				</div>
 			</template>
-
-
 		</div>
 		<template #footer>
 			<div class="flex items-center justify-between">
@@ -79,11 +76,11 @@ onMounted(async () => {
 				/>
 				<WorklogActions
 					class="ml-auto"
-							:loading="isLoading"
+					:loading="isLoading"
 					:next="weekTimeWidgetStore.next"
 					:prev="weekTimeWidgetStore.prev"
 					:refresh="weekTimeWidgetStore.refresh"
-					/>
+				/>
 			</div>
 		</template>
 	</UCard>
