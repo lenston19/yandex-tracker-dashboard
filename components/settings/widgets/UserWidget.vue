@@ -2,8 +2,9 @@
 import LogoutModal from "~/components/settings/modals/LogoutModal.vue"
 import { useAuthStore } from "~/stores/auth"
 import { HEROICONS } from "~/helpers/static/heroicons"
+const authStore = useAuthStore()
 
-const { userName, mySelf, userAvatarUrl } = storeToRefs(useAuthStore())
+const { userName, mySelf, userAvatarUrl, isLoading } = storeToRefs(authStore)
 
 const dialog = ref<boolean>(false)
 </script>
@@ -13,10 +14,17 @@ const dialog = ref<boolean>(false)
 
 	<UCard v-if="mySelf">
 		<template #header>
+			<div class="flex items-center gap-4">
 			<div class="text-xl">
-				<!-- TODO: Обновление данных с аккаунта -->
 				Пользователь
+				</div>
+				<UButton
+					:icon="HEROICONS.ARROW_PATH"
+					:loading="isLoading"
+					@click="authStore.refreshMySelf"
+				/>
 			</div>
+
 		</template>
 
 		<div class="flex items-center gap-4">
@@ -32,6 +40,7 @@ const dialog = ref<boolean>(false)
 			<UButton
 				@click="dialog = true"
 				color="red"
+				:loading="isLoading"
 				label="Выйти"
 				:icon="HEROICONS.ARROW_RIGHT_START_ON_RECTANGLE"
 			/>

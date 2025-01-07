@@ -18,3 +18,16 @@ useHead({
 		<UModals />
 	</ClientOnly>
 </template>
+
+<style lang="scss">
+body {
+	position: relative;
+	width: 100%;
+	min-height: 100dvh;
+	overflow-x: hidden;
+}
+
+#__nuxt {
+	height: 100%;
+}
+</style>
