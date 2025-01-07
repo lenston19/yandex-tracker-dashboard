@@ -40,7 +40,7 @@ const hoursPlural = computed(() => {
 })
 
 const maxPlural = computed(() => {
-	return props.max > 0 && props.showMax ? `/ ${pluralize(props.max, hoursPluralize)}` : ''
+	return props.max > 0 && `/ ${pluralize(props.max, hoursPluralize)}`
 })
 </script>
 
@@ -53,16 +53,17 @@ const maxPlural = computed(() => {
 		animation="swing"
 	>
 		<template #indicator="{ percent }">
-				<component
-					v-if="hours !== null && hours >= 0" :is="showMax ? 'div' : 'UTooltip'"
-					:text="`Максимально ${pluralize(computedMax, hoursPluralize)}`"
-					class="text-sm text-right font-bold ml-auto flex gap-1"
-				>
-					{{ hoursPlural }} {{ maxPlural }}
-					<span class="italic font-normal">
-						({{ Number.isNaN(percent) ? 0 : Math.floor(percent) }}%)
-					</span>
-				</component>
+			<component
+				v-if="hours !== null && hours >= 0"
+				:is="showMax ? 'div' : 'UTooltip'"
+				:text="`Максимально ${pluralize(computedMax, hoursPluralize)}`"
+				class="text-sm text-right  ml-auto flex gap-1"
+			>
+				<span class="underline"> {{ hoursPlural }} {{ props.showMax ? maxPlural : '' }}</span>
+				<span class="italic font-light">
+					({{ Number.isNaN(percent) ? 0 : Math.floor(percent) }}%)
+				</span>
+			</component>
 			<USkeleton
 				v-else
 				class="ml-auto h-[20px] w-[100px]"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia"
 import LogoutModal from "~/components/settings/modals/LogoutModal.vue"
-import { useAuthStore } from "~/store/auth"
+import { useAuthStore } from "~/stores/auth"
+import { HEROICONS } from "~/helpers/static/heroicons"
 
 const { userName, mySelf, userAvatarUrl } = storeToRefs(useAuthStore())
 
@@ -20,7 +20,10 @@ const dialog = ref<boolean>(false)
 		</template>
 
 		<div class="flex items-center gap-4">
-			<UAvatar :src="userAvatarUrl" :alt="userName" />
+			<UAvatar
+				:src="userAvatarUrl"
+				:alt="userName"
+			/>
 			<div class="text-accent overflow-hidden truncate">
 				{{ userName || "Пусто" }}
 			</div>
@@ -30,7 +33,7 @@ const dialog = ref<boolean>(false)
 				@click="dialog = true"
 				color="red"
 				label="Выйти"
-				icon="i-heroicons-arrow-right-start-on-rectangle"
+				:icon="HEROICONS.ARROW_RIGHT_START_ON_RECTANGLE"
 			/>
 		</template>
 	</UCard>

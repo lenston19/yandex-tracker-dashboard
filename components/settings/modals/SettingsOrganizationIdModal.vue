@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useSiteSettingsStore } from '~/store/site-settings'
+import { storeToRefs } from 'pinia'
+import { useSiteSettingsStore } from '~/stores/site-settings'
 import { string, object } from 'yup'
 
 const { organizationId } = storeToRefs(useSiteSettingsStore())
@@ -21,7 +21,10 @@ const save = () => {
 </script>
 
 <template>
-	<UModal v-model="model" prevent-close>
+	<UModal
+		v-model="model"
+		prevent-close
+	>
 		<UCard>
 			<template #header>
 				<div class="text-xl">
@@ -38,7 +41,11 @@ const save = () => {
 					label="Идентификатор"
 					name="id"
 				>
-					<UInput v-model="state.id" color="primary" variant="outline" />
+					<UInput
+						v-model="state.id"
+						color="primary"
+						variant="outline"
+					/>
 				</UFormGroup>
 
 				<div class="flex justify-between">
@@ -61,6 +68,4 @@ const save = () => {
 
 
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

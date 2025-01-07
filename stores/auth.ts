@@ -1,9 +1,8 @@
-import { defineStore, storeToRefs } from 'pinia'
-import { ref } from '#imports'
+
 import yandexTrackerApi from '~/api/yandex-tracker.api'
 import yandexInfoApi from '~/api/yandex-info.api'
 import yandexAvatarApi from '~/api/yandex-avatar.api'
-import { useSiteSettingsStore } from '~/store/site-settings'
+import { useSiteSettingsStore } from '~/stores/site-settings'
 
 export const useAuthStore = defineStore('auth', () => {
 	const { organizationId, accessToken } = storeToRefs(useSiteSettingsStore())
@@ -47,4 +46,4 @@ export const useAuthStore = defineStore('auth', () => {
 		refreshMySelf,
 		clearState,
 	}
-},{ persist: true })
+}, { persist: true })

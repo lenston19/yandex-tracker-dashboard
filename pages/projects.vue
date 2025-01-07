@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { DateTime } from "luxon"
-import { storeToRefs } from "pinia";
-import { useProjectsStore } from "~/store/projects";
+import { useProjectsStore } from "~/stores/projects"
 import GroupedWorklogsTable from '~/components/worklogs/GroupedWorklogsTable.vue'
+import EmptyState from "~/components/ui/EmptyState.vue"
 
 definePageMeta({
 	middleware: ['auth']
@@ -10,57 +10,43 @@ definePageMeta({
 
 const projectsStore = useProjectsStore()
 
-const { queueWorklogs, isLoading } = storeToRefs(projectsStore)
+const { queueWorklogs, isLoading, params } = storeToRefs(projectsStore)
 
 const title = computed(() =>
-	DateTime.now().startOf("month").toFormat("LLLL yyyy")
+	DateTime.fromISO(params.value.from).toFormat("LLLL yyyy")
 )
 </script>
 
 <template>
-	<div class="flex items-center justify-between mb-5">
-		<div class="text-xl capitalize">
-			{{ title }}
+	<div class="flex flex-col gap-5">
+		<PageHeader
+			:title="title"
+			:loading="isLoading"
+			:next="projectsStore.next"
+			:prev="projectsStore.prev"
+			:refresh="projectsStore.refresh"
+		/>
+		<div class="grid grid-cols-1 gap-12">
+			<template v-if="isLoading">
+				<UCard v-for="_ in 3">
+					<USkeleton class="h-24 w-full" />
+				</UCard>
+			</template>
+			<EmptyState v-else-if="!queueWorklogs.length" />
+			<template v-else>
+				<UCard
+					class="col-span-1"
+					v-for="queue in queueWorklogs"
+					:key="queue.queueName"
+				>
+					<GroupedWorklogsTable
+						:title="queue.queueName"
+						:rows="queue.worklogs"
+						:page-count="10"
+						showTotal
+					/>
+				</UCard>
+			</template>
 		</div>
-		<div class="flex items-center gap-4">
-			<div class="flex items-center">
-				<UButton
-					icon="i-heroicons-arrow-left"
-					variant="link"
-					@click="projectsStore.prev"
-				/>
-				<UButton
-					icon="i-heroicons-arrow-right"
-					variant="link"
-					@click="projectsStore.next"
-				/>
-			</div>
-			<UButton
-				icon="i-heroicons-arrow-path"
-				variant="link"
-				@click="projectsStore.refresh"
-			/>
-		</div>
-	</div>
-	<div class="grid grid-cols-1 gap-12">
-		<template v-if="!isLoading">
-			<UCard
-				class="col-span-1"
-				v-for="queue in queueWorklogs"
-				:key="queue.queueName"
-			>
-				<GroupedWorklogsTable
-					:title="queue.queueName"
-					:rows="queue.worklogs"
-					:page-count="10"
-					showTotal
-				/>
-			</UCard>
-		</template>
-		<template v-else>
-			<UCard  v-for="_ in 3">
-				<USkeleton class="h-24 w-full"/>
-			</UCard>
-		</template>
 	</div>
 </template>

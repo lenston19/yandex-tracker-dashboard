@@ -1,3 +1,49 @@
+<script setup lang="ts">
+import { DateTime } from "luxon"
+import { calculateWorklogTimeByDay } from "~/helpers/utils/time"
+import { Yandex } from "~/types/yandex-tracker/yandex-tracker.entity"
+
+const props = defineProps<{
+	worklogs: Yandex.Worklog[]
+}>()
+
+
+const getKey = (row: Yandex.Worklog) => row.issue.key
+const getName = (row: Yandex.Worklog) => row.issue.display
+const getTime = (row: Yandex.Worklog) => calculateWorklogTimeByDay(row)
+const getDateCreatedAt = (row: Yandex.Worklog) => DateTime.fromISO(row.start).toFormat('dd.MM.yyyy')
+const getTimeCreatedAt = (row: Yandex.Worklog) => DateTime.fromISO(row.start).toFormat('HH:mm:ss')
+
+const page = ref<number>(1)
+const pageCount = 5
+const rows = computed(() => {
+	return props.worklogs.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+})
+
+const columns = [
+	{
+		key: "name",
+		label: "Наименование задачи",
+	},
+	{
+		key: "time",
+		label: "Потраченное время",
+	},
+	{
+		key: "dateCreatedAt",
+		label: "Дата",
+	},
+	{
+		key: "timeCreatedAt",
+		label: "Время",
+	},
+	{
+		key: "comment",
+		label: "Комментарий",
+	},
+]
+</script>
+
 <template>
 	<UTable
 		:rows="rows"
@@ -41,49 +87,3 @@
 		color="violet"
 	/>
 </template>
-
-<script setup lang="ts">
-import { DateTime } from "luxon";
-import { calculateWorklogTimeByDay } from "~/helpers/utils/time";
-import { Yandex } from "~/types/yandex-tracker/yandex-tracker.entity";
-
-const props = defineProps<{
-	worklogs: Yandex.Worklog[];
-}>();
-
-
-const getKey = (row: Yandex.Worklog) => row.issue.key
-const getName = (row: Yandex.Worklog) => row.issue.display
-const getTime = (row: Yandex.Worklog) => calculateWorklogTimeByDay(row)
-const getDateCreatedAt = (row: Yandex.Worklog) => DateTime.fromISO(row.createdAt).toFormat('dd.MM.yyyy')
-const getTimeCreatedAt = (row: Yandex.Worklog) => DateTime.fromISO(row.createdAt).toFormat('HH:mm:ss')
-
-const page = ref<number>(1);
-const pageCount = 5;
-const rows = computed(() => {
-  return props.worklogs.slice((page.value - 1) * pageCount, (page.value) * pageCount)
-})
-
-const columns = [
-	{
-		key: "name",
-		label: "Наименование задачи",
-	},
-	{
-		key: "time",
-		label: "Потраченное время",
-	},
-	{
-		key: "dateCreatedAt",
-		label: "Дата",
-	},
-	{
-		key: "timeCreatedAt",
-		label: "Время",
-	},
-	{
-		key: "comment",
-		label: "Комментарий",
-	},
-];
-</script>

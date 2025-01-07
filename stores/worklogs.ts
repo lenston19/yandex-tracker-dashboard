@@ -1,19 +1,19 @@
 import { DateTime } from 'luxon'
-import { defineStore, storeToRefs } from 'pinia'
 import yandexTrackerApi from '~/api/yandex-tracker.api'
 import { DateDuration } from '~/types/base'
 import { YandexTrackerApi } from '~/types/yandex-tracker/yandex-tracker.api'
 import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
-import { useAuthStore } from '~/store/auth'
+import { useAuthStore } from '~/stores/auth'
+import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
 
 export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) =>
-	 defineStore(`worklogs-${format}-${key}`, () => {
+	defineStore(`worklogs-${format}-${key}`, () => {
 		const { login } = storeToRefs(useAuthStore())
 		const worklogsModel = ref<Yandex.Worklog[]>([])
 
 		const params = ref<DateDuration>({
-			from: DateTime.now().startOf(format).toISO(),
-			to: DateTime.now().endOf(format).toISO()
+			from: DateTime.local().startOf(format).toUTC(0, { keepLocalTime: true }).toISO(),
+			to: DateTime.local().endOf(format).toUTC(0, { keepLocalTime: true }).toISO()
 		})
 
 		const next = async () => {
@@ -24,7 +24,7 @@ export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) 
 			}
 			params.value.from = fromDateTime
 			params.value.to = toDateTime
-			await refresh();
+			await refresh()
 		}
 
 		const prev = async () => {
@@ -36,7 +36,7 @@ export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) 
 
 			params.value.from = fromDateTime
 			params.value.to = toDateTime
-			await refresh();
+			await refresh()
 		}
 
 		const fetchMoreWorklog = async (body: YandexTrackerApi.worklogList.GET.RequestDTO, totalPages: number) => {
@@ -93,12 +93,15 @@ export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) 
 
 		const isLoading = computed(() => requestStatus.value !== 'success')
 
+		const totalHours = computed(() => worklogsModel.value ? formatHoursToFixed(calculateTotalHours(worklogsModel.value)) : 0)
+
 		return {
 			worklogsModel,
 			params,
 			next,
 			prev,
 			refresh,
-			isLoading
+			isLoading,
+			totalHours
 		}
-})()
+	})()

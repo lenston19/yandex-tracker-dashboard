@@ -1,6 +1,5 @@
-import { defineStore, storeToRefs } from 'pinia'
-import { useWorklogsStore } from '~/store/worklogs'
-import { useQueuesStore } from '~/store/queues'
+import { useWorklogsStore } from '~/stores/worklogs'
+import { useQueuesStore } from '~/stores/queues'
 import { QueueWorklogs, collectWorklogsByQueue } from '~/helpers/utils/collecting'
 
 export const useProjectsStore = defineStore('projects', () => {
@@ -22,6 +21,7 @@ export const useProjectsStore = defineStore('projects', () => {
 	return {
 		worklogsModel,
 		queuesModel,
+		params: worklogsStore.params,
 		next: worklogsStore.next,
 		prev: worklogsStore.prev,
 		refresh: worklogsStore.refresh,

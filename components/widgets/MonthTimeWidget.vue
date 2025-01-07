@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia"
-import { useMonthTimeWidgetStore } from "~/store/month-time-widget";
-import { useSiteSettingsStore } from "~/store/site-settings";
-import { formatRUB } from "~/helpers/utils/format-money";
+import { useMonthTimeWidgetStore } from "~/stores/month-time-widget"
+import { useSiteSettingsStore } from "~/stores/site-settings"
+import { formatRUB } from "~/helpers/utils/format-money"
+import { HEROICONS } from "~/helpers/static/heroicons"
 
 const monthTimeWidgetStore = useMonthTimeWidgetStore()
 
@@ -45,17 +45,23 @@ onMounted(async () => {
 				animation="swing"
 			>
 				<template #indicator>
-					<div v-if="!isLoading" class="text-sm text-right font-bold">
+					<div
+						v-if="!isLoading"
+						class="text-sm text-right font-bold"
+					>
 						{{ formatRUB(currentRuble) }} / {{ formatRUB(maxRuble) }}
 					</div>
-					<USkeleton v-else class="ml-auto w-[100px] h-6"/>
+					<USkeleton
+						v-else
+						class="ml-auto w-[100px] h-6"
+					/>
 				</template>
 			</UProgress>
 		</div>
 		<template #footer>
 			<div class="flex items-center gap-4 justify-end">
 				<UButton
-					icon="i-heroicons-arrow-path"
+					:icon="HEROICONS.ARROW_PATH"
 					:loading="isLoading"
 					@click="monthTimeWidgetStore.refresh"
 				/>

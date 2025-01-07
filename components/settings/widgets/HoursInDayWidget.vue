@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia"
 import SettingsHoursInDayModal from "~/components/settings/modals/SettingsHoursInDayModal.vue"
 import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
 import { pluralize } from "~/helpers/utils/pluralize"
-import { useSiteSettingsStore } from "~/store/site-settings"
+import { useSiteSettingsStore } from "~/stores/site-settings"
 
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 

@@ -1,6 +1,5 @@
-import { defineStore, storeToRefs } from 'pinia'
 import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
-import { useWorklogsStore } from '~/store/worklogs'
+import { useWorklogsStore } from '~/stores/worklogs'
 
 export const useDayTimeWidgetStore = defineStore('day-time-widget', () => {
 	const worklogsStore = useWorklogsStore('day', 'day-time-widget')

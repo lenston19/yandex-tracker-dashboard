@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { pages } from "~/helpers/static/menu"
 import SettingsOrganizationIdModal from "~/components/settings/modals/SettingsOrganizationIdModal.vue"
-import { useSiteSettingsStore } from "~/store/site-settings"
-import { useAuthStore } from "~/store/auth"
-import { storeToRefs } from "pinia"
+import { useSiteSettingsStore } from "~/stores/site-settings"
+import { useAuthStore } from "~/stores/auth"
+import { HEROICONS } from "~/helpers/static/heroicons"
 
 const config = useRuntimeConfig()
 const colorMode = useColorMode()
@@ -31,13 +31,11 @@ const getUserAccessToken = () => {
 
 <template>
 	<div class="main-layout">
-		<div
-			class="border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 py-2 min-h-[61px]"
-		>
+		<div class="border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 py-2 min-h-[61px]">
 			<template v-if="organizationId && login">
 				<UButton
 					class="flex"
-					icon="i-heroicons-bars-3"
+					:icon="HEROICONS.BARS_3"
 					@click="isOpenSlideover = !isOpenSlideover"
 				/>
 				<USlideover
@@ -59,9 +57,8 @@ const getUserAccessToken = () => {
 			<div class="flex items-center gap-4 ml-auto">
 				<ClientOnly>
 					<UButton
-						:icon="
-							isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'
-						"
+						:icon="isDark ? HEROICONS.MOON_20_SOLID : HEROICONS.SUN_20_SOLID
+							"
 						color="gray"
 						variant="ghost"
 						@click="isDark = !isDark"
@@ -73,7 +70,10 @@ const getUserAccessToken = () => {
 					:to="{ name: 'settings' }"
 					class="h-fit"
 				>
-					<UAvatar :src="userAvatarUrl" :alt="userName" />
+					<UAvatar
+						:src="userAvatarUrl"
+						:alt="userName"
+					/>
 					{{ userName }}
 				</UButton>
 				<UButton

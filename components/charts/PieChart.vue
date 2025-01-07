@@ -4,7 +4,8 @@ import {
 	ArcElement, Tooltip, Legend,
 } from "chart.js"
 import { Pie } from 'vue-chartjs'
-import { PieChartData } from "~/types/base";
+import { PieChartData } from "~/types/base"
+import EmptyState from "~/components/ui/EmptyState.vue"
 
 ChartJS.register(
 	ArcElement,
@@ -12,21 +13,32 @@ ChartJS.register(
 	Tooltip
 )
 
-defineProps<{
+const props = defineProps<{
 	data: PieChartData
+	loading: boolean
 }>()
+
+const hasData = computed(() => {
+	return props.data.datasets.at(0)?.data.length
+})
 </script>
 
 <template>
 	<ClientOnly>
+		<USkeleton
+			v-if="loading"
+			class="w-full h-48"
+		/>
 		<Pie
+			v-else-if="hasData"
 			:key="JSON.stringify(data)"
 			:data="data"
 			:options="{
 				responsive: true,
 				maintainAspectRatio: false
 			}"
-			class="max-h-96"
+			class="max-h-48"
 		/>
+		<EmptyState v-else />
 	</ClientOnly>
 </template>

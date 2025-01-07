@@ -5,17 +5,20 @@ const calculateDurationInHours = (duration: string): number => {
 	const time = Duration.fromISO(duration)
 	let totalHours = 0
 
+	if (time.weeks) {
+		totalHours += time.weeks * 40
+	}
 	if (time.days) {
-			totalHours += time.days * 8
+		totalHours += time.days * 8
 	}
 	if (time.hours) {
-			totalHours += time.hours
+		totalHours += time.hours
 	}
 	if (time.minutes) {
-			totalHours += time.minutes / 60
+		totalHours += time.minutes / 60
 	}
 	if (time.seconds) {
-			totalHours += time.seconds / 3600
+		totalHours += time.seconds / 3600
 	}
 
 	return totalHours

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SettingsOrganizationIdModal from "~/components/settings/modals/SettingsOrganizationIdModal.vue"
-import { useSiteSettingsStore } from "~/store/site-settings"
+import { useSiteSettingsStore } from "~/stores/site-settings"
 
 const siteSettingsStore = useSiteSettingsStore()
 const dialog = ref<boolean>(false)
