@@ -5,8 +5,7 @@ import { pluralize } from "~/helpers/utils/pluralize"
 import { useSiteSettingsStore } from "~/stores/site-settings"
 import { useWeekTimeWidgetStore } from "~/stores/week-time-widget"
 import DayLinearProgress from '~/components/ui/DayLinearProgress.vue'
-import EmptyState from "~/components/ui/EmptyState.vue"
-import { HEROICONS } from "~/helpers/static/heroicons"
+import WorklogActions from "~/components/ui/WorklogActions.vue"
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
 const { currentWeek, params, weekTotalHours, isLoading } = storeToRefs(weekTimeWidgetStore)
@@ -78,27 +77,13 @@ onMounted(async () => {
 					v-else
 					class="h-6 w-[160px]"
 				/>
-				<div class="flex items-center gap-4 ml-auto">
-					<div class="flex items-center">
-						<UButton
-							:icon="HEROICONS.ARROW_LEFT"
-							variant="link"
+				<WorklogActions
+					class="ml-auto"
 							:loading="isLoading"
-							@click="weekTimeWidgetStore.prev"
-						/>
-						<UButton
-							:icon="HEROICONS.ARROW_RIGHT"
-							variant="link"
-							:loading="isLoading"
-							@click="weekTimeWidgetStore.next"
-						/>
-					</div>
-					<UButton
-						:icon="HEROICONS.ARROW_PATH"
-						:loading="isLoading"
-						@click="weekTimeWidgetStore.refresh"
+					:next="weekTimeWidgetStore.next"
+					:prev="weekTimeWidgetStore.prev"
+					:refresh="weekTimeWidgetStore.refresh"
 					/>
-				</div>
 			</div>
 		</template>
 	</UCard>
