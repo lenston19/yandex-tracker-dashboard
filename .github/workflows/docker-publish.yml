@@ -26,12 +26,12 @@ jobs:
       - name: Determine Docker tag
         id: tag
         run: |
-          if [[ "${{ github.head_ref }}" == "master" ]]; then
+          if [[ "${{ github.base_ref }}" == "master" ]]; then
             echo "tag=latest" >> $GITHUB_ENV
-          elif [[ "${{ github.head_ref }}" == "dev" ]]; then
+          elif [[ "${{ github.base_ref }}" == "dev" ]]; then
             echo "tag=unstable" >> $GITHUB_ENV
           else
-            echo "Unexpected branch: ${{ github.head_ref }}"
+            echo "Unexpected branch: ${{ github.base_ref }}"
             exit 1
           fi
 
