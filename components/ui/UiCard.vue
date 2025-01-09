@@ -13,7 +13,10 @@ const ui = computed(() => ({
 
 <template>
 	<UCard :ui="ui">
-		<template #header>
+		<template
+			v-if="title || $slots.header"
+			#header
+		>
 			<div
 				v-if="title"
 				class="text-xl"
@@ -26,7 +29,10 @@ const ui = computed(() => ({
 
 		</template>
 		<slot></slot>
-		<template #footer>
+		<template
+			v-if="$slots.footer"
+			#footer
+		>
 			<slot name="footer"></slot>
 		</template>
 	</UCard>
