@@ -62,6 +62,7 @@ onMounted(async () => {
 				class="w-fit ml-auto"
 				:refresh="monthTimeWidgetStore.refresh"
 				:loading="isLoading"
+				type="month"
 			/>
 		</template>
 	</UiCard>

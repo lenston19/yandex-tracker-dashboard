@@ -38,6 +38,7 @@ onMounted(async () => {
 				class="w-fit ml-auto"
 				:refresh="dayTimeWidgetStore.refresh"
 				:loading="isLoading"
+				type="day"
 			/>
 		</template>
 	</UiCard>

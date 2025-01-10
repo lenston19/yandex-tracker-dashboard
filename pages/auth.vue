@@ -21,7 +21,7 @@ onMounted(async () => {
 		"access_token"
 	)
 	if (accessTokenFromRoute) {
-		siteSettingsStore.setAccessToken(accessTokenFromRoute)
+		accessToken.value = accessTokenFromRoute
 
 		if (accessToken.value) {
 			toast.add({ title: "Авторизован" })

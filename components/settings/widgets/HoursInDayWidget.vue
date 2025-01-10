@@ -6,6 +6,7 @@ import { useSiteSettingsStore } from "~/stores/site-settings"
 import UiCard from '~/components/ui/UiCard.vue'
 
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
+const modal = useModal()
 
 const hoursPlural = computed(() => {
 	if (hoursInDay.value) {
@@ -13,12 +14,12 @@ const hoursPlural = computed(() => {
 	}
 })
 
-const dialog = ref<boolean>(false)
+function openModal() {
+	modal.open(SettingsHoursInDayModal)
+}
 </script>
 
 <template>
-	<SettingsHoursInDayModal v-model="dialog" />
-
 	<UiCard title="Часов в день">
 		<div class="text-accent overflow-hidden truncate">
 			{{ hoursPlural || "Выключено" }}
@@ -26,7 +27,7 @@ const dialog = ref<boolean>(false)
 
 		<template #footer>
 			<UButton
-				@click="dialog = true"
+				@click="openModal"
 				label="Изменить"
 			/>
 		</template>

@@ -6,7 +6,9 @@ import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
 import { useAuthStore } from '~/stores/auth'
 import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
 
-export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) =>
+export type WorklogFormat = 'month' | 'week' | 'day'
+
+export const useWorklogsStore = (format: WorklogFormat, key: string) =>
 	defineStore(`worklogs-${format}-${key}`, () => {
 		const { login } = storeToRefs(useAuthStore())
 		const worklogsModel = ref<Yandex.Worklog[]>([])
@@ -17,8 +19,12 @@ export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) 
 		})
 
 		const next = async () => {
-			const fromDateTime = DateTime.fromISO(params.value.from).plus({ [format]: 1 }).toISO()
-			const toDateTime = DateTime.fromISO(params.value.to).plus({ [format]: 1 }).toISO()
+			const fromDateTime = DateTime.fromISO(params.value.from)
+				.plus({ [format]: 1 })
+				.toISO()
+			const toDateTime = DateTime.fromISO(params.value.to)
+				.plus({ [format]: 1 })
+				.toISO()
 			if (fromDateTime === null || toDateTime === null) {
 				return
 			}
@@ -28,8 +34,12 @@ export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) 
 		}
 
 		const prev = async () => {
-			const fromDateTime = DateTime.fromISO(params.value.from).minus({ [format]: 1 }).toISO()
-			const toDateTime = DateTime.fromISO(params.value.to).minus({ [format]: 1 }).toISO()
+			const fromDateTime = DateTime.fromISO(params.value.from)
+				.minus({ [format]: 1 })
+				.toISO()
+			const toDateTime = DateTime.fromISO(params.value.to)
+				.minus({ [format]: 1 })
+				.toISO()
 			if (fromDateTime === null || toDateTime === null) {
 				return
 			}
@@ -47,53 +57,53 @@ export const useWorklogsStore = (format: 'month' | 'week' | 'day', key: string) 
 					page: String(counter)
 				})
 				if (iterResponse.status === 200 && iterResponse._data) {
-					worklogs = [
-						...worklogs,
-						...iterResponse._data
-					]
+					worklogs = [...worklogs, ...iterResponse._data]
 				}
 				counter++
 			}
 			return worklogs
 		}
 
-		const {
-			refresh,
-			status: requestStatus
-		} = useLazyAsyncData(`worklogs-${format}-items`, async () => {
-			if (!login.value) {
-				return [] as Yandex.Worklog[]
+		const { refresh, status } = useLazyAsyncData(
+			`worklogs-${format}-items`,
+			async () => {
+				if (!login.value) {
+					return [] as Yandex.Worklog[]
+				}
+				const body = {
+					createdBy: login.value,
+					createdAt: {
+						from: params.value.from,
+						to: params.value.to
+					}
+				}
+
+				const response = await yandexTrackerApi.worklogList(body)
+
+				if (!response._data) {
+					return [] as Yandex.Worklog[]
+				}
+
+				const totalPages = response.headers.get('X-Total-Pages')
+				const totalCount = response.headers.get('X-Total-Count')
+				let responseAllWorklogs: Yandex.Worklog[] = []
+				if (totalPages && totalCount && +totalCount > 50) {
+					responseAllWorklogs = await fetchMoreWorklog(body, +totalPages)
+				}
+				worklogsModel.value = [...response._data, ...responseAllWorklogs]
+
+				return response._data
+			},
+			{
+				server: false
 			}
-			const body = {
-				createdBy: login.value,
-				createdAt: {
-					from: params.value.from,
-					to: params.value.to
-				},
-			}
+		)
 
-			const response = await yandexTrackerApi.worklogList(body)
+		const isLoading = computed(() => status.value === 'pending')
 
-			if (!response._data) {
-				return [] as Yandex.Worklog[]
-			}
-
-			const totalPages = response.headers.get('X-Total-Pages')
-			const totalCount = response.headers.get('X-Total-Count')
-			let responseAllWorklogs: Yandex.Worklog[] = []
-			if (totalPages && (totalCount && +totalCount > 50)) {
-				responseAllWorklogs = await fetchMoreWorklog(body, +totalPages)
-			}
-			worklogsModel.value = [...response._data, ...responseAllWorklogs]
-
-			return response._data
-		}, {
-			server: false,
-		})
-
-		const isLoading = computed(() => requestStatus.value !== 'success')
-
-		const totalHours = computed(() => worklogsModel.value ? formatHoursToFixed(calculateTotalHours(worklogsModel.value)) : 0)
+		const totalHours = computed(() =>
+			worklogsModel.value ? formatHoursToFixed(calculateTotalHours(worklogsModel.value)) : 0
+		)
 
 		return {
 			worklogsModel,
