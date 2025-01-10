@@ -5,8 +5,8 @@ import PieChart from "~/components/charts/PieChart.vue"
 import { useMonthlyReportStore } from "~/stores/monthly-report"
 import { pluralize } from "~/helpers/utils/pluralize"
 import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
-import { HEROICONS } from "~/helpers/static/heroicons"
 import UiCard from '~/components/ui/UiCard.vue'
+import UiTooltipInfo from "~/components/ui/UiTooltipInfo.vue"
 
 definePageMeta({
 	middleware: ['auth']
@@ -42,7 +42,7 @@ const data = computed(() => {
 		{
 			name: 'Среднее значение часов за месяц',
 			value: pluralize(averageHoursByMonth.value, hoursPluralize),
-			helpText: 'Часы за все дни / количество дней (> 15 минут)',
+			helpText: 'Часы за все\u00A0дни / количество\u00A0дней <br><span class="text-xs text-gray-300">*\u00A0минимум\u00A015\u00A0минут в день</span>',
 			attrs: {
 				color: () => {
 					switch (true) {
@@ -95,21 +95,13 @@ onMounted(async () => {
 						class="w-full"
 					>
 						<template #name-data="{ row }">
-							<div class="flex gap-2 items-center">
+							<div class="flex gap-2 items-center text-wrap">
 								{{ row.name }}
-								<UTooltip
-									:ui="{
-										base: '[@media(pointer:coarse)]:block max-w-[150px] sm:max-w-[226px] !overflow-visible !text-wrap h-fit text-sm',
-									}"
+								<UiTooltipInfo
 									v-if="row.helpText?.length"
 									:text="row.helpText"
-								>
-									<UIcon
-										:name="HEROICONS.INFORMATION_CIRCLE"
-										class="w-4 h-4 cursor-help"
-									/>
-								</UTooltip>
-
+									base-class="max-w-[226px]"
+								/>
 							</div>
 						</template>
 						<template #value-data="{ row }">
