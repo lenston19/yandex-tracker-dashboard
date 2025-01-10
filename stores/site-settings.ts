@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
 import SettingsOrganizationIdModal from '~/components/settings/modals/SettingsOrganizationIdModal.vue'
+import { DEFAULT_TIME_ZONE } from '~/helpers/static/timeZone'
+import { TimeZoneSelectOption } from '~/types/base'
 
 export const useSiteSettingsStore = defineStore(
 	'site-settings',
@@ -9,7 +11,7 @@ export const useSiteSettingsStore = defineStore(
 
 		const hoursInDay = ref<number>(8)
 		const gold = ref<number>(0)
-
+		const timeZone = ref<TimeZoneSelectOption>({ ...DEFAULT_TIME_ZONE })
 		const isNeedOrganizationId = computed(() => organizationId.value === '')
 
 		const clearState = () => {
@@ -41,13 +43,31 @@ export const useSiteSettingsStore = defineStore(
 			}
 		})
 
+		const toast = useToast()
+
+		watch(timeZone, () => {
+			toast.add({
+				title: 'Временная зона изменена',
+				description: timeZone.value.id
+			})
+		})
+
+		function setTimeZone(newTimeZone: TimeZoneSelectOption) {
+			timeZone.value = {
+				id: newTimeZone.id,
+				value: newTimeZone.value
+			}
+		}
+
 		return {
 			organizationId,
 			accessToken,
 			hoursInDay,
 			gold,
+			timeZone,
 			needHoursInCurrentMonth,
-			clearState
+			clearState,
+			setTimeZone
 		}
 	},
 	{
