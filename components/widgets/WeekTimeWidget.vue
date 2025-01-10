@@ -78,6 +78,7 @@ onMounted(async () => {
 					:next="weekTimeWidgetStore.next"
 					:prev="weekTimeWidgetStore.prev"
 					:refresh="weekTimeWidgetStore.refresh"
+					type="week"
 				/>
 			</div>
 		</template>
