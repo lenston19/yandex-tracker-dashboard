@@ -8,6 +8,8 @@ import { HEROICONS } from "~/helpers/static/heroicons"
 const { organizationId } = storeToRefs(useSiteSettingsStore())
 
 const toast = useToast()
+const modal = useModal()
+
 const { copy, copied, isSupported } = useClipboard({ source: organizationId })
 
 function copyWithToast() {
@@ -17,14 +19,16 @@ function copyWithToast() {
 		color: 'green'
 	})
 }
+
+function openModal() {
+	modal.open(SettingsOrganizationIdModal)
+}
 </script>
 
 <template>
-	<SettingsOrganizationIdModal v-model="dialog" />
-
 	<UiCard title="ID Организации">
 		<div class="flex gap-4 items-center">
-		<div class="text-accent overflow-hidden truncate">
+			<div class="text-accent overflow-hidden truncate">
 				{{ organizationId || "Пусто" }}
 			</div>
 			<UTooltip
@@ -44,7 +48,7 @@ function copyWithToast() {
 
 		<template #footer>
 			<UButton
-				@click="dialog = true"
+				@click="openModal"
 				:label="organizationId ? 'Изменить' : 'Добавить'"
 			/>
 		</template>

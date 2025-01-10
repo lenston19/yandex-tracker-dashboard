@@ -8,25 +8,28 @@ const authStore = useAuthStore()
 
 const { userName, mySelf, userAvatarUrl, isLoading } = storeToRefs(authStore)
 
-const dialog = ref<boolean>(false)
+const modal = useModal()
+
+function openModal() {
+	modal.open(LogoutModal)
+}
 </script>
 
 <template>
-	<LogoutModal v-model="dialog" />
-
 	<UiCard v-if="mySelf">
 		<template #header>
 			<div class="flex items-center gap-4">
 				<div class="text-xl">
 					Пользователь
 				</div>
-				<UButton
-					:icon="HEROICONS.ARROW_PATH"
-					:loading="isLoading"
-					@click="authStore.refreshMySelf"
-				/>
+				<UTooltip text="Обновить данные о пользователе">
+					<UButton
+						:icon="HEROICONS.ARROW_PATH"
+						:loading="isLoading"
+						@click="authStore.refreshMySelf"
+					/>
+				</UTooltip>
 			</div>
-
 		</template>
 
 		<div class="flex items-center gap-4">
@@ -35,12 +38,12 @@ const dialog = ref<boolean>(false)
 				:alt="userName"
 			/>
 			<div class="text-accent overflow-hidden truncate">
-				{{ userName || "Пусто" }}
+				{{ userName || "Вы" }}
 			</div>
 		</div>
 		<template #footer>
 			<UButton
-				@click="dialog = true"
+				@click="openModal"
 				color="red"
 				:loading="isLoading"
 				label="Выйти"
