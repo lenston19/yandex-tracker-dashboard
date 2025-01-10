@@ -47,7 +47,7 @@ export default defineNuxtConfig({
 	],
 	runtimeConfig: {
 		public: {
-			yandexClientId: process.env.YANDEX_CLIENT_ID || '',
+			yandexClientId: process.env.NUXT_PUBLIC_YANDEX_CLIENT_ID || '',
 		}
 	},
 	devtools: {
@@ -65,7 +65,7 @@ export default defineNuxtConfig({
 	proxy: {
 		proxies: {
 			'^/tracker/.*': {
-				target: process.env.YANDEX_API ?? 'https://api.tracker.yandex.net/v2',
+				target: process.env.NUXT_PUBLIC_YANDEX_TRACKER_API ?? 'https://api.tracker.yandex.net/v2',
 				rewrite: (path: string) => path.replace(/^\/tracker/, '')
 			},
 			'^/info/.*': {

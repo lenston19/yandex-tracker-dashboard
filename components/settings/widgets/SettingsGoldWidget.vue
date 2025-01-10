@@ -5,13 +5,14 @@ import { useSiteSettingsStore } from "~/stores/site-settings"
 import UiCard from '~/components/ui/UiCard.vue'
 
 const { gold } = storeToRefs(useSiteSettingsStore())
+const modal = useModal()
 
-const dialog = ref<boolean>(false)
+function openModal() {
+	modal.open(SettingsGoldModal)
+}
 </script>
 
 <template>
-	<SettingsGoldModal v-model="dialog" />
-
 	<UiCard title="Ставка">
 		<div class="text-accent overflow-hidden truncate">
 			{{ formatRUB(gold) || "Пусто" }}
@@ -19,7 +20,7 @@ const dialog = ref<boolean>(false)
 
 		<template #footer>
 			<UButton
-				@click="dialog = true"
+				@click="openModal"
 				label="Изменить"
 			/>
 		</template>

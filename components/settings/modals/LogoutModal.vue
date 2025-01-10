@@ -21,21 +21,17 @@ const logout = () => {
 <template>
 	<UModal v-model="model">
 		<UiCard title="Выйти из аккаунта?">
-			<template #footer>
-				<div class="flex gap-4 justify-end">
-					<UButton
-						@click="closeDialog"
-						label="Закрыть"
-					/>
-					<UButton
-						@click="logout"
-						color="red"
-						label="Выйти"
-					/>
-				</div>
-			</template>
+			<div class="flex gap-4 justify-end">
+				<UButton
+					@click="closeDialog"
+					label="Закрыть"
+				/>
+				<UButton
+					@click="logout"
+					color="red"
+					label="Выйти"
+				/>
+			</div>
 		</UiCard>
 	</UModal>
 </template>
-
-<style scoped lang="scss"></style>

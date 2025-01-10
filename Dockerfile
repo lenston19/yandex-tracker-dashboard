@@ -44,4 +44,4 @@ COPY --from=build /usr/src/app/.output ./.output
 
 EXPOSE 3000
 
-CMD ["node", ".output/server/index.mjs"]
+ENTRYPOINT ["node", ".output/server/index.mjs"]

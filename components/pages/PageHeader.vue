@@ -16,6 +16,7 @@ defineProps<{
 			:next="next"
 			:prev="prev"
 			:refresh="refresh"
+			type="month"
 		/>
 	</div>
 </template>
