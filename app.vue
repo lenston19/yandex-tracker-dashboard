@@ -1,8 +1,15 @@
 <script lang="ts" setup>
 import { Settings } from 'luxon'
+import { useSiteSettingsStore } from '~/stores/site-settings'
 
-Settings.defaultZone = 'Europe/Moscow'
+const siteSettingsStore = useSiteSettingsStore()
 Settings.defaultLocale = 'ru'
+
+watch(
+	() => siteSettingsStore.timeZone.value,
+	(value) => {
+		Settings.defaultZone = value
+	})
 
 useHead({
 	title: 'YandexTracker Dashboard'

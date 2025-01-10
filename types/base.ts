@@ -1,5 +1,5 @@
 export interface DateDuration {
-	from: string,
+	from: string
 	to: string
 }
 
@@ -21,4 +21,9 @@ export interface PieChartData {
 		backgroundColor: string[]
 		data: number[]
 	}[]
+}
+
+export interface TimeZoneSelectOption {
+	id: string
+	value: string
 }
