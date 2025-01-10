@@ -15,7 +15,7 @@ const [isOpen, toggle] = useToggle(false)
 	<UButton
 		class="flex"
 		:icon="HEROICONS.BARS_3"
-		@click="toggle"
+		@click="toggle(true)"
 	/>
 	<USlideover
 		v-if="organizationId && login"
@@ -28,7 +28,7 @@ const [isOpen, toggle] = useToggle(false)
 		<div class="p-4">
 			<UVerticalNavigation
 				:links="pages"
-				@click="toggle"
+				@click="toggle(false)"
 			/>
 		</div>
 	</USlideover>
