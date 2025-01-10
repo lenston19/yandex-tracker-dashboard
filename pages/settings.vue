@@ -2,6 +2,7 @@
 import OrganizationWidget from "~/components/settings/widgets/OrganizationWidget.vue"
 import UserWidget from "~/components/settings/widgets/UserWidget.vue"
 import HoursInDayWidget from "~/components/settings/widgets/HoursInDayWidget.vue"
+import TimeZoneWidget from "~/components/settings/widgets/TimeZoneWidget.vue"
 </script>
 
 <template>
@@ -10,5 +11,6 @@ import HoursInDayWidget from "~/components/settings/widgets/HoursInDayWidget.vue
 		<OrganizationWidget />
 		<HoursInDayWidget />
 		<SettingsGoldWidget />
+		<TimeZoneWidget />
 	</div>
 </template>
