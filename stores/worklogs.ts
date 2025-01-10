@@ -49,7 +49,7 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
 			await refresh()
 		}
 
-		const fetchMoreWorklog = async (body: YandexTrackerApi.worklogList.GET.RequestDTO, totalPages: number) => {
+		const fetchMoreWorklog = async (body: YandexTrackerApi.worklogList.Body, totalPages: number) => {
 			let counter = 2
 			let worklogs: Yandex.Worklog[] = []
 			while (counter <= totalPages) {
