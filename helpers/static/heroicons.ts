@@ -12,4 +12,6 @@ export const enum HEROICONS {
 	ARROW_RIGHT = 'i-heroicons-arrow-right',
 	ARROW_PATH = 'i-heroicons-arrow-path',
 	ARROW_RIGHT_START_ON_RECTANGLE = 'i-heroicons-arrow-right-start-on-rectangle',
+	CLIPBOARD_DOCUMENT_SOLID = 'i-heroicons-clipboard-document-solid',
+	CHECK = 'i-heroicons-check'
 }
