@@ -2,6 +2,7 @@
 	"start_url": "/",
 	"display": "standalone",
 	"name": "YandexTracker Dashboard",
+	"background_color": "#1f2937",
 	"icons": [
 		{
 			"sizes": "192x192",
