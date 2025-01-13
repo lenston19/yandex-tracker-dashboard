@@ -8,6 +8,10 @@ import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
 import UiCard from '~/components/ui/UiCard.vue'
 import UiTooltipInfo from "~/components/ui/UiTooltipInfo.vue"
 
+useHead({
+	title: 'Месячный отчет'
+})
+
 definePageMeta({
 	middleware: ['auth']
 })

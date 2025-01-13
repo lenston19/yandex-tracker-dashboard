@@ -4,6 +4,11 @@ import { useProjectsStore } from "~/stores/projects"
 import GroupedWorklogsTable from '~/components/worklogs/GroupedWorklogsTable.vue'
 import UiEmptyState from "~/components/ui/UiEmptyState.vue"
 import UiCard from '~/components/ui/UiCard.vue'
+import { SITEMAP } from '~/helpers/router/sitemap/index'
+
+useHead({
+	title: SITEMAP.projects.name
+})
 
 definePageMeta({
 	middleware: ['auth']

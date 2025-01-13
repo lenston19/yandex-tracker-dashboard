@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Settings } from 'luxon'
 import { useSiteSettingsStore } from '~/stores/site-settings'
+import { SITEMAP } from './helpers/router/sitemap'
 
 const siteSettingsStore = useSiteSettingsStore()
 Settings.defaultLocale = 'ru'
@@ -12,7 +13,7 @@ watch(
 	})
 
 useHead({
-	title: 'YandexTracker Dashboard'
+	title: SITEMAP.main.name
 })
 </script>
 

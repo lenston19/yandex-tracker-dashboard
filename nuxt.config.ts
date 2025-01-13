@@ -1,3 +1,7 @@
+import { readFileSync } from 'fs'
+
+const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
+const appVersion = packageJson.version
 // @ts-ignore
 export default defineNuxtConfig({
 	compatibilityDate: '2024-08-09',
@@ -21,7 +25,7 @@ export default defineNuxtConfig({
 				{ rel: 'icon', href: '/favicon.ico' },
 				{ rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
 				{ rel: 'manifest', href: '/site.webmanifest' }
-			],
+			]
 		}
 	},
 	typescript: {
@@ -45,20 +49,17 @@ export default defineNuxtConfig({
 			pathPrefix: false
 		}
 	],
+	plugins: ['~/plugins/version-check.client'],
 	runtimeConfig: {
 		public: {
 			yandexClientId: process.env.NUXT_PUBLIC_YANDEX_CLIENT_ID || '',
+			appVersion: appVersion || '1.0.0'
 		}
 	},
 	devtools: {
 		enabled: true
 	},
-	modules: [
-		'@pinia/nuxt',
-		'@pinia-plugin-persistedstate/nuxt',
-		'@nuxt-alt/proxy',
-		'@nuxt/ui',
-	],
+	modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', '@nuxt-alt/proxy', '@nuxt/ui', '@nuxt/content'],
 	colorMode: {
 		preference: 'dark'
 	},
@@ -75,7 +76,7 @@ export default defineNuxtConfig({
 			'^/avatar/.*': {
 				target: 'https://avatars.yandex.net/get-yapic',
 				rewrite: (path: string) => path.replace(/^\/avatar/, '')
-			},
+			}
 		}
 	},
 	ui: {
