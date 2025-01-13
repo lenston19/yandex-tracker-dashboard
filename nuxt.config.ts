@@ -59,7 +59,7 @@ export default defineNuxtConfig({
 	devtools: {
 		enabled: true
 	},
-	modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', '@nuxt-alt/proxy', '@nuxt/ui'],
+	modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', '@nuxt-alt/proxy', '@nuxt/ui', '@nuxt/content'],
 	colorMode: {
 		preference: 'dark'
 	},
