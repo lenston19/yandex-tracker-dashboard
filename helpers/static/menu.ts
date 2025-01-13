@@ -4,29 +4,29 @@ import { SITEMAP } from '~/helpers/router/sitemap/index'
 export const pages = [
 	[
 		{
-			...SITEMAP.main,
+			to: SITEMAP.main.route,
 			label: 'Дашборд',
 			icon: HEROICONS.HOME
 		},
 		{
-			...SITEMAP.projects,
+			to: SITEMAP.projects.route,
 			label: SITEMAP.projects.name,
 			icon: HEROICONS.FOLDER
 		},
 		{
-			...SITEMAP.monthlyReport,
+			to: SITEMAP.monthlyReport.route,
 			label: SITEMAP.monthlyReport.name,
 			icon: HEROICONS.CHART_BAR
 		}
 	],
 	[
 		{
-			...SITEMAP.changelog,
+			to: SITEMAP.changelog.route,
 			label: SITEMAP.changelog.name,
 			icon: HEROICONS.INFORMATION_CIRCLE
 		},
 		{
-			...SITEMAP.settings,
+			to: SITEMAP.settings.route,
 			label: SITEMAP.settings.name,
 			icon: HEROICONS.COG
 		}
