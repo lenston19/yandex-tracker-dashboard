@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useSiteSettingsStore } from "~/stores/site-settings"
 import { useAuthStore } from "~/stores/auth"
+import { SITEMAP } from '~/helpers/router/sitemap/index'
+
+useHead({
+	title: SITEMAP.auth.name
+})
 
 definePageMeta({
 	layout: "empty",
