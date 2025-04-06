@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import WeekTimeWidget from "~/components/widgets/WeekTimeWidget.vue"
-import DayTimeWidget from "~/components/widgets/DayTimeWidget.vue"
-import MonthTimeWidget from "~/components/widgets/MonthTimeWidget.vue"
+import WeekTimeWidget from '~/components/widgets/WeekTimeWidget.vue'
+import DayTimeWidget from '~/components/widgets/DayTimeWidget.vue'
+import MonthTimeWidget from '~/components/widgets/MonthTimeWidget.vue'
 import { SITEMAP } from '~/helpers/router/sitemap/index'
 
 useHead({

@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import {
-	Chart as ChartJS,
-	ArcElement, Tooltip, Legend,
-} from "chart.js"
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Pie } from 'vue-chartjs'
-import { PieChartData } from "~/types/base"
-import UiEmptyState from "~/components/ui/UiEmptyState.vue"
+import type { PieChartData } from '~/types/base'
+import UiEmptyState from '~/components/ui/UiEmptyState.vue'
 
-ChartJS.register(
-	ArcElement,
-	Legend,
-	Tooltip
-)
+ChartJS.register(ArcElement, Legend, Tooltip)
 
 const props = defineProps<{
 	data: PieChartData

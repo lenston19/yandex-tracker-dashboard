@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { HEROICONS } from "~/helpers/static/heroicons"
+import { HEROICONS } from '~/helpers/static/heroicons'
 
 export interface WorklogActionsProps {
 	next?: () => Promise<void> | void

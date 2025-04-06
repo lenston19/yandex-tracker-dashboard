@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { DateTime } from "luxon"
-import { useProjectsStore } from "~/stores/projects"
+import { DateTime } from 'luxon'
+import { useProjectsStore } from '~/stores/projects'
 import GroupedWorklogsTable from '~/components/worklogs/GroupedWorklogsTable.vue'
-import UiEmptyState from "~/components/ui/UiEmptyState.vue"
+import UiEmptyState from '~/components/ui/UiEmptyState.vue'
 import UiCard from '~/components/ui/UiCard.vue'
 import { SITEMAP } from '~/helpers/router/sitemap/index'
 
@@ -18,9 +18,7 @@ const projectsStore = useProjectsStore()
 
 const { queueWorklogs, isLoading, params } = storeToRefs(projectsStore)
 
-const title = computed(() =>
-	DateTime.fromISO(params.value.from).toFormat("LLLL yyyy")
-)
+const title = computed(() => DateTime.fromISO(params.value.from).toFormat('LLLL yyyy'))
 </script>
 
 <template>
@@ -41,15 +39,15 @@ const title = computed(() =>
 			<UiEmptyState v-else-if="!queueWorklogs.length" />
 			<template v-else>
 				<UiCard
-					class="col-span-1"
 					v-for="queue in queueWorklogs"
 					:key="queue.queueName"
+					class="col-span-1"
 				>
 					<GroupedWorklogsTable
 						:title="queue.queueName"
 						:rows="queue.worklogs"
 						:page-count="10"
-						showTotal
+						show-total
 					/>
 				</UiCard>
 			</template>

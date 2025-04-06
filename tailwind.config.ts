@@ -14,14 +14,12 @@ export default <Partial<Config>>{
 			typography: (theme: any) => ({
 				DEFAULT: {
 					css: {
-						color: theme('colors.primary.800'),
-					},
-				},
-			}),
-		},
+						color: theme('colors.primary.800')
+					}
+				}
+			})
+		}
 	},
 	content: ['components/**/*.vue', 'layouts/**/*.vue', 'pages/**/*.vue'],
-	plugins: [
-		require('@tailwindcss/typography')
-	]
+	plugins: [require('@tailwindcss/typography')]
 }

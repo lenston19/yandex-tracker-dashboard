@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useMonthTimeWidgetStore } from "~/stores/month-time-widget"
-import { useSiteSettingsStore } from "~/stores/site-settings"
-import { formatRUB } from "~/helpers/utils/format-money"
-import WorklogActions from "~/components/worklogs/WorklogActions.vue"
+import { useMonthTimeWidgetStore } from '~/stores/month-time-widget'
+import { useSiteSettingsStore } from '~/stores/site-settings'
+import { formatRUB } from '~/helpers/utils/format-money'
+import WorklogActions from '~/components/worklogs/WorklogActions.vue'
 import UiCard from '~/components/ui/UiCard.vue'
 import DayLinearProgress from '~/components/widgets/ui/DayLinearProgress.vue'
 
@@ -12,7 +12,9 @@ const { totalHours, isLoading } = storeToRefs(monthTimeWidgetStore)
 const { needHoursInCurrentMonth, gold } = storeToRefs(useSiteSettingsStore())
 
 const currentRuble = computed(() => totalHours.value * gold.value)
-const maxRuble = computed(() => needHoursInCurrentMonth.value ? needHoursInCurrentMonth.value * gold.value : currentRuble.value)
+const maxRuble = computed(() =>
+	needHoursInCurrentMonth.value ? needHoursInCurrentMonth.value * gold.value : currentRuble.value
+)
 
 onMounted(async () => {
 	if (!totalHours.value) {

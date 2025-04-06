@@ -8,6 +8,6 @@ export const useMonthTimeWidgetStore = defineStore('month-time-widget', () => {
 		totalHours,
 		worklogsModel,
 		isLoading,
-		refresh: worklogsStore.refresh,
+		refresh: worklogsStore.refresh
 	}
 })

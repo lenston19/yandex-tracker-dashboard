@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import SettingsOrganizationIdModal from '~/components/settings/modals/SettingsOrganizationIdModal.vue'
 import { DEFAULT_TIME_ZONE } from '~/helpers/static/timeZone'
-import { TimeZoneSelectOption } from '~/types/base'
+import type { TimeZoneSelectOption } from '~/types/base'
 
 export const useSiteSettingsStore = defineStore(
 	'site-settings',

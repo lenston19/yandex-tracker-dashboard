@@ -8,8 +8,6 @@ import { HEROICONS } from '~/helpers/static/heroicons'
 			:name="HEROICONS.CIRCLE_STACK_20_SOLID"
 			class="w-6 h-6"
 		/>
-		<div class="text-h4">
-			Нет данных
-		</div>
+		<div class="text-h4">Нет данных</div>
 	</div>
 </template>

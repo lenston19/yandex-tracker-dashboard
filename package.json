@@ -1,13 +1,16 @@
 {
   "name": "yandex-tracker-dashboard",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
+    "postinstall": "nuxt prepare",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "dependencies": {
     "@iconify-json/heroicons": "^1.2.2",
@@ -20,16 +23,15 @@
     "@vueuse/core": "^12.3.0",
     "chart.js": "^4.4.7",
     "luxon": "^3.5.0",
-    "nuxt": "^3.15.1",
+    "nuxt": "^3.16.2",
     "pinia": "^2.3.0",
     "sass": "^1.83.1",
     "sass-loader": "^16.0.4",
-    "typescript": "^5.7.2",
     "vue-chartjs": "^5.3.2",
     "yup": "^1.6.1"
   },
-  "packageManager": "pnpm@9.15.3",
   "devDependencies": {
+    "@nuxt/eslint": "1.3.0",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/stylelint-module": "^5.2.0",
@@ -38,11 +40,16 @@
     "@types/node": "^18.19.70",
     "@typescript-eslint/parser": "^8.19.1",
     "eslint": "^9.17.0",
+    "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-nuxt": "^4.0.0",
+    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
     "stylelint": "^16.12.0",
     "stylelint-config-standard": "^36.0.1",
-    "stylelint-config-standard-scss": "^14.0.0"
+    "stylelint-config-standard-scss": "^14.0.0",
+    "typescript": "^5.7.2"
   },
-  "version": "1.0.0"
+  "packageManager": "pnpm@9.15.3"
 }

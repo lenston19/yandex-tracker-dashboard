@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
-import { pluralize } from "~/helpers/utils/pluralize"
+import { hoursPluralize } from '~/helpers/static/pluralizeArrayWords'
+import { pluralize } from '~/helpers/utils/pluralize'
 
 const props = withDefaults(
 	defineProps<{
 		hours?: number | null
 		min?: number
-		max?: number,
+		max?: number
 		showMax?: boolean
 	}>(),
 	{
@@ -17,7 +17,7 @@ const props = withDefaults(
 	}
 )
 
-const computedMax = computed(() => props.max === 0 ? 8 : props.max)
+const computedMax = computed(() => (props.max === 0 ? 8 : props.max))
 
 enum DayLinearColor {
 	GREEN = 'green',
@@ -46,7 +46,7 @@ const maxPlural = computed(() => {
 
 <template>
 	<UProgress
-		:value="hours"
+		:value="hours ?? undefined"
 		:min="min"
 		:max="computedMax"
 		:color="computedColor"
@@ -54,15 +54,13 @@ const maxPlural = computed(() => {
 	>
 		<template #indicator="{ percent }">
 			<component
-				v-if="hours !== null && hours >= 0"
 				:is="showMax ? 'div' : 'UTooltip'"
+				v-if="hours !== null && hours >= 0"
 				:text="`Максимально ${pluralize(computedMax, hoursPluralize)}`"
-				class="text-sm text-right  ml-auto flex gap-1"
+				class="ml-auto flex gap-1 text-right text-sm"
 			>
 				<span class="underline"> {{ hoursPlural }} {{ props.showMax ? maxPlural : '' }}</span>
-				<span class="italic font-light">
-					({{ Number.isNaN(percent) ? 0 : Math.floor(percent) }}%)
-				</span>
+				<span class="font-light italic"> ({{ Number.isNaN(percent) ? 0 : Math.floor(percent) }}%) </span>
 			</component>
 			<USkeleton
 				v-else

@@ -7,9 +7,11 @@ defineProps<{
 </script>
 
 <template>
-	<UTooltip :ui="{
-		base: '[@media(pointer:coarse)]:block !overflow-visible !text-wrap h-fit text-base'
-	}">
+	<UTooltip
+		:ui="{
+			base: '[@media(pointer:coarse)]:block !overflow-visible !text-wrap h-fit text-base'
+		}"
+	>
 		<template #text>
 			<span
 				v-if="text"

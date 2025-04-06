@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const modelValue = defineModel < boolean > ({ default: false })
+const modelValue = defineModel<boolean>({ default: false })
 </script>
 
 <template>
@@ -113,7 +113,6 @@ const modelValue = defineModel < boolean > ({ default: false })
 }
 
 @keyframes triangulate {
-
 	0%,
 	100% {
 		transform: none;
@@ -129,7 +128,6 @@ const modelValue = defineModel < boolean > ({ default: false })
 }
 
 @keyframes grow {
-
 	0%,
 	85%,
 	100% {

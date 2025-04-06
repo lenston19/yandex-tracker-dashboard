@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { TIME_ZONE_LIST } from '~/helpers/static/timeZone'
-import { TimeZoneSelectOption } from '~/types/base'
+import type { TimeZoneSelectOption } from '~/types/base'
 import type { Group } from '#ui/types'
 import { HEROICONS } from '~/helpers/static/heroicons'
-import { useSiteSettingsStore } from "~/stores/site-settings"
+import { useSiteSettingsStore } from '~/stores/site-settings'
 
 const siteSettingsStore = useSiteSettingsStore()
 

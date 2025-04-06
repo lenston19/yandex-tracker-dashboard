@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import WorklogActions, { type WorklogActionsProps } from "~/components/worklogs/WorklogActions.vue"
+import WorklogActions, { type WorklogActionsProps } from '~/components/worklogs/WorklogActions.vue'
 
-defineProps<{
-	title: string,
-} & WorklogActionsProps>()
+defineProps<
+	{
+		title: string
+	} & WorklogActionsProps
+>()
 </script>
 
 <template>

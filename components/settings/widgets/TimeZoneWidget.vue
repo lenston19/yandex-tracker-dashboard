@@ -18,8 +18,8 @@ function openModal() {
 		</div>
 		<template #footer>
 			<UButton
-				@click="openModal"
 				label="Изменить"
+				@click="openModal"
 			/>
 		</template>
 	</UiCard>

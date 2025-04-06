@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import OrganizationWidget from "~/components/settings/widgets/OrganizationWidget.vue"
-import UserWidget from "~/components/settings/widgets/UserWidget.vue"
-import HoursInDayWidget from "~/components/settings/widgets/HoursInDayWidget.vue"
-import TimeZoneWidget from "~/components/settings/widgets/TimeZoneWidget.vue"
+import OrganizationWidget from '~/components/settings/widgets/OrganizationWidget.vue'
+import UserWidget from '~/components/settings/widgets/UserWidget.vue'
+import HoursInDayWidget from '~/components/settings/widgets/HoursInDayWidget.vue'
+import TimeZoneWidget from '~/components/settings/widgets/TimeZoneWidget.vue'
 import { SITEMAP } from '~/helpers/router/sitemap/index'
 
 useHead({

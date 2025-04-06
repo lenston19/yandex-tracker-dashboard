@@ -6,8 +6,8 @@ const props = defineProps<{
 
 const ui = computed(() => ({
 	body: {
-		padding: props.noPaddingBody ? '' : 'px-4 py-5 sm:p-6',
-	},
+		padding: props.noPaddingBody ? '' : 'px-4 py-5 sm:p-6'
+	}
 }))
 </script>
 
@@ -26,7 +26,6 @@ const ui = computed(() => ({
 				v-else-if="$slots.header"
 				name="header"
 			></slot>
-
 		</template>
 		<slot></slot>
 		<template

@@ -73,8 +73,6 @@ export namespace Yandex {
 		'islands-75' = 'islands-75',
 		'islands-retina-middle' = 'islands-retina-middle',
 		'islands-retina-50' = 'islands-retina-50',
-		'islands-200' = 'islands-200',
+		'islands-200' = 'islands-200'
 	}
 }
-
-

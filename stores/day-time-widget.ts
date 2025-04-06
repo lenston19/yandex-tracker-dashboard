@@ -15,6 +15,6 @@ export const useDayTimeWidgetStore = defineStore('day-time-widget', () => {
 	return {
 		isLoading,
 		totalHours,
-		refresh: worklogsStore.refresh,
+		refresh: worklogsStore.refresh
 	}
 })

@@ -1,17 +1,15 @@
-import { useSiteSettingsStore } from "~/stores/site-settings"
+import { useSiteSettingsStore } from '~/stores/site-settings'
 import { useToast } from '#imports'
 
 export const $api = $fetch.create({
 	onRequest: ({ options }) => {
 		const { organizationId, accessToken } = storeToRefs(useSiteSettingsStore())
 
-		options.headers = {
-			'Authorization': `OAuth ${accessToken.value}`,
-			'X-Cloud-Org-ID': organizationId.value
-		}
+		options.headers.set('Authorization', `OAuth ${accessToken.value}`)
+		options.headers.set('X-Cloud-Org-ID', organizationId.value)
 	},
 	onRequestError: ({ error }) => {
-		if (process.server) {
+		if (import.meta.server) {
 			return
 		}
 
@@ -26,7 +24,7 @@ export const $api = $fetch.create({
 		useToast().add({
 			color: 'red',
 			title: 'Ошибка!',
-			description,
+			description
 		})
 	}
 })

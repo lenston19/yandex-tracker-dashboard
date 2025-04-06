@@ -1,6 +1,6 @@
 import { $api } from '~/api/base.api'
-import { YandexTrackerApi } from '~/types/yandex-tracker/yandex-tracker.api'
-import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
+import type { YandexTrackerApi } from '~/types/yandex-tracker/yandex-tracker.api'
+import type { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
 
 export default {
 	/**
