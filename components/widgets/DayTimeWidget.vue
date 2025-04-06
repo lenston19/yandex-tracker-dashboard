@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { DateTime } from "luxon"
-import { useDayTimeWidgetStore } from "~/stores/day-time-widget"
-import { useSiteSettingsStore } from "~/stores/site-settings"
-import WorklogActions from "~/components/worklogs/WorklogActions.vue"
+import { DateTime } from 'luxon'
+import { useDayTimeWidgetStore } from '~/stores/day-time-widget'
+import { useSiteSettingsStore } from '~/stores/site-settings'
+import WorklogActions from '~/components/worklogs/WorklogActions.vue'
 import DayLinearProgress from '~/components/widgets/ui/DayLinearProgress.vue'
 import UiCard from '~/components/ui/UiCard.vue'
 
@@ -11,7 +11,7 @@ const { totalHours, isLoading } = storeToRefs(dayTimeWidgetStore)
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
 const title = computed(() => {
-	return `Сегодня - <span class="italic">${DateTime.now().toFormat("dd.MM.yyyy")}</span>`
+	return `Сегодня - <span class="italic">${DateTime.now().toFormat('dd.MM.yyyy')}</span>`
 })
 
 onMounted(async () => {

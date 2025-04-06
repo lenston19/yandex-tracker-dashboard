@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import LogoutModal from "~/components/settings/modals/LogoutModal.vue"
-import { useAuthStore } from "~/stores/auth"
-import { HEROICONS } from "~/helpers/static/heroicons"
+import LogoutModal from '~/components/settings/modals/LogoutModal.vue'
+import { useAuthStore } from '~/stores/auth'
+import { HEROICONS } from '~/helpers/static/heroicons'
 import UiCard from '~/components/ui/UiCard.vue'
 
 const authStore = useAuthStore()
@@ -19,9 +19,7 @@ function openModal() {
 	<UiCard v-if="mySelf">
 		<template #header>
 			<div class="flex items-center gap-4">
-				<div class="text-xl">
-					Пользователь
-				</div>
+				<div class="text-xl">Пользователь</div>
 				<UTooltip text="Обновить данные о пользователе">
 					<UButton
 						:icon="HEROICONS.ARROW_PATH"
@@ -38,16 +36,16 @@ function openModal() {
 				:alt="userName"
 			/>
 			<div class="text-accent overflow-hidden truncate">
-				{{ userName || "Вы" }}
+				{{ userName || 'Вы' }}
 			</div>
 		</div>
 		<template #footer>
 			<UButton
-				@click="openModal"
 				color="red"
 				:loading="isLoading"
 				label="Выйти"
 				:icon="HEROICONS.ARROW_RIGHT_START_ON_RECTANGLE"
+				@click="openModal"
 			/>
 		</template>
 	</UiCard>

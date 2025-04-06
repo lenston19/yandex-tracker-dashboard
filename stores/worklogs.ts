@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import yandexTrackerApi from '~/api/yandex-tracker.api'
-import { DateDuration } from '~/types/base'
-import { YandexTrackerApi } from '~/types/yandex-tracker/yandex-tracker.api'
-import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
+import type { DateDuration } from '~/types/base'
+import type { YandexTrackerApi } from '~/types/yandex-tracker/yandex-tracker.api'
+import type { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
 import { useAuthStore } from '~/stores/auth'
 import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
 

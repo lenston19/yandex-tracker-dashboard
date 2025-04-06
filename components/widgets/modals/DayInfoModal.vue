@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { collectWorklogs } from "~/helpers/utils/collecting"
-import { Weekday } from "~/stores/week-time-widget"
-import GroupedWorklogsTable from "~/components/worklogs/GroupedWorklogsTable.vue"
-import { pluralize } from "~/helpers/utils/pluralize"
-import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
+import { collectWorklogs } from '~/helpers/utils/collecting'
+import type { Weekday } from '~/stores/week-time-widget'
+import GroupedWorklogsTable from '~/components/worklogs/GroupedWorklogsTable.vue'
+import { pluralize } from '~/helpers/utils/pluralize'
+import { hoursPluralize } from '~/helpers/static/pluralizeArrayWords'
 import UiCard from '~/components/ui/UiCard.vue'
 
 const props = defineProps<{
@@ -14,21 +14,21 @@ const worklogs = computed(() => {
 	return collectWorklogs(props.day.items).result
 })
 
-const dayTotalHours = computed(() =>
-	pluralize(props.day.hours, hoursPluralize)
-)
+const dayTotalHours = computed(() => pluralize(props.day.hours, hoursPluralize))
 
-function close () {
+function close() {
 	useModal().close()
 }
 </script>
 
 <template>
-	<UModal :ui="{
-		width: 'w-full sm:max-w-4xl'
-	}">
+	<UModal
+		:ui="{
+			width: 'w-full sm:max-w-4xl'
+		}"
+	>
 		<UiCard
-			class="min-w-full  md:min-w-[800px]"
+			class="min-w-full md:min-w-[800px]"
 			no-padding-body
 		>
 			<template #header>
@@ -48,8 +48,8 @@ function close () {
 			<template #footer>
 				<div class="flex justify-end">
 					<UButton
-						@click="close()"
 						label="Закрыть"
+						@click="close()"
 					/>
 				</div>
 			</template>

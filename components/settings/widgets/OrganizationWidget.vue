@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import SettingsOrganizationIdModal from "~/components/settings/modals/SettingsOrganizationIdModal.vue"
-import { useSiteSettingsStore } from "~/stores/site-settings"
+import SettingsOrganizationIdModal from '~/components/settings/modals/SettingsOrganizationIdModal.vue'
+import { useSiteSettingsStore } from '~/stores/site-settings'
 import UiCard from '~/components/ui/UiCard.vue'
-import { useClipboard } from "@vueuse/core"
-import { HEROICONS } from "~/helpers/static/heroicons"
+import { useClipboard } from '@vueuse/core'
+import { HEROICONS } from '~/helpers/static/heroicons'
 
 const { organizationId } = storeToRefs(useSiteSettingsStore())
 
@@ -15,7 +15,7 @@ const { copy, copied, isSupported } = useClipboard({ source: organizationId })
 function copyWithToast() {
 	copy()
 	toast.add({
-		title: "Скопировано",
+		title: 'Скопировано',
 		color: 'green'
 	})
 }
@@ -29,7 +29,7 @@ function openModal() {
 	<UiCard title="ID Организации">
 		<div class="flex gap-4 items-center">
 			<div class="text-accent overflow-hidden truncate">
-				{{ organizationId || "Пусто" }}
+				{{ organizationId || 'Пусто' }}
 			</div>
 			<UTooltip
 				v-if="organizationId && isSupported"
@@ -48,8 +48,8 @@ function openModal() {
 
 		<template #footer>
 			<UButton
-				@click="openModal"
 				:label="organizationId ? 'Изменить' : 'Добавить'"
+				@click="openModal"
 			/>
 		</template>
 	</UiCard>

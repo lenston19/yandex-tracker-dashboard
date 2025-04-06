@@ -1,5 +1,5 @@
 import { $api } from '~/api/base.api'
-import { YandexInfo } from '~/types/yandex-info/yandex-info.entity'
+import type { YandexInfo } from '~/types/yandex-info/yandex-info.entity'
 
 export default {
 	/**

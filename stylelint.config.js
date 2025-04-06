@@ -1,7 +1,5 @@
 module.exports = {
-	extends: [
-		'stylelint-config-standard-scss'
-	],
+	extends: ['stylelint-config-standard-scss'],
 	customSyntax: 'postcss-styled-syntax',
 	// add your custom config here
 	// https://stylelint.io/user-guide/configuration

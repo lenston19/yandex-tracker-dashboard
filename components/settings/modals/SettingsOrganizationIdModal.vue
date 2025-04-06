@@ -12,7 +12,7 @@ const schema = object({
 })
 
 const state = reactive({
-	id: !!organizationId.value ? organizationId.value : ''
+	id: organizationId.value ? organizationId.value : ''
 })
 
 const save = () => {
@@ -30,8 +30,8 @@ const save = () => {
 			<UForm
 				:schema="schema"
 				:state="state"
-				@submit="save"
 				class="space-y-4"
+				@submit="save"
 			>
 				<UFormGroup
 					label="Идентификатор"
@@ -61,7 +61,5 @@ const save = () => {
 		</UiCard>
 	</UModal>
 </template>
-
-
 
 <style scoped lang="scss"></style>

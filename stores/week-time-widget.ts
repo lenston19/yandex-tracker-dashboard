@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
+import type { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
 import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
 import DayInfoModal from '~/components/widgets/modals/DayInfoModal.vue'
 import { useWorklogsStore } from '~/stores/worklogs'
@@ -32,7 +32,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 				weekday: iterateDay.toFormat('EEEE'),
 				monthDay: iterateDay.toFormat('dd MMMM yyyy'),
 				hours: dayHours,
-				items: dayItems,
+				items: dayItems
 			})
 			iterateDay = iterateDay.plus({ day: 1 })
 		}
@@ -51,7 +51,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
 	const modal = useModal()
 
-	function openDetailDayDialog (day: Weekday) {
+	function openDetailDayDialog(day: Weekday) {
 		if (day.hours > 0) {
 			modal.open(DayInfoModal, { day })
 		}
@@ -65,6 +65,6 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 		currentWeek,
 		isLoading,
 		refresh: worklogsStore.refresh,
-		openDetailDayDialog,
+		openDetailDayDialog
 	}
 })

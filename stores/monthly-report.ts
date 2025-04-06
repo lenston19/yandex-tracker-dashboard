@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
-import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
-import { PieChartData, LineChartData } from '~/types/base'
+import type { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
+import type { PieChartData, LineChartData } from '~/types/base'
 import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
 import { useWorklogsStore } from '~/stores/worklogs'
 import { useQueuesStore } from './queues'
@@ -126,7 +126,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 		return isNaN(result) ? 0 : result
 	})
 
-	function refresh () {
+	function refresh() {
 		worklogsStore.refresh()
 		queueStore.refresh()
 	}
@@ -144,7 +144,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 	}
 })
 
-function createPastelColorPicker () {
+function createPastelColorPicker() {
 	const colors = [
 		'#7F8C8D', // Серый
 		'#1ABC9C', // Бирюзовый
