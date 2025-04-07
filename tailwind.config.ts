@@ -1,10 +1,3 @@
-/*
- ** TailwindCSS Configuration File
- **
- ** Docs: https://tailwindcss.com/docs/configuration
- ** Default: https://github.com/tailwindcss/tailwindcss/blob/master/stubs/defaultConfig.stub.js
- */
-
 // @ts-ignore
 import type { Config } from 'tailwindcss'
 
@@ -15,13 +8,21 @@ export default <Partial<Config>>{
 				DEFAULT: {
 					css: {
 						color: theme('colors.primary.800'),
-					},
-				},
-			}),
-		},
+						'a.text-primary': {
+							color: theme('colors.green.600'),
+							'&:hover': {
+								color: theme('colors.green.400')
+							}
+						},
+						'span.text-primary': {
+							color: theme('colors.green.600')
+						}
+					}
+				}
+			})
+		}
 	},
 	content: ['components/**/*.vue', 'layouts/**/*.vue', 'pages/**/*.vue'],
-	plugins: [
-		require('@tailwindcss/typography')
-	]
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	plugins: [require('@tailwindcss/typography')]
 }

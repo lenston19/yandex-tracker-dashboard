@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { DateTime } from "luxon"
-import { calculateWorklogTimeByDay } from "~/helpers/utils/time"
-import { Yandex } from "~/types/yandex-tracker/yandex-tracker.entity"
-import UiPagination from "~/components/ui/UiPagination.vue"
+import { DateTime } from 'luxon'
+import { calculateWorklogTimeByDay } from '~/helpers/utils/time'
+import type { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
+import UiPagination from '~/components/ui/UiPagination.vue'
 
 const props = defineProps<{
 	worklogs: Yandex.Worklog[]
 }>()
-
 
 const getKey = (row: Yandex.Worklog) => row.issue.key
 const getName = (row: Yandex.Worklog) => row.issue.display
@@ -18,30 +17,30 @@ const getTimeCreatedAt = (row: Yandex.Worklog) => DateTime.fromISO(row.start).to
 const page = ref<number>(1)
 const pageCount = 5
 const rows = computed(() => {
-	return props.worklogs.slice((page.value - 1) * pageCount, (page.value) * pageCount)
+	return props.worklogs.slice((page.value - 1) * pageCount, page.value * pageCount)
 })
 
 const columns = [
 	{
-		key: "name",
-		label: "Наименование задачи",
+		key: 'name',
+		label: 'Наименование задачи'
 	},
 	{
-		key: "time",
-		label: "Потраченное время",
+		key: 'time',
+		label: 'Потраченное время'
 	},
 	{
-		key: "dateCreatedAt",
-		label: "Дата",
+		key: 'dateCreatedAt',
+		label: 'Дата'
 	},
 	{
-		key: "timeCreatedAt",
-		label: "Время",
+		key: 'timeCreatedAt',
+		label: 'Время'
 	},
 	{
-		key: "comment",
-		label: "Комментарий",
-	},
+		key: 'comment',
+		label: 'Комментарий'
+	}
 ]
 </script>
 
@@ -62,9 +61,7 @@ const columns = [
 			{{ getKey(row) }}
 		</template>
 		<template #name-data="{ row }">
-			<div class="">
-				{{ getName(row) }}
-			</div>
+			{{ getName(row) }}
 		</template>
 		<template #time-data="{ row }">
 			<UBadge

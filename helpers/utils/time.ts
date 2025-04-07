@@ -1,5 +1,5 @@
 import { Duration } from 'luxon'
-import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
+import type { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
 
 const calculateDurationInHours = (duration: string): number => {
 	const time = Duration.fromISO(duration)

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { DateTime } from "luxon"
-import LineChart from "~/components/charts/LineChart.vue"
-import PieChart from "~/components/charts/PieChart.vue"
-import { useMonthlyReportStore } from "~/stores/monthly-report"
-import { pluralize } from "~/helpers/utils/pluralize"
-import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
+import { DateTime } from 'luxon'
+import LineChart from '~/components/charts/LineChart.vue'
+import PieChart from '~/components/charts/PieChart.vue'
+import { useMonthlyReportStore } from '~/stores/monthly-report'
+import { pluralize } from '~/helpers/utils/pluralize'
+import { hoursPluralize } from '~/helpers/static/pluralizeArrayWords'
 import UiCard from '~/components/ui/UiCard.vue'
-import UiTooltipInfo from "~/components/ui/UiTooltipInfo.vue"
+import UiTooltipInfo from '~/components/ui/UiTooltipInfo.vue'
 
 useHead({
 	title: 'Месячный отчет'
@@ -17,21 +17,20 @@ definePageMeta({
 })
 
 const monthlyReportStore = useMonthlyReportStore()
-const { monthLineChartData, monthPieChartData, params, isLoading, averageHoursByMonth, totalHours } = storeToRefs(monthlyReportStore)
+const { monthLineChartData, monthPieChartData, params, isLoading, averageHoursByMonth, totalHours } =
+	storeToRefs(monthlyReportStore)
 
-const title = computed(() =>
-	DateTime.fromISO(params.value.from).toFormat("LLLL yyyy")
-)
+const title = computed(() => DateTime.fromISO(params.value.from).toFormat('LLLL yyyy'))
 
 const columns = [
 	{
-		key: "name",
-		label: "Наименование",
+		key: 'name',
+		label: 'Наименование'
 	},
 	{
-		key: "value",
-		label: "Значение",
-	},
+		key: 'value',
+		label: 'Значение'
+	}
 ]
 
 const data = computed(() => {
@@ -46,17 +45,21 @@ const data = computed(() => {
 		{
 			name: 'Среднее значение часов за месяц',
 			value: pluralize(averageHoursByMonth.value, hoursPluralize),
-			helpText: 'Часы за все\u00A0дни / количество\u00A0дней <br><span class="text-xs text-gray-300">*\u00A0минимум\u00A015\u00A0минут в день</span>',
+			helpText:
+				'Часы за все\u00A0дни / количество\u00A0дней <br><span class="text-xs text-gray-300">*\u00A0минимум\u00A015\u00A0минут в день</span>',
 			attrs: {
 				color: () => {
 					switch (true) {
-						case averageHoursByMonth.value < 5: return 'red'
-						case averageHoursByMonth.value < 8: return 'yellow'
-						default: return 'primary'
+						case averageHoursByMonth.value < 5:
+							return 'red'
+						case averageHoursByMonth.value < 8:
+							return 'yellow'
+						default:
+							return 'primary'
 					}
 				}
 			}
-		},
+		}
 	]
 })
 
@@ -121,7 +124,6 @@ onMounted(async () => {
 						class="w-[calc(100%-3rem)] mt-5 h-48"
 					/>
 				</div>
-
 			</UiCard>
 			<UiCard
 				title="Занятость на проектах"

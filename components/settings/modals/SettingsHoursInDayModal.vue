@@ -11,7 +11,7 @@ const schema = object({
 	hours: number()
 		.transform((value: number | string) => (Number.isNaN(value) || typeof +value !== 'number' ? null : value))
 		.min(0, 'Минимальное значение 0')
-		.required('Поле обязательное'),
+		.required('Поле обязательное')
 })
 
 const state = reactive({
@@ -29,24 +29,20 @@ const save = () => {
 		<UiCard>
 			<template #header>
 				<div class="flex flex-col gap-3">
-					<div class="text-lg">
-						Введите количество часов, которые вы работаете в день
-					</div>
+					<div class="text-lg">Введите количество часов, которые вы работаете в день</div>
 					<div class="text-sm">
 						* С помощью этой функции вам будет видно в виджете месяца <span class="italic">(на главной)</span>, сколько
 						вам необходимо часов в этом месяце
 					</div>
-					<div class="text-sm">
-						** <strong>0</strong> - Отключает эту функцию
-					</div>
+					<div class="text-sm">** <strong>0</strong> - Отключает эту функцию</div>
 				</div>
 			</template>
 
 			<UForm
 				:schema="schema"
 				:state="state"
-				@submit="save"
 				class="space-y-4"
+				@submit="save"
 			>
 				<UFormGroup
 					label="Часы"

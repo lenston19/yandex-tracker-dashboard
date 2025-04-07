@@ -1,5 +1,5 @@
 import yandexTrackerApi from '~/api/yandex-tracker.api'
-import { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
+import type { Yandex } from '~/types/yandex-tracker/yandex-tracker.entity'
 import { useAuthStore } from '~/stores/auth'
 
 export const useQueuesStore = defineStore('queues', () => {

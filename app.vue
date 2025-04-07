@@ -8,9 +8,10 @@ Settings.defaultLocale = 'ru'
 
 watch(
 	() => siteSettingsStore.timeZone.value,
-	(value) => {
+	value => {
 		Settings.defaultZone = value
-	})
+	}
+)
 
 useHead({
 	title: SITEMAP.main.name

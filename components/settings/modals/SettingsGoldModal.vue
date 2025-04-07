@@ -11,7 +11,7 @@ const schema = object({
 	money: number()
 		.transform((value: number | string) => (Number.isNaN(value) || typeof +value !== 'number' ? null : value))
 		.min(0, 'Минимальное значение 0')
-		.required('Поле обязательное'),
+		.required('Поле обязательное')
 })
 
 const state = reactive({
@@ -30,8 +30,8 @@ const save = () => {
 			<UForm
 				:schema="schema"
 				:state="state"
-				@submit="save"
 				class="space-y-4"
+				@submit="save"
 			>
 				<UFormGroup
 					label="Ставка"

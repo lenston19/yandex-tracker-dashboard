@@ -4,7 +4,7 @@ const config = useRuntimeConfig()
 const getUserAccessToken = () => {
 	window.open(
 		`https://oauth.yandex.ru/authorize?response_type=token&client_id=${config.public.yandexClientId}`,
-		"_blank"
+		'_blank'
 	)
 }
 </script>
@@ -12,8 +12,8 @@ const getUserAccessToken = () => {
 <template>
 	<UButton
 		color="red"
-		@click="getUserAccessToken"
 		label="Войти через Яндекс"
 		class="h-fit"
+		@click="getUserAccessToken"
 	/>
 </template>

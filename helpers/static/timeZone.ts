@@ -1,4 +1,4 @@
-import { TimeZoneSelectOption } from '~/types/base'
+import type { TimeZoneSelectOption } from '~/types/base'
 
 export const DEFAULT_TIME_ZONE: TimeZoneSelectOption = {
 	id: '(GMT+03:00) Moscow',

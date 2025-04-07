@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { DateTime } from "luxon"
-import { hoursPluralize } from "~/helpers/static/pluralizeArrayWords"
-import { pluralize } from "~/helpers/utils/pluralize"
-import { useSiteSettingsStore } from "~/stores/site-settings"
-import { useWeekTimeWidgetStore } from "~/stores/week-time-widget"
+import { DateTime } from 'luxon'
+import { hoursPluralize } from '~/helpers/static/pluralizeArrayWords'
+import { pluralize } from '~/helpers/utils/pluralize'
+import { useSiteSettingsStore } from '~/stores/site-settings'
+import { useWeekTimeWidgetStore } from '~/stores/week-time-widget'
 import DayLinearProgress from '~/components/widgets/ui/DayLinearProgress.vue'
-import WorklogActions from "~/components/worklogs/WorklogActions.vue"
+import WorklogActions from '~/components/worklogs/WorklogActions.vue'
 import UiCard from '~/components/ui/UiCard.vue'
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
-const { currentWeek, params, weekTotalHours, isLoading } = storeToRefs(weekTimeWidgetStore)
+const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue } =
+	storeToRefs(weekTimeWidgetStore)
 
-const { hoursInDay } = storeToRefs(useSiteSettingsStore())
+const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
 
 const title = computed(() => {
 	const dateFrom = DateTime.fromISO(params.value.from)
 	const dateTo = DateTime.fromISO(params.value.to)
-	return `Неделя ${dateFrom.toFormat("dd.MM.yyyy")}
-	- ${dateTo.toFormat("dd.MM.yyyy")}`
+	return `Неделя ${dateFrom.toFormat('dd.MM.yyyy')}
+	- ${dateTo.toFormat('dd.MM.yyyy')}`
 })
 
 const maxHoursInWeek = computed(() => pluralize(hoursInDay.value ? hoursInDay.value * 5 : 40, hoursPluralize))
@@ -60,6 +61,27 @@ onMounted(async () => {
 				</div>
 			</template>
 		</div>
+		<template v-if="flatQueueWorklogs.length && isShowWeeklyLoading && !isLoadingQueue && !isLoading">
+			<UDivider class="py-4" />
+			<UMeterGroup
+				:min="0"
+				:max="100"
+				size="lg"
+				:indicator="false"
+				icon="i-heroicons-minus"
+			>
+				<template
+					v-for="queue in flatQueueWorklogs"
+					:key="queue.queueName"
+				>
+					<UMeter
+						:value="queue.percentage"
+						:color="queue.color"
+						:label="`${queue.queueName} (${pluralize(+queue.hours.toFixed(2), hoursPluralize)})`"
+					/>
+				</template>
+			</UMeterGroup>
+		</template>
 		<template #footer>
 			<div class="flex items-center justify-between">
 				<div

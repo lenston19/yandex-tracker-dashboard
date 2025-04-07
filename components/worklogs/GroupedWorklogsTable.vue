@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import {
-	calculateTotalHours,
-	formatHoursToHHMMSS,
-} from "~/helpers/utils/time"
-import WorklogsTable from "~/components/worklogs/WorklogsTable.vue"
-import { CollectedWorklog } from "~/helpers/utils/collecting"
-import UiPagination from "~/components/ui/UiPagination.vue"
+import { calculateTotalHours, formatHoursToHHMMSS } from '~/helpers/utils/time'
+import WorklogsTable from '~/components/worklogs/WorklogsTable.vue'
+import type { CollectedWorklog } from '~/helpers/utils/collecting'
+import UiPagination from '~/components/ui/UiPagination.vue'
 
 const props = withDefaults(
 	defineProps<{
 		rows: CollectedWorklog[]
 		title?: string
-		showTotal: boolean
+		showTotal?: boolean
 		pageCount?: number
 	}>(),
 	{
@@ -22,25 +19,25 @@ const props = withDefaults(
 
 const expand = ref({
 	openedRows: [],
-	row: null,
+	row: null
 })
 
 const getTotalTime = (row: CollectedWorklog) => formatHoursToHHMMSS(calculateTotalHours(row.items))
 
 const columns = [
 	{
-		key: "key",
-		label: "Задача",
+		key: 'key',
+		label: 'Задача'
 	},
 	{
-		key: "totalTime",
-		label: "Всего времени",
-	},
+		key: 'totalTime',
+		label: 'Всего времени'
+	}
 ]
 
 const page = ref(1)
 const data = computed(() => {
-	return props.rows.slice((page.value - 1) * props.pageCount, (page.value) * props.pageCount)
+	return props.rows.slice((page.value - 1) * props.pageCount, page.value * props.pageCount)
 })
 
 const calcByProject = (rows: CollectedWorklog[]) => {

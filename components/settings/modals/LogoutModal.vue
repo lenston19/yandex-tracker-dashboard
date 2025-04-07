@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth"
-import { useSiteSettingsStore } from "~/stores/site-settings"
-import UiCard from "~/components/ui/UiCard.vue"
+import { useAuthStore } from '~/stores/auth'
+import { useSiteSettingsStore } from '~/stores/site-settings'
+import UiCard from '~/components/ui/UiCard.vue'
 
 const siteSettingsStore = useSiteSettingsStore()
 const authStore = useAuthStore()
@@ -23,13 +23,13 @@ const logout = () => {
 		<UiCard title="Выйти из аккаунта?">
 			<div class="flex gap-4 justify-end">
 				<UButton
-					@click="closeDialog"
 					label="Закрыть"
+					@click="closeDialog"
 				/>
 				<UButton
-					@click="logout"
 					color="red"
 					label="Выйти"
+					@click="logout"
 				/>
 			</div>
 		</UiCard>

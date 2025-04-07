@@ -64,7 +64,27 @@ export default defineNuxtConfig({
 	devtools: {
 		enabled: true
 	},
-	modules: ['@pinia/nuxt', '@pinia-plugin-persistedstate/nuxt', '@nuxt-alt/proxy', '@nuxt/ui', '@nuxt/content'],
+	modules: [
+		'@pinia/nuxt',
+		'@nuxt/eslint',
+		'@pinia-plugin-persistedstate/nuxt',
+		'@nuxt-alt/proxy',
+		'@nuxt/ui',
+		'@nuxt/content'
+	],
+	content: {
+		build: {
+			markdown: {
+				highlight: {
+					theme: {
+						default: 'github-light',
+						dark: 'github-dark',
+						sepia: 'monokai'
+					}
+				}
+			}
+		}
+	},
 	colorMode: {
 		preference: 'dark'
 	},

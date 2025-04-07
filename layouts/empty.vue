@@ -1,13 +1,7 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
-	<UContainer class="flex items-center justify-center min-h-dvh">
+	<UContainer class="flex min-h-dvh items-center justify-center">
 		<NuxtPage />
 	</UContainer>
 </template>
-
-<style lang="scss">
-
-</style>

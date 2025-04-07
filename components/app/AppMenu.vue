@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { HEROICONS } from "~/helpers/static/heroicons"
-import { useSiteSettingsStore } from "~/stores/site-settings"
-import { useAuthStore } from "~/stores/auth"
-import { pages } from "~/helpers/static/menu"
-import { useToggle } from "@vueuse/core"
+import { HEROICONS } from '~/helpers/static/heroicons'
+import { useSiteSettingsStore } from '~/stores/site-settings'
+import { useAuthStore } from '~/stores/auth'
+import { pages } from '~/helpers/static/menu'
+import { useToggle } from '@vueuse/core'
 
 const { login } = storeToRefs(useAuthStore())
 const { organizationId } = storeToRefs(useSiteSettingsStore())
@@ -22,7 +22,7 @@ const [isOpen, toggle] = useToggle(false)
 		v-model="isOpen"
 		side="left"
 		:ui="{
-			height: 'max-h-fit',
+			height: 'max-h-fit'
 		}"
 	>
 		<div class="p-4">

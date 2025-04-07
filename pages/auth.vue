@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useSiteSettingsStore } from "~/stores/site-settings"
-import { useAuthStore } from "~/stores/auth"
+import { useSiteSettingsStore } from '~/stores/site-settings'
+import { useAuthStore } from '~/stores/auth'
 import { SITEMAP } from '~/helpers/router/sitemap/index'
 
 useHead({
@@ -8,10 +8,8 @@ useHead({
 })
 
 definePageMeta({
-	layout: "empty",
-	middleware: [
-		'empty-organization-id'
-	]
+	layout: 'empty',
+	middleware: ['empty-organization-id']
 })
 
 const route = useRoute()
@@ -22,17 +20,15 @@ const { accessToken } = storeToRefs(siteSettingsStore)
 const toast = useToast()
 
 onMounted(async () => {
-	const accessTokenFromRoute = new URLSearchParams(route.hash.slice(1)).get(
-		"access_token"
-	)
+	const accessTokenFromRoute = new URLSearchParams(route.hash.slice(1)).get('access_token')
 	if (accessTokenFromRoute) {
 		accessToken.value = accessTokenFromRoute
 
 		if (accessToken.value) {
-			toast.add({ title: "Авторизован" })
+			toast.add({ title: 'Авторизован' })
 			await authStore.refreshMySelf()
 		} else {
-			toast.add({ title: "Ошибка" })
+			toast.add({ title: 'Ошибка' })
 		}
 	}
 })
@@ -43,7 +39,7 @@ onMounted(async () => {
 		<div
 			class="text-2xl"
 			:class="{
-				'loading': !accessToken
+				loading: !accessToken
 			}"
 		>
 			{{ accessToken ? 'Успешно' : 'Загрузка' }}
@@ -66,7 +62,7 @@ onMounted(async () => {
 	vertical-align: bottom;
 	-webkit-animation: ellipsis steps(3, end) 1.4s infinite;
 	animation: ellipsis steps(3, end) 1.4s infinite;
-	content: "\2026";
+	content: '\2026';
 	width: 0px;
 }
 

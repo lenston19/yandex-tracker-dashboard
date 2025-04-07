@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
 	<MainLayout>
@@ -8,7 +7,3 @@
 		</UContainer>
 	</MainLayout>
 </template>
-
-<style lang="scss">
-
-</style>

@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import SettingsOrganizationIdModal from '~/components/settings/modals/SettingsOrganizationIdModal.vue'
 import { DEFAULT_TIME_ZONE } from '~/helpers/static/timeZone'
-import { TimeZoneSelectOption } from '~/types/base'
+import type { TimeZoneSelectOption } from '~/types/base'
 
 export const useSiteSettingsStore = defineStore(
 	'site-settings',
@@ -13,6 +13,7 @@ export const useSiteSettingsStore = defineStore(
 		const gold = ref<number>(0)
 		const timeZone = ref<TimeZoneSelectOption>({ ...DEFAULT_TIME_ZONE })
 		const isNeedOrganizationId = computed(() => organizationId.value === '')
+		const isShowWeeklyLoading = ref<boolean>(false)
 
 		const clearState = () => {
 			organizationId.value = ''
@@ -68,6 +69,7 @@ export const useSiteSettingsStore = defineStore(
 			gold,
 			timeZone,
 			needHoursInCurrentMonth,
+			isShowWeeklyLoading,
 			clearState,
 			setTimeZone
 		}
