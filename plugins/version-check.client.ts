@@ -21,7 +21,7 @@ export default defineNuxtPlugin(() => {
 					icon: HEROICONS.ARROW_PATH,
 					click: () => {
 						versionStore.setVersion(appVersion)
-						location.reload()
+						useRouter().push('/changelog')
 					}
 				}
 			]
