@@ -70,8 +70,21 @@ export default defineNuxtConfig({
 		'@pinia-plugin-persistedstate/nuxt',
 		'@nuxt-alt/proxy',
 		'@nuxt/ui',
-		'@nuxt/content',
+		'@nuxt/content'
 	],
+	content: {
+		build: {
+			markdown: {
+				highlight: {
+					theme: {
+						default: 'github-light',
+						dark: 'github-dark',
+						sepia: 'monokai'
+					}
+				}
+			}
+		}
+	},
 	colorMode: {
 		preference: 'dark'
 	},
