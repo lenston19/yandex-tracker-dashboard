@@ -13,6 +13,7 @@ export const useSiteSettingsStore = defineStore(
 		const gold = ref<number>(0)
 		const timeZone = ref<TimeZoneSelectOption>({ ...DEFAULT_TIME_ZONE })
 		const isNeedOrganizationId = computed(() => organizationId.value === '')
+		const isShowWeeklyLoading = ref<boolean>(false)
 
 		const clearState = () => {
 			organizationId.value = ''
@@ -68,6 +69,7 @@ export const useSiteSettingsStore = defineStore(
 			gold,
 			timeZone,
 			needHoursInCurrentMonth,
+			isShowWeeklyLoading,
 			clearState,
 			setTimeZone
 		}

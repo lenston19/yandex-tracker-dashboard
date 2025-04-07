@@ -8,7 +8,7 @@ const props = withDefaults(
 	defineProps<{
 		rows: CollectedWorklog[]
 		title?: string
-		showTotal: boolean
+		showTotal?: boolean
 		pageCount?: number
 	}>(),
 	{

@@ -32,7 +32,10 @@ const title = computed(() => DateTime.fromISO(params.value.from).toFormat('LLLL 
 		/>
 		<div class="grid grid-cols-1 gap-12">
 			<template v-if="isLoading">
-				<UiCard v-for="_ in 3">
+				<UiCard
+					v-for="index in 3"
+					:key="index"
+				>
 					<USkeleton class="h-24 w-full" />
 				</UiCard>
 			</template>
