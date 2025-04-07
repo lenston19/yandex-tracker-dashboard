@@ -9,7 +9,7 @@ export default defineNuxtPlugin(() => {
 	if (versionStore.appVersion && versionStore.appVersion !== appVersion) {
 		toast.add({
 			title: 'Доступна новая версия приложения.',
-			description: 'Обновить страницу?',
+			description: 'Что нового?',
 			icon: HEROICONS.INFORMATION_CIRCLE,
 			// @ts-ignore
 			// Выключение кнопки закрытия уведомления
@@ -17,11 +17,11 @@ export default defineNuxtPlugin(() => {
 			timeout: 0,
 			actions: [
 				{
-					label: 'Обновить',
-					icon: HEROICONS.ARROW_PATH,
+					label: 'Узнать',
+					trailingIcon: HEROICONS.QUESTION_MARK_CIRCLE,
 					click: () => {
 						versionStore.setVersion(appVersion)
-						location.reload()
+						useRouter().push('/changelog')
 					}
 				}
 			]

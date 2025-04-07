@@ -14,5 +14,6 @@ export const enum HEROICONS {
 	ARROW_RIGHT_START_ON_RECTANGLE = 'i-heroicons-arrow-right-start-on-rectangle',
 	CLIPBOARD_DOCUMENT_SOLID = 'i-heroicons-clipboard-document-solid',
 	CHECK = 'i-heroicons-check',
-	CHEVRON_DOWN_20_SOLID = 'i-heroicons-chevron-down-20-solid'
+	CHEVRON_DOWN_20_SOLID = 'i-heroicons-chevron-down-20-solid',
+	QUESTION_MARK_CIRCLE = 'i-heroicons-question-mark-circle'
 }
