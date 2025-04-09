@@ -37,7 +37,10 @@ export function collectWorklogsByQueue(queues: Yandex.Queue[], worklogs: Yandex.
 
 	for (const queue of queues) {
 		const matchedWorklogs = Array.from(groupedWorklogs.keys())
-			.filter(issueKey => issueKey.startsWith(queue.key))
+			.filter(issueKey => {
+				const [prefix] = issueKey.split('-', 1)
+				return prefix === queue.key
+			})
 			.map(issueKey => ({
 				key: issueKey,
 				items: groupedWorklogs.get(issueKey) || []

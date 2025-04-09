@@ -16,9 +16,14 @@ export default {
 	 * Получение данных об очередях из сервиса https://api.tracker.yandex.net/v2
 	 * @return Yandex.Queue[]
 	 */
-	async queuesList() {
-		return await $api<Yandex.Queue[]>('/tracker/queues', {
-			method: 'GET'
+	async queuesList(params?: Record<string, string>, countPerPage: number = 50) {
+		const queryParams = {
+			perPage: countPerPage,
+			...params
+		}
+		return await $api.raw<Yandex.Queue[]>('/tracker/queues', {
+			method: 'GET',
+			params: queryParams
 		})
 	},
 	/**
