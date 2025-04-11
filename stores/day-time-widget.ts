@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { calculateTotalHours, formatHoursToFixed } from '~/helpers/utils/time'
 import { useWorklogsStore } from '~/stores/worklogs'
 
@@ -9,7 +10,10 @@ export const useDayTimeWidgetStore = defineStore('day-time-widget', () => {
 		if (!worklogsModel.value) {
 			return
 		}
-		return formatHoursToFixed(calculateTotalHours(worklogsModel.value))
+		const worklogs = worklogsModel.value.filter(worklog =>
+			DateTime.now().hasSame(DateTime.fromISO(worklog.start), 'day')
+		)
+		return formatHoursToFixed(calculateTotalHours(worklogs))
 	})
 
 	return {
