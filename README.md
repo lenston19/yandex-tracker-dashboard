@@ -51,7 +51,7 @@
     ```sh
     cp .env.example .env
     ```
-2. Укажите ваш `YANDEX_CLIENT_ID` в файле .env
+2. Укажите ваш `YANDEX_CLIENT_ID` в файле .env (Получить можно после создания по ссылке [Yandex OAuth](https://oauth.yandex.ru/client/new/))
 
 ## Запуск
 
