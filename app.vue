@@ -28,7 +28,13 @@ useHead({
 	</ClientOnly>
 </template>
 
-<style lang="scss">
+<style>
+@tailwind base;
+
+html.dark {
+	@apply bg-gray-950;
+}
+
 body {
 	position: relative;
 	width: 100%;
