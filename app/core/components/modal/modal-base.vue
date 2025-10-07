@@ -42,7 +42,7 @@ function closeWindow() {
       variant="link"
       :icon="HEROICONS.X_MARK"
       :class="mergedUI.close"
-      class="absolute top-0 right-0 z-2 text-white"
+      class="absolute top-0 right-0 z-2 text-default"
       square
       @click="closeWindow"
     />

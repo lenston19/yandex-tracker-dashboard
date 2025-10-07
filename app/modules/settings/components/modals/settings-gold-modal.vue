@@ -37,18 +37,22 @@ const save = () => {
         <u-form-field
           label="Ставка"
           name="money"
+          class="w-full"
         >
           <u-input
             v-model.number="state.money"
             type="number"
             color="primary"
             variant="outline"
+            class="w-full"
           />
         </u-form-field>
-        <u-button
-          label="Сохранить"
-          type="submit"
-        />
+        <div class="flex justify-end">
+          <u-button
+            label="Сохранить"
+            type="submit"
+          />
+        </div>
       </u-form>
     </ui-card>
   </modal-base>

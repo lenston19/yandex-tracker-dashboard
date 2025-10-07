@@ -4,6 +4,7 @@ import { calculateWorklogTimeByDay } from '../../utils/time'
 import type { Yandex } from '../../types/api/yandex-tracker/yandex-tracker.entity'
 import UiPagination from '../ui/ui-pagination.vue'
 import { WORKLOG_COLUMNS } from '../../constants/worklogs'
+import UiCard from '../ui/ui-card.vue'
 
 const props = defineProps<{
   worklogs: Yandex.Worklog[]
@@ -21,37 +22,47 @@ const rows = computed(() => props.worklogs.slice((page.value - 1) * pageCount, p
 </script>
 
 <template>
-  <u-table
-    :data="rows"
-    :columns="WORKLOG_COLUMNS"
+  <ui-card
     :ui="{
-      thead: 'whitespace-nowrap w-fit [&:nth-child(2)]:max-w-[200px]'
+      body: 'p-0 sm:p-0'
     }"
   >
-    <template #id-cell="{ row }">
-      {{ getKey(row.original) }}
-    </template>
-    <template #name-cell="{ row }">
-      {{ getName(row.original) }}
-    </template>
-    <template #time-cell="{ row }">
-      <u-badge
-        :label="getTime(row.original)"
-        color="secondary"
-        variant="subtle"
+    <u-table
+      :data="rows"
+      :columns="WORKLOG_COLUMNS"
+      :ui="{
+        thead: 'whitespace-nowrap w-fit [&:nth-child(2)]:max-w-[200px]'
+      }"
+    >
+      <template #id-cell="{ row }">
+        {{ getKey(row.original) }}
+      </template>
+      <template #name-cell="{ row }">
+        {{ getName(row.original) }}
+      </template>
+      <template #time-cell="{ row }">
+        <u-badge
+          :label="getTime(row.original)"
+          color="secondary"
+          variant="subtle"
+        />
+      </template>
+      <template #dateCreatedAt-cell="{ row }">
+        {{ getDateCreatedAt(row.original) }}
+      </template>
+      <template #timeCreatedAt-cell="{ row }">
+        {{ getTimeCreatedAt(row.original) }}
+      </template>
+    </u-table>
+
+    <template
+      v-if="rows.length > pageCount"
+      #footer
+    >
+      <ui-pagination
+        v-model="page"
+        :total="rows.length"
       />
     </template>
-    <template #dateCreatedAt-cell="{ row }">
-      {{ getDateCreatedAt(row.original) }}
-    </template>
-    <template #timeCreatedAt-cell="{ row }">
-      {{ getTimeCreatedAt(row.original) }}
-    </template>
-  </u-table>
-
-  <ui-pagination
-    v-model="page"
-    :total="rows.length"
-    color="violet"
-  />
+  </ui-card>
 </template>

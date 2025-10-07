@@ -27,18 +27,12 @@ const save = () => {
 
 <template>
   <modal-base v-model="model">
-    <ui-card>
-      <template #header>
-        <div class="flex flex-col gap-3">
-          <div class="text-lg">Введите количество часов, которые вы работаете в день</div>
-          <div class="text-sm">
-            * С помощью этой функции вам будет видно в виджете месяца <span class="italic">(на главной)</span>, сколько
-            вам необходимо часов в этом месяце
-          </div>
-          <div class="text-sm">** <strong>0</strong> - Отключает эту функцию</div>
-        </div>
-      </template>
-
+    <ui-card
+      title="Введите количество часов, которые вы работаете в день"
+      :ui="{
+        header: 'max-w-[95%]'
+      }"
+    >
       <u-form
         :schema="schema"
         :state="state"
@@ -48,19 +42,33 @@ const save = () => {
         <u-form-field
           label="Часы"
           name="hours"
+          class="w-full"
         >
           <u-input
             v-model.number="state.hours"
             type="number"
             color="primary"
             variant="outline"
+            class="w-full"
           />
         </u-form-field>
-        <u-button
-          label="Сохранить"
-          type="submit"
-        />
+        <div class="flex justify-end">
+          <u-button
+            label="Сохранить"
+            type="submit"
+          />
+        </div>
       </u-form>
+
+      <template #footer>
+        <div class="flex flex-col gap-1 text-xs">
+          <span class="block">
+            * С помощью этой функции вам будет видно в виджете месяца <span class="italic">(на главной)</span>, сколько
+            вам необходимо часов в этом месяце
+          </span>
+          <span class="block">** <strong>0</strong> - Отключает эту функцию</span>
+        </div>
+      </template>
     </ui-card>
   </modal-base>
 </template>

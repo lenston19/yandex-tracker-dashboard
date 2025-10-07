@@ -27,7 +27,7 @@ const dayTotalHours = computed(() => pluralize(props.day.hours, HOURS_PLURALIZE)
   >
     <ui-card class="min-w-full md:min-w-[800px]">
       <template #header>
-        <div class="flex justify-between">
+        <div class="flex max-w-[95%] justify-between">
           <span class="text-xl font-bold">
             {{ day.monthDay }}
           </span>

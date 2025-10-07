@@ -23,6 +23,7 @@ const save = (close: () => void) => {
     v-slot="{ close }"
     v-model="model"
     :show-close="false"
+    :prevent-close="false"
   >
     <ui-card title="Для дальнейшей работы с приложением нужен ID организации">
       <u-form

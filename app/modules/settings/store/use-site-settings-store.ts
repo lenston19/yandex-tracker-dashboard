@@ -52,16 +52,13 @@ export const useSiteSettingsStore = defineStore(
       if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
         toast.add({
           title: 'Временная зона изменена',
-          description: timeZone.value.key
+          description: timeZone.value.label
         })
       }
     })
 
     function setTimeZone(newTimeZone: TimeZoneSelectOption) {
-      timeZone.value = {
-        key: newTimeZone.key,
-        value: newTimeZone.value
-      }
+      timeZone.value = { ...newTimeZone }
     }
 
     return {

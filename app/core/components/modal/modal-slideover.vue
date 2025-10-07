@@ -15,7 +15,7 @@ const mergedUI = computed(() => {
     header: twMerge('border-b border-gray-200 p-3 sm:px-8 sm:py-7'),
     body: twMerge('px-6 py-4.5', props.ui?.body),
     content: twMerge(
-      'fixed top-0 bottom-0 left-0 flex h-svh w-full transform flex-col bg-neutral-800 text-white transition-transform duration-300 md:w-60',
+      'fixed top-0 bottom-0 left-0 flex h-svh w-full transform flex-col bg-default text-default transition-transform duration-300 md:w-60 dark:bg-neutral-900',
       props.ui?.content
     )
   }

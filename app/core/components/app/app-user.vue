@@ -16,6 +16,9 @@ const { userName, userAvatarUrl } = storeToRefs(useAuthStore())
         src: userAvatarUrl,
         icon: 'i-heroicons-user'
       }"
+      :ui="{
+        name: 'truncate whitespace-nowrap'
+      }"
     />
   </u-button>
 </template>

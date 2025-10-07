@@ -4,6 +4,7 @@ import { HEROICONS } from '~/core/constants/heroicons'
 import { useModal } from 'vue-final-modal'
 import AppLogin from '~/core/components/app/app-login.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
+import { useSiteSettingsStore } from '../store/use-site-settings-store'
 
 const authStore = useAuthStore()
 

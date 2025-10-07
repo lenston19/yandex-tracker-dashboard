@@ -13,7 +13,7 @@ const modelValue = defineModel<boolean>({ default: false })
   >
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-[9999] bg-gray-200 transition-opacity dark:bg-gray-800"
+      class="fixed inset-0 z-[9999] bg-gray-200 transition-opacity dark:bg-neutral-900"
     ></div>
   </transition>
   <div

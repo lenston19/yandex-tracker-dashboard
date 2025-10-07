@@ -21,11 +21,22 @@ const [isOpen, toggle] = useToggle(false)
   <async-modal-slideover
     v-if="organizationId && login"
     v-model="isOpen"
+    :ui="{
+      body: 'flex flex-col'
+    }"
   >
     <u-navigation-menu
       :items="APP_PAGES"
       orientation="vertical"
+      class="flex-1"
       @click="toggle(false)"
+    />
+
+    <u-color-mode-select
+      class="w-full"
+      :ui="{
+        content: 'z-9999'
+      }"
     />
   </async-modal-slideover>
 </template>

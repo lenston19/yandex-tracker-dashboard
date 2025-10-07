@@ -37,8 +37,15 @@ const calcByProject = (rows: CollectedWorklog[]) => {
 </script>
 
 <template>
-  <ui-card>
-    <template #header>
+  <ui-card
+    :ui="{
+      body: 'p-0 sm:p-0'
+    }"
+  >
+    <template
+      v-if="title || showTotal"
+      #header
+    >
       <div class="flex items-center justify-between">
         <div
           v-if="title"
@@ -58,7 +65,6 @@ const calcByProject = (rows: CollectedWorklog[]) => {
       v-model:expanded="expanded"
       :data="data"
       :columns="GROUPED_WORKLOG_COLUMNS"
-      :ui="{ tr: 'data-[expanded=true]:bg-elevated/50' }"
     >
       <template #expand-cell="{ row }">
         <u-button
@@ -82,10 +88,17 @@ const calcByProject = (rows: CollectedWorklog[]) => {
       </template>
 
       <template #expanded="{ row }">
-        <worklogs-table :worklogs="row.original.items" />
+        <div class="w-full overflow-x-auto">
+          <div class="min-w-max">
+            <worklogs-table :worklogs="row.original.items" />
+          </div>
+        </div>
       </template>
     </u-table>
-    <template #footer>
+    <template
+      v-if="rows.length > pageCount"
+      #footer
+    >
       <ui-pagination
         v-model="page"
         :total="rows.length"

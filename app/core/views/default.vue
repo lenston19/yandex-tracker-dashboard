@@ -32,9 +32,11 @@ onMounted(() => {
       class="flex min-h-[61px] items-center justify-between border-b border-gray-200 px-4 py-2 dark:border-gray-800"
     >
       <app-menu v-if="organizationId && login" />
-      <div class="ml-auto flex items-center gap-4">
-        <u-color-mode-switch />
-        <app-user v-if="userName" />
+      <div
+        v-if="userName"
+        class="ml-auto flex items-center gap-1 lg:gap-4"
+      >
+        <app-user />
       </div>
     </header>
     <main>

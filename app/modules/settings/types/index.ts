@@ -1,4 +1,4 @@
 export interface TimeZoneSelectOption {
-  key: string
-  value: string
+  label: string
+  id: string
 }
