@@ -1,41 +1,76 @@
-import unusedImports from 'eslint-plugin-unused-imports'
 import withNuxt from './.nuxt/eslint.config.mjs'
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
-import prettierPlugin from 'eslint-plugin-prettier'
-import eslintConfigPrettier from 'eslint-config-prettier'
+import unusedImports from 'eslint-plugin-unused-imports'
+import eslintPluginBetterTailwindcss from 'eslint-plugin-better-tailwindcss'
+import pluginPrettier from 'eslint-plugin-prettier'
+import configPrettier from 'eslint-config-prettier'
 
-export default withNuxt([
-	{
-		files: ['**/*.ts', '**/*.vue'],
-		plugins: {
-			'unused-imports': unusedImports,
-			prettier: prettierPlugin
-		},
-		rules: {
-			...eslintConfigPrettier.rules,
-			'vue/multi-word-component-names': 0,
-			'vue/require-default-prop': 0,
-			'vue/no-v-html': 0,
-			'vue/no-multiple-template-root': 0,
-			'unused-imports/no-unused-imports': 1,
-			'@stylistic/arrow-parens': 0,
-			'@typescript-eslint/ban-ts-comment': 0,
-			'no-multi-spaces': 2,
-			'no-console': [1, { allow: ['warn', 'error', 'info'] }],
-			'no-control-regex': 0,
-			'@typescript-eslint/no-explicit-any': [0, { ignoreRestArgs: true }],
-			'@typescript-eslint/no-namespace': 0,
-			'@typescript-eslint/no-empty-object-type': [2, { allowInterfaces: 'with-single-extends' }],
-			'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
-			'vue/component-name-in-template-casing': [
-				'error',
-				'PascalCase',
-				{
-					registeredComponentsOnly: true,
-					ignores: []
-				}
-			]
-		}
-	},
-	eslintPluginPrettierRecommended
-])
+export default withNuxt(
+  {
+    plugins: {
+      'unused-imports': unusedImports,
+      'better-tailwindcss': eslintPluginBetterTailwindcss,
+      prettier: pluginPrettier
+    },
+    rules: {
+      'prettier/prettier': 'error',
+      // enable all recommended rules to report a warning
+      ...eslintPluginBetterTailwindcss.configs['recommended-warn'].rules,
+      // enable all recommended rules to report an error
+      ...eslintPluginBetterTailwindcss.configs['recommended-error'].rules,
+
+      indent: ['error', 4, { SwitchCase: 1 }],
+      'vue/html-indent': ['error', 4],
+      'vue/no-multiple-template-root': 0,
+      'no-tabs': 0,
+      'import/no-mutable-exports': 0,
+      camelcase: 0,
+      'import/named': 0,
+      'no-return-assign': 'off',
+      'no-console': 'off',
+      'import/no-named-as-default': 'off',
+      'func-call-spacing': 'off',
+      'vue/valid-v-for': 'off',
+      'vue/multi-word-component-names': 'off',
+      '@typescript-eslint/unified-signatures': 'off',
+      '@typescript-eslint/no-namespace': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+
+      'vue/block-order': ['error', { order: ['script', 'template', 'style'] }],
+
+      'vue/require-default-prop': 'off',
+      'vue/no-v-html': 'off',
+
+      'unused-imports/no-unused-imports': 'error',
+      // '@stylistic/arrow-parens': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      'vue/component-name-in-template-casing': [
+        'error',
+        'kebab-case',
+        {
+          registeredComponentsOnly: false
+        }
+      ],
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: {
+            void: 'any',
+            normal: 'any',
+            component: 'always'
+          },
+          svg: 'always',
+          math: 'always'
+        }
+      ],
+
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+      'better-tailwindcss/no-unregistered-classes': 'off'
+    },
+    settings: {
+      'better-tailwindcss': {
+        entryPoint: './app/assets/styles/main.css'
+      }
+    }
+  },
+  configPrettier
+)

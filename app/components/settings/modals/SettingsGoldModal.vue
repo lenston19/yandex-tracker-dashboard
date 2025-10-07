@@ -1,0 +1,55 @@
+<script setup lang="ts">
+import { useSiteSettingsStore } from '~/stores/use-site-settings-store'
+import { number, object } from 'yup'
+import ModalBase from '~/components/modal/ModalBase.vue'
+import UiCard from '~/components/ui/UiCard.vue'
+
+const { gold } = storeToRefs(useSiteSettingsStore())
+
+const model = defineModel<boolean>()
+
+const schema = object({
+  money: number()
+    .transform((value: number | string) => (Number.isNaN(value) || typeof +value !== 'number' ? null : value))
+    .min(0, 'Минимальное значение 0')
+    .required('Поле обязательное')
+})
+
+const state = reactive({
+  money: gold.value >= 0 ? gold.value : 8
+})
+
+const save = () => {
+  gold.value = state.money
+  model.value = false
+}
+</script>
+
+<template>
+  <modal-base v-model="model">
+    <ui-card title="Введите ставку">
+      <u-form
+        :schema="schema"
+        :state="state"
+        class="space-y-4"
+        @submit="save"
+      >
+        <u-form-field
+          label="Ставка"
+          name="money"
+        >
+          <u-input
+            v-model.number="state.money"
+            type="number"
+            color="primary"
+            variant="outline"
+          />
+        </u-form-field>
+        <u-button
+          label="Сохранить"
+          type="submit"
+        />
+      </u-form>
+    </ui-card>
+  </modal-base>
+</template>
