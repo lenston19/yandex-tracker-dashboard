@@ -1,5 +1,5 @@
-import { HEROICONS } from '~/constants/heroicons'
-import { useAppVersionStore } from '~/stores/use-app-version-store'
+import { HEROICONS } from '~/core/constants/heroicons'
+import { useAppVersionStore } from '~/core/store/use-app-version-store'
 
 export default defineNuxtPlugin(() => {
   const appVersion = useRuntimeConfig().public.appVersion

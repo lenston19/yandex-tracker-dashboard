@@ -1,4 +1,4 @@
-import * as uiConfigs from '~/config/ui'
+import * as uiConfigs from '~/core/constants/ui-config'
 
 export default defineAppConfig({
   ui: uiConfigs

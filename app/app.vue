@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { Settings } from 'luxon'
-import { useSiteSettingsStore } from '~/stores/use-site-settings-store'
-import { SITEMAP } from './helpers/router/sitemap'
+import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { SITEMAP } from '~/core/utils/router/sitemap'
 import { ModalsContainer } from 'vue-final-modal'
 import { ru } from '@nuxt/ui/locale'
 
@@ -37,22 +37,3 @@ useHead({
     </client-only>
   </u-app>
 </template>
-
-<style>
-/* @tailwind base;
-
-html.dark {
-  @apply bg-neutral-950;
-} */
-
-body {
-  position: relative;
-  width: 100%;
-  min-height: 100dvh;
-  overflow-x: hidden;
-}
-
-#__nuxt {
-  height: 100%;
-}
-</style>

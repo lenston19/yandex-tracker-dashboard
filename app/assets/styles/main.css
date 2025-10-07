@@ -1,2 +1,18 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
+
+:root {
+  html.dark {
+    @apply bg-neutral-950;
+  }
+  body {
+    position: relative;
+    width: 100%;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  #__nuxt {
+    height: 100%;
+  }
+}

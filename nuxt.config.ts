@@ -104,5 +104,11 @@ export default defineNuxtConfig({
         prefetch: false
       }
     }
+  },
+  srcDir: 'app/',
+  dir: {
+    app: 'app',
+    assets: 'assets',
+    layouts: 'core/views'
   }
 })
