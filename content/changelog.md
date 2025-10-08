@@ -1,5 +1,17 @@
 # Что нового?
 
+## [1.1.0] - 2025-10-08
+
+### Added
+- Страница 404
+- Добавлен <a href="https://vue-final-modal.org/">Vue Final Modal</a>
+- Реализована модульная структура
+
+### Changed
+- Обновлен <a href="https://ui.nuxt.com/">Nuxt UI</a> до версии 4
+- Обновлен <a href="https://nuxt.com/">Nuxt</a> до версии 4
+- chart.js заменен на <a href="https://apexcharts.com/">apexcharts</a> 
+
 ## [1.0.1] - 2025-04-07
 ### Added
 - Отображение потраченного времени на каждый проект в течении недели на <a href="/" class="text-primary">главной</a>
