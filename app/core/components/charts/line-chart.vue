@@ -2,6 +2,7 @@
 import type { LineChartData } from '../../types'
 import VueApexCharts from 'vue3-apexcharts'
 import UiEmptyState from '../ui/ui-empty-state.vue'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 const props = defineProps<{
   data: LineChartData
@@ -65,6 +66,8 @@ const chartOptions = computed(() => ({
     x: { show: false }
   }
 }))
+
+const { isSmaller } = useBreakpoints(breakpointsTailwind)
 </script>
 
 <template>
@@ -73,14 +76,21 @@ const chartOptions = computed(() => ({
       v-if="loading"
       class="h-48 w-full"
     />
-    <vue-apex-charts
+    <div
       v-else-if="hasData"
-      type="line"
-      :height="chartHeight"
-      class="max-h-48"
-      :options="chartOptions"
-      :series="series"
-    />
+      class="w-full overflow-x-auto overflow-y-hidden"
+    >
+      <div class="max-md:inline-block max-md:min-w-[600px] md:w-full">
+        <vue-apex-charts
+          type="line"
+          :height="chartHeight"
+          :width="isSmaller('md') ? Math.max(props.data.labels.length * 50, 600) : undefined"
+          :options="chartOptions"
+          :series="series"
+          class="w-full"
+        />
+      </div>
+    </div>
     <ui-empty-state v-else />
   </client-only>
 </template>

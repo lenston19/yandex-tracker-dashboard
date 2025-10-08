@@ -18,7 +18,7 @@ const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
 const title = computed(() => {
   const dateFrom = DateTime.fromISO(params.value.from)
   const dateTo = DateTime.fromISO(params.value.to)
-  return `Неделя ${dateFrom.toFormat('dd.MM.yyyy')} - ${dateTo.toFormat('dd.MM.yyyy')}`
+  return `${dateFrom.toFormat('dd.MM.yyyy')} - ${dateTo.toFormat('dd.MM.yyyy')}`
 })
 
 const maxHoursInWeek = computed(() => pluralize(hoursInDay.value ? hoursInDay.value * 5 : 40, HOURS_PLURALIZE))
@@ -41,11 +41,22 @@ onMounted(async () => {
 
 <template>
   <ui-card
-    :title="title"
     :ui="{
       footer: 'w-full'
     }"
   >
+    <template #header>
+      <div class="flex items-center gap-2">
+        <div class="text-lg font-medium">Неделя</div>
+        <u-badge
+          variant="subtle"
+          color="primary"
+          size="lg"
+        >
+          {{ title }}
+        </u-badge>
+      </div>
+    </template>
     <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
       <template v-if="isLoading">
         <day-linear-progress

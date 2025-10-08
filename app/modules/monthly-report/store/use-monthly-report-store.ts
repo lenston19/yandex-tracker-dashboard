@@ -18,11 +18,11 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
     labels: [],
     datasets: [
       {
-        backgroundColor: 'rgba(56,142,60,0.2)',
-        borderColor: 'rgba(56,142,60,1)',
+        backgroundColor: 'var(--ui-color-success-500)',
+        borderColor: 'var(--ui-color-success-300)',
         borderWidth: 2,
-        hoverBackgroundColor: 'rgba(56,142,60,0.4)',
-        hoverBorderColor: 'rgba(56,142,60,1)',
+        hoverBackgroundColor: 'var(--ui-color-success-500)',
+        hoverBorderColor: 'var(--ui-color-success-300)',
         data: []
       }
     ]

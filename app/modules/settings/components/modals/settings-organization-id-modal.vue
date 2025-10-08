@@ -39,7 +39,7 @@ const save = (close: () => void) => {
         >
           <u-input
             v-model="state.id"
-            color="primary"
+            color="success"
             variant="outline"
             class="w-full"
           />

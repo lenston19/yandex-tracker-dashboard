@@ -2,6 +2,91 @@
 @import '@nuxt/ui';
 
 :root {
+  --ui-color-primary-50: #f4f5ff;
+  --ui-color-primary-100: #e5e8ff;
+  --ui-color-primary-200: #d3d9ff;
+  --ui-color-primary-300: #bcc5ff;
+  --ui-color-primary-400: #9da7fa;
+  --ui-color-primary-500: #7c8ff2;
+  --ui-color-primary-600: #6577db;
+  --ui-color-primary-700: #525fbf;
+  --ui-color-primary-800: #414f99;
+  --ui-color-primary-900: #343e77;
+  --ui-color-primary-950: #23294a;
+
+  --ui-color-success-50: #f2fcf6;
+  --ui-color-success-100: #dff8e8;
+  --ui-color-success-200: #c3f0d4;
+  --ui-color-success-300: #a4e4bc;
+  --ui-color-success-400: #7fd7a1;
+  --ui-color-success-500: #63c98c;
+  --ui-color-success-600: #4eaf77;
+  --ui-color-success-700: #3f8f63;
+  --ui-color-success-800: #356f52;
+  --ui-color-success-900: #274d3b;
+  --ui-color-success-950: #1a3226;
+
+  --ui-color-info-50: #f1f9fe;
+  --ui-color-info-100: #dbf1fd;
+  --ui-color-info-200: #b9e4fb;
+  --ui-color-info-300: #8ed2f8;
+  --ui-color-info-400: #5fbaf3;
+  --ui-color-info-500: #3ba3e8;
+  --ui-color-info-600: #2c86cb;
+  --ui-color-info-700: #236ca6;
+  --ui-color-info-800: #1c5484;
+  --ui-color-info-900: #173e63;
+  --ui-color-info-950: #0f273f;
+
+  --ui-color-warning-50: #fffbea;
+  --ui-color-warning-100: #fff5c4;
+  --ui-color-warning-200: #ffe897;
+  --ui-color-warning-300: #ffd96b;
+  --ui-color-warning-400: #ffc44b;
+  --ui-color-warning-500: #ffb038;
+  --ui-color-warning-600: #e8962d;
+  --ui-color-warning-700: #c77928;
+  --ui-color-warning-800: #9f5d23;
+  --ui-color-warning-900: #78461c;
+  --ui-color-warning-950: #472a10;
+
+  --ui-color-error-50: #fff5f6;
+  --ui-color-error-100: #ffe0e3;
+  --ui-color-error-200: #ffc7cb;
+  --ui-color-error-300: #ffa1a8;
+  --ui-color-error-400: #f37a86;
+  --ui-color-error-500: #e95767;
+  --ui-color-error-600: #d34258;
+  --ui-color-error-700: #b53548;
+  --ui-color-error-800: #902b3b;
+  --ui-color-error-900: #6a2230;
+  --ui-color-error-950: #3d141d;
+
+  --ui-color-secondary-50: #faf6ff;
+  --ui-color-secondary-100: #f2e8ff;
+  --ui-color-secondary-200: #e2d1ff;
+  --ui-color-secondary-300: #cdb3ff;
+  --ui-color-secondary-400: #b592fc;
+  --ui-color-secondary-500: #9c73f5;
+  --ui-color-secondary-600: #8358e2;
+  --ui-color-secondary-700: #6b44c2;
+  --ui-color-secondary-800: #56399a;
+  --ui-color-secondary-900: #402b72;
+  --ui-color-secondary-950: #271b48;
+
+  --ui-color-neutral-950: #0b0c0d;
+  --ui-color-neutral-900: #16181a;
+  --ui-color-neutral-800: #1e2023;
+  --ui-color-neutral-700: #30343a;
+  --ui-color-neutral-500: #868c95;
+  --ui-color-neutral-400: #b2b7be;
+  --ui-color-neutral-300: #e0e3e7;
+  --ui-color-neutral-200: #f0f2f4;
+  --ui-color-neutral-100: #f9fafb;
+
+  --ui-color-black-500: #111214;
+  --ui-color-black-700: #262930;
+
   html.dark {
     @apply bg-neutral-950;
   }

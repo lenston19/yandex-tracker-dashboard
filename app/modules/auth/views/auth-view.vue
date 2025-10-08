@@ -50,7 +50,7 @@ onMounted(async () => {
     <u-button
       v-if="accessToken"
       label="К настройкам"
-      color="primary"
+      color="success"
       class="w-fit"
       @click="router.push({ name: SITEMAP.settings.route.name })"
     />

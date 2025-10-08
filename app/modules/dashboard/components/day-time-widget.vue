@@ -10,7 +10,7 @@ const dayTimeWidgetStore = useDayTimeWidgetStore()
 const { totalHours, isLoading } = storeToRefs(dayTimeWidgetStore)
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
-const title = computed(() => `Сегодня - ${DateTime.now().toFormat('dd.MM.yyyy')}`)
+const title = computed(() => DateTime.now().toFormat('dd.MM.yyyy'))
 
 onMounted(async () => {
   if (!totalHours.value) {
@@ -20,7 +20,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ui-card :title="title">
+  <ui-card>
+    <template #header>
+      <div class="flex items-center gap-2">
+        <div class="text-lg font-medium">Сегодня</div>
+        <u-badge
+          variant="subtle"
+          color="primary"
+          size="lg"
+        >
+          {{ title }}
+        </u-badge>
+      </div>
+    </template>
     <day-linear-progress
       :hours="!isLoading ? totalHours : null"
       :max="!isLoading ? hoursInDay : undefined"

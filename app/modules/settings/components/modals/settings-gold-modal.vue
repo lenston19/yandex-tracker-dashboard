@@ -42,7 +42,7 @@ const save = () => {
           <u-input
             v-model.number="state.money"
             type="number"
-            color="primary"
+            color="success"
             variant="outline"
             class="w-full"
           />

@@ -42,7 +42,6 @@ onMounted(async () => {
         :model-value="currentRuble"
         :min="0"
         :max="maxRuble"
-        color="info"
         animation="swing"
       />
       <div

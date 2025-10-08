@@ -53,11 +53,19 @@ const calcByProject = (rows: CollectedWorklog[]) => {
         >
           {{ title }}
         </div>
-        <div v-if="showTotal">
-          Всего:
-          <span class="font-bold">
+        <div
+          v-if="showTotal"
+          class="flex items-center gap-1"
+        >
+          <div class="text-base font-medium italic">Всего:</div>
+          <u-badge
+            class="font-bold"
+            color="neutral"
+            variant="subtle"
+            size="lg"
+          >
             {{ calcByProject(rows) }}
-          </span>
+          </u-badge>
         </div>
       </div>
     </template>

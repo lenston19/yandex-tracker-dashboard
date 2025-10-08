@@ -37,9 +37,9 @@ function copyWithToast() {
       >
         <u-button
           variant="link"
-          :color="copied ? 'primary' : 'neutral'"
+          :color="copied ? 'success' : 'neutral'"
           :icon="copied ? HEROICONS.CHECK : HEROICONS.CLIPBOARD_DOCUMENT_SOLID"
-          class="hover:text-primary"
+          class="hover:text-success"
           :disabled="copied"
           @click="copyWithToast"
         />

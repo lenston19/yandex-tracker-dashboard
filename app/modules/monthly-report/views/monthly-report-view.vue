@@ -27,7 +27,7 @@ const averageBadgeColor = computed(() => {
     case averageHoursByMonth.value < 8:
       return 'warning'
     default:
-      return 'primary'
+      return 'success'
   }
 })
 
@@ -109,7 +109,7 @@ onMounted(() => {
           </u-table>
           <u-skeleton
             v-else
-            class="mt-5 h-48 w-[calc(100%-3rem)]"
+            class="h-48 w-full"
           />
         </div>
       </ui-card>

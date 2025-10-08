@@ -31,7 +31,9 @@ const rows = computed(() => props.worklogs.slice((page.value - 1) * pageCount, p
       :data="rows"
       :columns="WORKLOG_COLUMNS"
       :ui="{
-        thead: 'whitespace-nowrap w-fit [&:nth-child(2)]:max-w-[200px]'
+        thead: 'whitespace-nowrap w-fit',
+        td: 'first:whitespace-pre-wrap last:whitespace-pre-wrap w-fit first:w-80 last:w-50',
+        th: 'first:whitespace-pre-wrap last:whitespace-pre-wrap w-fit first:w-80 last:w-50'
       }"
     >
       <template #id-cell="{ row }">
@@ -43,7 +45,7 @@ const rows = computed(() => props.worklogs.slice((page.value - 1) * pageCount, p
       <template #time-cell="{ row }">
         <u-badge
           :label="getTime(row.original)"
-          color="secondary"
+          color="info"
           variant="subtle"
         />
       </template>
