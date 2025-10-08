@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { VueFinalModal } from 'vue-final-modal'
-import type { ModalProps } from '~/core/types/components/modal'
+import type { ModalProps } from '../../types/components/modal'
 import { twMerge } from 'tailwind-merge'
-import { HEROICONS } from '~/core/constants/heroicons'
+import { HEROICONS } from '../../constants/heroicons'
 
 const props = withDefaults(defineProps<ModalProps>(), {
   ui: () => ({}),

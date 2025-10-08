@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { VueFinalModal } from 'vue-final-modal'
 import { twMerge } from 'tailwind-merge'
-import type { ModalDrawerProps } from '~/core/types/components/modal'
+import type { ModalDrawerProps } from '../../types/components/modal'
 
 const props = withDefaults(defineProps<ModalDrawerProps>(), {
   ui: () => ({}),
