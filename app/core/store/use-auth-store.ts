@@ -16,7 +16,8 @@ export const useAuthStore = defineStore(
       refresh: refreshMySelf,
       pending: isLoadingMySelf
     } = useLazyAsyncData('my-self', async () => await yandexTrackerApi.mySelf(), {
-      immediate: false
+      immediate: false,
+      server: false
     })
 
     watchEffect(async () => {
@@ -24,7 +25,7 @@ export const useAuthStore = defineStore(
         await refreshMySelf()
       }
 
-      if (accessToken.value) {
+      if (organizationId.value && accessToken.value && mySelf.value) {
         await fetchProfile()
         await fetchAvatar()
       }
@@ -36,6 +37,7 @@ export const useAuthStore = defineStore(
       pending: isLoadingUser
     } = useLazyAsyncData('profile', async () => await yandexInfoApi.fetchUser(), {
       immediate: false,
+      server: false,
       pick: ['default_avatar_id']
     })
 
@@ -58,7 +60,8 @@ export const useAuthStore = defineStore(
         )
       },
       {
-        immediate: false
+        immediate: false,
+        server: false
       }
     )
 
