@@ -2,18 +2,28 @@ import { DateTime } from 'luxon'
 import { useModal } from 'vue-final-modal'
 import { DEFAULT_TIME_ZONE } from '../constants/time-zone'
 import type { TimeZoneSelectOption } from '../types'
+import type { ThemeType } from '~/core/types'
 
 export const useSiteSettingsStore = defineStore(
   'site-settings',
   () => {
-    const organizationId = ref<string>('')
-    const accessToken = ref<string>('')
+    const themeType = useRuntimeConfig().public.themeType as ThemeType | undefined
+    const organizationId = useCookie('organizationId')
+    const accessToken = useCookie('accessToken')
 
     const hoursInDay = ref<number>(8)
     const gold = ref<number>(0)
     const timeZone = ref<TimeZoneSelectOption>({ ...DEFAULT_TIME_ZONE })
     const isNeedOrganizationId = computed(() => organizationId.value === '')
     const isShowWeeklyLoading = ref<boolean>(false)
+
+    const seasonalTheme = reactive<{
+      type: ThemeType | undefined
+      active: boolean
+    }>({
+      type: themeType,
+      active: true
+    })
 
     const clearState = () => {
       organizationId.value = ''
@@ -69,11 +79,17 @@ export const useSiteSettingsStore = defineStore(
       timeZone,
       needHoursInCurrentMonth,
       isShowWeeklyLoading,
+
+      seasonalTheme,
+      themeType,
+
       clearState,
       setTimeZone
     }
   },
   {
-    persist: true
+    persist: {
+      omit: ['accessToken', 'organizationId']
+    }
   }
 )

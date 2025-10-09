@@ -9,10 +9,9 @@ import UiPageHeader from '~/core/components/ui/ui-page-header.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import { MONTHLY_REPORT_COLUMNS } from '../constants/columns'
 import type { UiColors } from '~/core/types'
+import { SITEMAP } from '~/core/utils/router/sitemap'
 
-useHead({ title: 'Месячный отчет' })
-
-definePageMeta({ middleware: ['auth'] })
+useHead({ title: SITEMAP.monthlyReport.name })
 
 const monthlyReportStore = useMonthlyReportStore()
 const { monthLineChartData, monthPieChartData, params, isLoading, averageHoursByMonth, totalHours } =

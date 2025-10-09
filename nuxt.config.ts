@@ -60,7 +60,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       yandexClientId: process.env.NUXT_PUBLIC_YANDEX_CLIENT_ID || '',
-      appVersion: appVersion || '1.0.0'
+      appVersion: appVersion || '1.0.0',
+      themeType: process.env.NUXT_PUBLIC_THEME_TYPE
     }
   },
 
@@ -107,8 +108,6 @@ export default defineNuxtConfig({
   },
   srcDir: 'app/',
   dir: {
-    app: 'app',
-    assets: 'assets',
     layouts: 'core/views'
   }
 })

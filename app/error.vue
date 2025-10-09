@@ -23,11 +23,15 @@ const errorCode = props.error?.statusCode ?? 404
       {{ errorCode }}
     </div>
 
-    <h1 class="mt-4 text-xl font-bold text-default">Страница не найдена</h1>
+    <div class="text-md italic">{{ props.error?.message }}</div>
 
-    <p class="mt-2 max-w-md text-default">
-      К сожалению, страница, которую вы ищете, не существует или была перемещена.
-    </p>
+    <template v-if="errorCode === 404">
+      <h1 class="mt-4 text-xl font-bold text-default">Страница не найдена</h1>
+
+      <p class="mt-2 max-w-md text-default">
+        К сожалению, страница, которую вы ищете, не существует или была перемещена.
+      </p>
+    </template>
 
     <u-button
       size="xl"

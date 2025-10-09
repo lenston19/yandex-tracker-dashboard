@@ -2,16 +2,8 @@
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
-import { useTimeoutFn } from '@vueuse/core'
 
-useHead({
-  title: SITEMAP.auth.name
-})
-
-definePageMeta({
-  layout: 'empty',
-  middleware: ['empty-organization-id']
-})
+useHead({ title: SITEMAP.auth.name })
 
 const route = useRoute()
 const router = useRouter()
@@ -20,20 +12,20 @@ const authStore = useAuthStore()
 const { accessToken } = storeToRefs(siteSettingsStore)
 const toast = useToast()
 
-onMounted(async () => {
-  const accessTokenFromRoute = new URLSearchParams(route.hash.slice(1)).get('access_token')
-  if (accessTokenFromRoute) {
-    accessToken.value = accessTokenFromRoute
+const handled = ref<boolean>(false)
 
-    if (accessToken.value) {
+onBeforeMount(async () => {
+  if (import.meta.client && !handled.value) {
+    handled.value = true
+    const token = new URLSearchParams(route.hash.slice(1)).get('access_token')
+    if (token) {
+      accessToken.value = token
       toast.add({ title: 'Авторизован' })
       await authStore.refreshMySelf()
-      useTimeoutFn(() => {
-        navigateTo({ name: SITEMAP.settings.route.name })
-      }, 1000)
-    } else {
-      toast.add({ title: 'Ошибка' })
+      navigateTo({ name: SITEMAP.settings.route.name })
     }
+  } else {
+    toast.add({ title: 'Ошибка' })
   }
 })
 </script>
