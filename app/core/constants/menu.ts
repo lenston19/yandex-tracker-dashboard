@@ -23,18 +23,28 @@ export const AUTH_APP_PAGES = [
 ]
 
 export const UNAUTH_APP_PAGES = [
-  {
-    to: SITEMAP.changelog.route,
-    label: SITEMAP.changelog.name,
-    icon: HEROICONS.INFORMATION_CIRCLE,
-    prefetch: false
-  },
-  {
-    to: SITEMAP.settings.route,
-    label: SITEMAP.settings.name,
-    icon: HEROICONS.COG,
-    prefetch: false
-  }
+  [
+    {
+      to: SITEMAP.changelog.route,
+      label: SITEMAP.changelog.name,
+      icon: HEROICONS.INFORMATION_CIRCLE,
+      prefetch: false
+    },
+    {
+      to: SITEMAP.faq.route,
+      label: SITEMAP.faq.name,
+      icon: HEROICONS.QUESTION_MARK_CIRCLE,
+      prefetch: false
+    }
+  ],
+  [
+    {
+      to: SITEMAP.settings.route,
+      label: SITEMAP.settings.name,
+      icon: HEROICONS.COG,
+      prefetch: false
+    }
+  ]
 ]
 
-export const APP_PAGES = [AUTH_APP_PAGES, UNAUTH_APP_PAGES]
+export const APP_PAGES = [AUTH_APP_PAGES, ...UNAUTH_APP_PAGES]
