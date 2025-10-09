@@ -30,7 +30,7 @@
 Для запуска проекта убедитесь, что у вас установлены следующие версии зависимостей:
 
 - Node.js: >= 20.11.1
-- PNPM: >= 9.15.3
+- PNPM: >= 10.18.1
 
 1. Клонируйте репозиторий:
     ```sh
@@ -72,8 +72,10 @@ pnpm run preview
 
 ## Основные зависимости
 
-- [Nuxt 3](https://nuxt.com/)
+- [Nuxt 4](https://nuxt.com/)
+- [Nuxt Ui 4](https://ui.nuxt.com/)
 - [Pinia](https://pinia.vuejs.org/)
-- [Chart.js](https://www.chartjs.org/)
+- [Apexcharts](https://apexcharts.com/)
 - [Luxon](https://moment.github.io/luxon/)
 - [Yup](https://github.com/jquense/yup)
+- [Vue Final Modal](https://vue-final-modal.org/)
