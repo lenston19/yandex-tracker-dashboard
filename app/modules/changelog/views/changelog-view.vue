@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 
-useHead({
-  title: SITEMAP.changelog.name
-})
+useHead({ title: SITEMAP.changelog.name })
 
 const route = useRoute()
 const { data: page } = await useAsyncData(route.path, () => {

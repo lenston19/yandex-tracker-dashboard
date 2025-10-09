@@ -15,15 +15,19 @@ export const useAuthStore = defineStore(
       data: mySelf,
       refresh: refreshMySelf,
       pending: isLoadingMySelf
-    } = useLazyAsyncData('my-self', async () => await yandexTrackerApi.mySelf())
+    } = useLazyAsyncData('my-self', async () => await yandexTrackerApi.mySelf(), {
+      immediate: false
+    })
 
     watchEffect(async () => {
       if (organizationId.value && !!accessToken.value && !mySelf.value) {
         await refreshMySelf()
       }
 
-      await fetchProfile()
-      await fetchAvatar()
+      if (accessToken.value) {
+        await fetchProfile()
+        await fetchAvatar()
+      }
     })
 
     const {
@@ -31,6 +35,7 @@ export const useAuthStore = defineStore(
       refresh: fetchProfile,
       pending: isLoadingUser
     } = useLazyAsyncData('profile', async () => await yandexInfoApi.fetchUser(), {
+      immediate: false,
       pick: ['default_avatar_id']
     })
 
@@ -38,18 +43,24 @@ export const useAuthStore = defineStore(
       data: avatar,
       refresh: fetchAvatar,
       pending: isLoadingAvatar
-    } = useLazyAsyncData('avatar', async () => {
-      if (!user.value) {
-        return ''
+    } = useLazyAsyncData(
+      'avatar',
+      async () => {
+        if (!user.value) {
+          return ''
+        }
+        return (
+          URL.createObjectURL(
+            new Blob([await yandexAvatarApi.fetchUserAvatar(user.value.default_avatar_id)], {
+              type: 'image/jpeg'
+            })
+          ) || ''
+        )
+      },
+      {
+        immediate: false
       }
-      return (
-        URL.createObjectURL(
-          new Blob([await yandexAvatarApi.fetchUserAvatar(user.value.default_avatar_id)], {
-            type: 'image/jpeg'
-          })
-        ) || ''
-      )
-    })
+    )
 
     function clearState() {
       mySelf.value = undefined

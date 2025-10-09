@@ -58,11 +58,13 @@ const { open } = useModal({
   <ui-card
     v-else
     title="Гость"
-    description="Вы не авторизованы. Чтобы получить доступ к информации о пользователе — войдите в систему."
     :ui="{
       description: 'text-sm'
     }"
   >
+    <div class="text-sm font-light">
+      Вы не авторизованы. Чтобы получить доступ к информации о пользователе — войдите в систему.
+    </div>
     <template #footer>
       <app-login v-if="!accessToken && !!organizationId" />
     </template>
