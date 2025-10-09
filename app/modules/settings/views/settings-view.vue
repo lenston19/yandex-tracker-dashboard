@@ -5,6 +5,7 @@ import TimeZoneWidget from '../components/time-zone-widget.vue'
 import MainSettingsWidget from '../components/main-settings-widget.vue'
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 import { useAuthStore } from '~/core/store/use-auth-store'
+import SeasonalThemeWidget from '../components/seasonal-theme-widget.vue'
 
 useHead({
   title: SITEMAP.settings.name
@@ -20,6 +21,7 @@ const { mySelf } = storeToRefs(authStore)
     <user-widget />
     <organization-widget />
     <time-zone-widget v-if="mySelf" />
+    <seasonal-theme-widget v-if="mySelf" />
     <main-settings-widget
       v-if="mySelf"
       class="col-span-auto sm:col-span-2 lg:col-span-3"

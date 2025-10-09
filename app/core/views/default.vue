@@ -6,7 +6,7 @@ import { useScrollLock, useToggle } from '@vueuse/core'
 import AppMenu from '~/core/components/app/app-menu.vue'
 import AppUser from '~/core/components/app/app-user.vue'
 
-const { organizationId } = storeToRefs(useSiteSettingsStore())
+const { organizationId, seasonalTheme } = storeToRefs(useSiteSettingsStore())
 const { login, isLoading: isLoadingMySelf, userName } = storeToRefs(useAuthStore())
 
 const bodyContainer = ref<HTMLElement | null>(null)
@@ -23,10 +23,24 @@ onMounted(() => {
     bodyContainer.value = document.body
   })
 })
+
+const seasonalThemeComponent = computed(() => {
+  switch (seasonalTheme.value.type) {
+    case 'halloween':
+      return defineAsyncComponent(() => import('../components/theme/theme-halloween.vue'))
+
+    default:
+      return null
+  }
+})
 </script>
 
 <template>
   <ui-loading-overlay v-model="isLoadingMySelf" />
+  <component
+    :is="seasonalThemeComponent"
+    v-if="seasonalTheme.active"
+  />
   <template v-if="!isLoadingMySelf">
     <header
       class="flex min-h-[61px] items-center justify-between border-b border-gray-200 px-4 py-2 dark:border-gray-800"

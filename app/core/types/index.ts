@@ -24,3 +24,5 @@ export interface PieChartData {
 }
 
 export type UiColors = 'error' | 'secondary' | 'warning' | 'primary' | 'success' | 'info' | 'neutral'
+
+export type ThemeType = 'halloween'
