@@ -3,14 +3,7 @@ import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 
-useHead({
-  title: SITEMAP.auth.name
-})
-
-definePageMeta({
-  layout: 'empty',
-  middleware: ['empty-organization-id']
-})
+useHead({ title: SITEMAP.auth.name })
 
 const route = useRoute()
 const router = useRouter()

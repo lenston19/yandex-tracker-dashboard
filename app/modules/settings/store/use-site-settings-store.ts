@@ -8,8 +8,8 @@ export const useSiteSettingsStore = defineStore(
   'site-settings',
   () => {
     const themeType = useRuntimeConfig().public.themeType as ThemeType | undefined
-    const organizationId = ref<string>('')
-    const accessToken = ref<string>('')
+    const organizationId = useCookie('organizationId')
+    const accessToken = useCookie('accessToken')
 
     const hoursInDay = ref<number>(8)
     const gold = ref<number>(0)
@@ -88,6 +88,8 @@ export const useSiteSettingsStore = defineStore(
     }
   },
   {
-    persist: true
+    persist: {
+      omit: ['accessToken', 'organizationId']
+    }
   }
 )

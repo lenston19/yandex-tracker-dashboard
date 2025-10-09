@@ -7,9 +7,7 @@ import { SITEMAP } from '~/core/utils/router/sitemap/index'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import SeasonalThemeWidget from '../components/seasonal-theme-widget.vue'
 
-useHead({
-  title: SITEMAP.settings.name
-})
+useHead({ title: SITEMAP.settings.name })
 
 const authStore = useAuthStore()
 

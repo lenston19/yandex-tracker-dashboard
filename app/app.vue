@@ -9,7 +9,7 @@ const siteSettingsStore = useSiteSettingsStore()
 Settings.defaultLocale = 'ru'
 
 watch(
-  () => siteSettingsStore.timeZone.value,
+  () => siteSettingsStore.timeZone.id,
   value => {
     Settings.defaultZone = value
   }

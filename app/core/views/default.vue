@@ -6,8 +6,8 @@ import { useScrollLock, useToggle } from '@vueuse/core'
 import AppMenu from '~/core/components/app/app-menu.vue'
 import AppUser from '~/core/components/app/app-user.vue'
 
-const { organizationId, seasonalTheme } = storeToRefs(useSiteSettingsStore())
-const { login, isLoading: isLoadingMySelf, userName } = storeToRefs(useAuthStore())
+const { seasonalTheme } = storeToRefs(useSiteSettingsStore())
+const { isLoading: isLoadingMySelf, userName } = storeToRefs(useAuthStore())
 
 const bodyContainer = ref<HTMLElement | null>(null)
 
@@ -39,13 +39,13 @@ const seasonalThemeComponent = computed(() => {
   <ui-loading-overlay v-model="isLoadingMySelf" />
   <component
     :is="seasonalThemeComponent"
-    v-if="seasonalTheme.active"
+    v-if="seasonalTheme.active && !isLoadingMySelf"
   />
   <template v-if="!isLoadingMySelf">
     <header
       class="flex min-h-[61px] items-center justify-between border-b border-gray-200 px-4 py-2 dark:border-gray-800"
     >
-      <app-menu v-if="organizationId && login" />
+      <app-menu />
       <div
         v-if="userName"
         class="ml-auto flex items-center gap-1 lg:gap-4"

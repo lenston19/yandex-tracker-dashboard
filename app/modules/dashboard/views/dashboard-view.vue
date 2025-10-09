@@ -4,13 +4,7 @@ import DayTimeWidget from '../components/day-time-widget.vue'
 import MonthTimeWidget from '../components/month-time-widget.vue'
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 
-useHead({
-  title: SITEMAP.main.name
-})
-
-definePageMeta({
-  middleware: ['auth']
-})
+useHead({ title: SITEMAP.main.name })
 </script>
 
 <template>
