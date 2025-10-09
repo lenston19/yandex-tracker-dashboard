@@ -43,11 +43,19 @@ const auth: SitemapRoute = {
   }
 }
 
+const faq: SitemapRoute = {
+  name: 'FAQ',
+  route: {
+    name: AppRoutes.faq
+  }
+}
+
 export const SITEMAP = {
   main,
   monthlyReport,
   projects,
   settings,
+  faq,
   changelog,
   auth
 }

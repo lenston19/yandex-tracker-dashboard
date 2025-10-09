@@ -8,19 +8,16 @@ export const useSiteSettingsStore = defineStore(
   'site-settings',
   () => {
     const themeType = useRuntimeConfig().public.themeType as ThemeType | undefined
-    const organizationId = useCookie('organizationId')
-    const accessToken = useCookie('accessToken')
+    const organizationId = useCookie('organizationId', { maxAge: 60 * 60 * 24 * 30 * 12 })
+    const accessToken = useCookie('accessToken', { maxAge: 60 * 60 * 24 * 30 * 12 })
 
     const hoursInDay = ref<number>(8)
     const gold = ref<number>(0)
     const timeZone = ref<TimeZoneSelectOption>({ ...DEFAULT_TIME_ZONE })
-    const isNeedOrganizationId = computed(() => organizationId.value === '')
+    const isNeedOrganizationId = computed(() => !organizationId.value)
     const isShowWeeklyLoading = ref<boolean>(false)
 
-    const seasonalTheme = reactive<{
-      type: ThemeType | undefined
-      active: boolean
-    }>({
+    const seasonalTheme = reactive<{ type: ThemeType | undefined; active: boolean }>({
       type: themeType,
       active: true
     })

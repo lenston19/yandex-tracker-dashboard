@@ -6,7 +6,8 @@ export const enum AppRoutes {
   projects = 'projects',
   settings = 'settings',
   changelog = 'changelog',
-  auth = 'auth'
+  auth = 'auth',
+  faq = 'faq'
 }
 
 export interface AppRoute extends RouteLocationNamedRaw {

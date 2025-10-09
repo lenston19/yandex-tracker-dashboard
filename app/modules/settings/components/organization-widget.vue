@@ -13,7 +13,7 @@ const { open } = useModal({
   component: defineAsyncComponent(() => import('./modals/settings-organization-id-modal.vue'))
 })
 
-const { copy, copied, isSupported } = useClipboard({ source: organizationId })
+const { copy, copied, isSupported } = useClipboard({ source: organizationId.value! })
 
 function copyWithToast() {
   copy()

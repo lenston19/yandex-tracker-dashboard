@@ -62,11 +62,15 @@ const { open } = useModal({
       description: 'text-sm'
     }"
   >
-    <div class="text-sm font-light">
-      Вы не авторизованы. Чтобы получить доступ к информации о пользователе — войдите в систему.
+    <div class="flex flex-col gap-2 text-sm font-light">
+      <div>Вы не авторизованы. Чтобы получить доступ к информации о пользователе — войдите в систему.</div>
+      <div>Так же введите <span class="font-bold">ID организации</span>, если он еще не заполнен</div>
     </div>
-    <template #footer>
-      <app-login v-if="!accessToken && !!organizationId" />
+    <template
+      v-if="!accessToken && !!organizationId"
+      #footer
+    >
+      <app-login />
     </template>
   </ui-card>
 </template>
