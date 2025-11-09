@@ -3,7 +3,7 @@ import { useSiteSettingsStore } from '../store/use-site-settings-store'
 import UiCard from '~/core/components/ui/ui-card.vue'
 
 const settingsStore = useSiteSettingsStore()
-const { seasonalTheme, themeType } = storeToRefs(settingsStore)
+const { seasonalTheme, isHaveThemeType } = storeToRefs(settingsStore)
 </script>
 
 <template>
@@ -13,9 +13,14 @@ const { seasonalTheme, themeType } = storeToRefs(settingsStore)
       <div class="flex items-center gap-2">
         <u-switch
           v-model="seasonalTheme.active"
-          :disabled="!!themeType"
-        ></u-switch>
-        <div class="animate-pulse italic">*Тык*</div>
+          :disabled="!isHaveThemeType"
+        />
+        <div
+          class="italic"
+          :class="[isHaveThemeType ? 'animate-pulse' : 'opacity-50']"
+        >
+          *Тык*
+        </div>
       </div>
     </template>
   </ui-card>
