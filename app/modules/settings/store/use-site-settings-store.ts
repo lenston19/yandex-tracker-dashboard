@@ -7,7 +7,7 @@ import type { ThemeType } from '~/core/types'
 export const useSiteSettingsStore = defineStore(
   'site-settings',
   () => {
-    const themeType = useRuntimeConfig().public.themeType as ThemeType | undefined
+    const themeType = ref<ThemeType>(useRuntimeConfig().public.themeType as ThemeType)
     const organizationId = useCookie('organizationId', { maxAge: 60 * 60 * 24 * 30 * 12 })
     const accessToken = useCookie('accessToken', { maxAge: 60 * 60 * 24 * 30 * 12 })
 
@@ -17,9 +17,13 @@ export const useSiteSettingsStore = defineStore(
     const isNeedOrganizationId = computed(() => !organizationId.value)
     const isShowWeeklyLoading = ref<boolean>(false)
 
+    const isHaveThemeType = computed(() => {
+      return !!themeType.value?.length
+    })
+
     const seasonalTheme = reactive<{ type: ThemeType | undefined; active: boolean }>({
-      type: themeType,
-      active: true
+      type: themeType.value,
+      active: isHaveThemeType.value
     })
 
     const clearState = () => {
@@ -79,6 +83,7 @@ export const useSiteSettingsStore = defineStore(
 
       seasonalTheme,
       themeType,
+      isHaveThemeType,
 
       clearState,
       setTimeZone
@@ -86,7 +91,7 @@ export const useSiteSettingsStore = defineStore(
   },
   {
     persist: {
-      omit: ['accessToken', 'organizationId']
+      omit: ['accessToken', 'organizationId', 'seasonalTheme', 'themeType']
     }
   }
 )
