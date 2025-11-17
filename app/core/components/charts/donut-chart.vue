@@ -56,10 +56,7 @@ const chartOptions = computed(() => ({
   },
   dataLabels: {
     enabled: true,
-    dropShadow: { enabled: false },
-    style: {
-      colors: ['var(--ui-text-inverted)']
-    },
+    dropShadow: { enabled: true },
     formatter: function (val: number) {
       return `${val.toFixed(1)}%`
     }
@@ -74,13 +71,12 @@ const chartOptions = computed(() => ({
   <div class="w-full">
     <u-skeleton
       v-if="loading"
-      class="h-48 w-full"
+      class="h-75 w-full"
     />
     <vue-apex-charts
       v-else-if="hasData"
       type="donut"
-      height="200"
-      class="max-h-48"
+      height="300"
       :options="chartOptions"
       :series="series"
     />

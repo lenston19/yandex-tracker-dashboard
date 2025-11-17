@@ -5,6 +5,17 @@ export namespace Yandex {
     display: string
   }
 
+  export interface BaseWithKey extends Base {
+    key: string
+  }
+
+  export type TeamUser = Base
+  export type IssueType = BaseWithKey
+  export type PriorityType = BaseWithKey
+  export type QueueVersion = Base
+  export type Workflow = Base
+  export type Resolution = BaseWithKey
+
   export interface MySelf extends Omit<Base, 'id'> {
     uid: number
     login: string
@@ -24,13 +35,19 @@ export namespace Yandex {
     welcomeMailSent: boolean
   }
 
-  export interface DefaultType extends Base {
-    key: string
+  export interface IssueTypeConfig {
+    issueType: IssueType
+    workflow: Workflow
+    resolutions: Resolution[]
   }
 
-  export interface Worklog extends Omit<Base, 'display'> {
+  export type WorklogIssue = BaseWithKey
+
+  export interface Worklog {
+    self: string
+    id: string
     version: string
-    issue: DefaultType
+    issue: WorklogIssue
     comment: string
     createdBy: Base
     updatedBy: Base
@@ -40,12 +57,6 @@ export namespace Yandex {
     duration: string
   }
 
-  export interface DefaultTypeTypesConfig {
-    issueTypes: DefaultType
-    workflows: Base
-    resolutions: DefaultType[]
-  }
-
   export interface Queue extends Omit<Base, 'display'> {
     key: string
     version: number
@@ -53,14 +64,18 @@ export namespace Yandex {
     description: string
     lead: Base
     assignAuto: boolean
-    defaultType: DefaultType
-    defaultPriority: DefaultType
-    teamUsers: Base
-    issueTypes: DefaultType
-    versions: Base
-    workflows: DefaultType[]
+
+    defaultType: IssueType
+    defaultPriority: PriorityType
+
+    teamUsers: TeamUser[]
+    issueTypes: IssueType[]
+    versions: QueueVersion[]
+    workflows: Workflow[]
+
     denyVoting: boolean
-    issueTypesConfig: DefaultTypeTypesConfig
+
+    issueTypesConfig: IssueTypeConfig[]
   }
 
   export enum AvatarSizes {

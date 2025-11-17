@@ -37,23 +37,24 @@ onMounted(async () => {
         :hours="null"
       />
 
-      <u-progress
-        v-if="gold"
-        :model-value="currentRuble"
-        :min="0"
-        :max="maxRuble"
-        animation="swing"
-      />
-      <div
-        v-if="!isLoading"
-        class="text-right text-sm italic"
-      >
-        {{ formatRUB(currentRuble) }} / {{ formatRUB(maxRuble) }}
-      </div>
-      <u-skeleton
-        v-else
-        class="ml-auto h-6 w-[100px]"
-      />
+      <template v-if="gold">
+        <u-progress
+          :model-value="currentRuble"
+          :min="0"
+          :max="maxRuble"
+          animation="swing"
+        />
+        <div
+          v-if="!isLoading"
+          class="text-right text-sm italic"
+        >
+          {{ formatRUB(currentRuble) }} / {{ formatRUB(maxRuble) }}
+        </div>
+        <u-skeleton
+          v-else
+          class="ml-auto h-6 w-[100px]"
+        />
+      </template>
     </div>
 
     <template #footer>

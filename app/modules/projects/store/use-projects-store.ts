@@ -1,7 +1,7 @@
 import { useWorklogsStore } from '~/core/store/use-worklogs-store'
 import { useQueuesStore } from '~/core/store/use-queues-store'
-import type { QueueWorklogs } from '~/core/utils/collecting'
 import { collectWorklogsByQueue } from '~/core/utils/collecting'
+import type { QueueWorklogs } from '~/core/types/worklogs'
 
 export const useProjectsStore = defineStore('projects', () => {
   const worklogsStore = useWorklogsStore('month', 'projects')
