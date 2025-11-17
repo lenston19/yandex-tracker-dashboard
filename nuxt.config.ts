@@ -32,23 +32,6 @@ export default defineNuxtConfig({
     }
   },
 
-  components: [
-    {
-      path: './app/components',
-      pathPrefix: false
-    }
-  ],
-
-  pinia: {
-    storesDirs: ['./app/stores/**']
-  },
-
-  vite: {
-    optimizeDeps: {
-      entries: ['~/components/**/*.vue']
-    }
-  },
-
   nitro: {
     prerender: {
       routes: ['/changelog']
@@ -106,7 +89,9 @@ export default defineNuxtConfig({
       }
     }
   },
+
   srcDir: 'app/',
+
   dir: {
     layouts: 'core/views'
   }
