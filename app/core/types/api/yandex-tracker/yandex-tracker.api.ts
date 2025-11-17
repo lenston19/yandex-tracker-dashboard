@@ -1,11 +1,14 @@
 export namespace YandexTrackerApi {
   export namespace worklogList {
+    export type Date = {
+      from: string
+      to: string
+    }
+
     export type Body = {
       createdBy: string
-      createdAt: {
-        from: string
-        to: string
-      }
+      start?: Date
+      createdAt?: Date
     }
   }
 }

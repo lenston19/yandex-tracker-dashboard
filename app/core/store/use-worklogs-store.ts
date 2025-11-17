@@ -38,9 +38,10 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
         worklogsModel.value = []
         return
       }
+
       const body: YandexTrackerApi.worklogList.Body = {
         createdBy: login.value,
-        createdAt: {
+        start: {
           from: params.value.from,
           to: params.value.to
         }
