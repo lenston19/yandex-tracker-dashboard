@@ -5,10 +5,11 @@ import { useModal } from 'vue-final-modal'
 import AppLogin from '~/core/components/app/app-login.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import { useSiteSettingsStore } from '../store/use-site-settings-store'
+import AppUser from '~/core/components/app/app-user.vue'
 
 const authStore = useAuthStore()
 
-const { userName, mySelf, userAvatarUrl, isLoading } = storeToRefs(authStore)
+const { mySelf, isLoading } = storeToRefs(authStore)
 const { organizationId, accessToken } = storeToRefs(useSiteSettingsStore())
 
 const { open } = useModal({
@@ -35,13 +36,7 @@ const { open } = useModal({
     </template>
 
     <div class="flex items-center gap-4">
-      <u-user
-        :name="userName"
-        :avatar="{
-          src: userAvatarUrl,
-          icon: 'i-heroicons-user'
-        }"
-      />
+      <app-user />
     </div>
 
     <template #footer>
