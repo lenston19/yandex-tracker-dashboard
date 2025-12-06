@@ -3,7 +3,11 @@ defineProps<{ title?: string }>()
 </script>
 
 <template>
-  <u-card>
+  <u-card
+    :ui="{
+      root: 'overflow-visible'
+    }"
+  >
     <template
       v-if="title || $slots.header"
       #header

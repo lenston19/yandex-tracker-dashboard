@@ -5,6 +5,7 @@ import UiLoadingOverlay from '~/core/components/ui/ui-loading-overlay.vue'
 import { useScrollLock, useToggle } from '@vueuse/core'
 import AppMenu from '~/core/components/app/app-menu.vue'
 import AppUser from '~/core/components/app/app-user.vue'
+import { SITEMAP } from '~/core/utils/router/sitemap'
 
 const { seasonalTheme } = storeToRefs(useSiteSettingsStore())
 const { isLoading: isLoadingMySelf, userName } = storeToRefs(useAuthStore())
@@ -29,6 +30,9 @@ const seasonalThemeComponent = computed(() => {
     case 'halloween':
       return defineAsyncComponent(() => import('../components/theme/theme-halloween.vue'))
 
+    case 'new-year':
+      return defineAsyncComponent(() => import('../components/theme/theme-new-year.vue'))
+
     default:
       return null
   }
@@ -50,7 +54,12 @@ const seasonalThemeComponent = computed(() => {
         v-if="userName"
         class="ml-auto flex items-center gap-1 lg:gap-4"
       >
-        <app-user />
+        <u-button
+          variant="subtle"
+          :to="{ name: SITEMAP.settings.route.name }"
+        >
+          <app-user />
+        </u-button>
       </div>
     </header>
     <main>
