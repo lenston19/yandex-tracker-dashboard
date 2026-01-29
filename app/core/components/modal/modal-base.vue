@@ -13,7 +13,10 @@ const props = withDefaults(defineProps<ModalProps>(), {
 const mergedUI = computed(() => {
   return {
     body: twMerge('flex items-center justify-center', props.ui?.body),
-    content: twMerge('relative w-full max-w-[27.5rem] rounded-xl bg-neutral-800 drop-shadow-lg', props.ui?.content),
+    content: twMerge(
+      'relative max-h-[95dvh] w-[95%] max-w-[27.5rem] overflow-y-auto rounded-xl bg-neutral-800 drop-shadow-lg',
+      props.ui?.content
+    ),
     close: twMerge('absolute top-2 right-2 rounded-none p-4', props.ui?.close)
   }
 })
