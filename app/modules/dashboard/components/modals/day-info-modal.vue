@@ -25,7 +25,7 @@ const dayTotalHours = computed(() => pluralize(props.day.hours, HOURS_PLURALIZE)
       content: 'w-full sm:max-w-4xl'
     }"
   >
-    <ui-card class="min-w-full md:min-w-[800px]">
+    <ui-card class="max-h-[95vh] min-w-full overflow-y-auto md:min-w-[800px]">
       <template #header>
         <div class="flex max-w-[95%] justify-between">
           <span class="text-xl font-bold">
