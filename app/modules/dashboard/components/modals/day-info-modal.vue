@@ -22,12 +22,12 @@ const dayTotalHours = computed(() => pluralize(props.day.hours, HOURS_PLURALIZE)
   <modal-base
     v-slot="{ close }"
     :ui="{
-      content: 'w-full sm:max-w-4xl'
+      content: 'sm:max-w-4xl'
     }"
   >
-    <ui-card class="max-h-[95vh] min-w-full overflow-y-auto md:min-w-[800px]">
+    <ui-card class="min-w-full md:min-w-[800px]">
       <template #header>
-        <div class="flex max-w-[95%] justify-between">
+        <div class="flex max-w-[95%] justify-between max-sm:flex-col max-sm:gap-2">
           <span class="text-xl font-bold">
             {{ day.monthDay }}
           </span>
