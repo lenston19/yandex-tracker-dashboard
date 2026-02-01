@@ -51,7 +51,8 @@
     ```sh
     cp .env.example .env
     ```
-2. Укажите ваш `YANDEX_CLIENT_ID` в файле .env
+2. Укажите ваш `YANDEX_CLIENT_ID` в файле .env (Получить можно после создания по ссылке [Yandex OAuth](https://oauth.yandex.ru/client/new/))
+3. Для локальной авторизации необходимо получить ACCESS_TOKEN и подставить его в ссылку ```http://localhost:3000/auth#access_token=<TOKEN>```
 
 ## Запуск
 
@@ -68,6 +69,12 @@ pnpm run build
 Для предварительного просмотра собранного проекта выполните:
 ```sh
 pnpm run preview
+```
+### p.s. Если у вас проект запускается, но постоянно висит лоадер nuxt, то проверьте, что вы проксируте эти домены (проблемы с доступом в РФ): 
+```
+*.fontshare.com;
+*.fontsource.org;
+*.bunny.net;
 ```
 
 ## Основные зависимости
