@@ -67,12 +67,9 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
     })
 
     const next = async () => {
-      const fromDateTime = DateTime.fromISO(params.value.from)
-        .plus({ [format]: 1 })
-        .toISO()
-      const toDateTime = DateTime.fromISO(params.value.to)
-        .plus({ [format]: 1 })
-        .toISO()
+      const newPeriod = DateTime.fromISO(params.value.from).plus({ [format]: 1 })
+      const fromDateTime = newPeriod.startOf(format).toUTC(0, { keepLocalTime: true }).toISO()
+      const toDateTime = newPeriod.endOf(format).toUTC(0, { keepLocalTime: true }).toISO()
       if (fromDateTime && toDateTime) {
         params.value.from = fromDateTime
         params.value.to = toDateTime
@@ -81,12 +78,9 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
     }
 
     const prev = async () => {
-      const fromDateTime = DateTime.fromISO(params.value.from)
-        .minus({ [format]: 1 })
-        .toISO()
-      const toDateTime = DateTime.fromISO(params.value.to)
-        .minus({ [format]: 1 })
-        .toISO()
+      const newPeriod = DateTime.fromISO(params.value.from).minus({ [format]: 1 })
+      const fromDateTime = newPeriod.startOf(format).toUTC(0, { keepLocalTime: true }).toISO()
+      const toDateTime = newPeriod.endOf(format).toUTC(0, { keepLocalTime: true }).toISO()
       if (fromDateTime && toDateTime) {
         params.value.from = fromDateTime
         params.value.to = toDateTime
