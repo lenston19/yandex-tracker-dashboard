@@ -43,6 +43,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       yandexClientId: process.env.NUXT_PUBLIC_YANDEX_CLIENT_ID || '',
+      organizationIdLink: process.env.NUXT_PUBLIC_ORGANIZATION_ID_LINK ?? 'https://center.yandex.cloud/',
       appVersion: appVersion || '1.0.0',
       themeType: process.env.NUXT_PUBLIC_THEME_TYPE
     }
