@@ -8,6 +8,8 @@ import UiCard from '~/core/components/ui/ui-card.vue'
 const { organizationId } = storeToRefs(useSiteSettingsStore())
 const model = defineModel<boolean>()
 
+const { organizationIdLink } = useRuntimeConfig().public
+
 const schema = object({ id: string().required('Поле обязательное') })
 
 const state = reactive({ id: organizationId.value ? organizationId.value : '' })
@@ -47,7 +49,7 @@ const save = (close: () => void) => {
 
         <div class="flex justify-between">
           <u-button
-            to="https://tracker.yandex.ru/admin/orgs"
+            :to="organizationIdLink"
             target="_blank"
             variant="link"
             class="p-0"
