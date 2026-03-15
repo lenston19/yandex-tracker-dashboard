@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { DateTime } from 'luxon'
 import { useDayTimeWidgetStore } from '../store/use-day-time-widget-store'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
+import { useNow } from '@vueuse/core'
 
 const dayTimeWidgetStore = useDayTimeWidgetStore()
 const { totalHours, isLoading } = storeToRefs(dayTimeWidgetStore)
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
-const title = computed(() => DateTime.now().toFormat('dd.MM.yyyy'))
+const { formatShortDate } = useDateFormatter()
+const now = useNow()
 
 onMounted(async () => {
   if (!totalHours.value) {
@@ -29,7 +31,7 @@ onMounted(async () => {
           color="primary"
           size="lg"
         >
-          {{ title }}
+          {{ formatShortDate(now) }}
         </u-badge>
       </div>
     </template>

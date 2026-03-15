@@ -1,4 +1,4 @@
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 import { useToast } from '#imports'
 
 export const $api = $fetch.create({

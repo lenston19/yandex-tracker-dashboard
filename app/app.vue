@@ -1,19 +1,11 @@
 <script lang="ts" setup>
-import { Settings } from 'luxon'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { setDefaultOptions } from 'date-fns'
+import { ru as dateFnsRu } from 'date-fns/locale'
 import { SITEMAP } from '~/core/utils/router/sitemap'
 import { ModalsContainer } from 'vue-final-modal'
 import { ru } from '@nuxt/ui/locale'
 
-const siteSettingsStore = useSiteSettingsStore()
-Settings.defaultLocale = 'ru'
-
-watch(
-  () => siteSettingsStore.timeZone.id,
-  value => {
-    Settings.defaultZone = value
-  }
-)
+setDefaultOptions({ locale: dateFnsRu })
 
 useHead({
   title: SITEMAP.main.name

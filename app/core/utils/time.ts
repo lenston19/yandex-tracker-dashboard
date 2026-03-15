@@ -1,27 +1,17 @@
-import { Duration } from 'luxon'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 
+const ISO_DURATION_RE =
+  /P(?:(\d+(?:[.,]\d+)?)W)?(?:(\d+(?:[.,]\d+)?)D)?(?:T(?:(\d+(?:[.,]\d+)?)H)?(?:(\d+(?:[.,]\d+)?)M)?(?:(\d+(?:[.,]\d+)?)S)?)?/
+
 const calculateDurationInHours = (duration: string): number => {
-  const time = Duration.fromISO(duration)
-  let totalHours = 0
-
-  if (time.weeks) {
-    totalHours += time.weeks * 40
-  }
-  if (time.days) {
-    totalHours += time.days * 8
-  }
-  if (time.hours) {
-    totalHours += time.hours
-  }
-  if (time.minutes) {
-    totalHours += time.minutes / 60
-  }
-  if (time.seconds) {
-    totalHours += time.seconds / 3600
-  }
-
-  return totalHours
+  const m = duration.match(ISO_DURATION_RE)
+  if (!m) return 0
+  const weeks = parseFloat(m[1] || '0')
+  const days = parseFloat(m[2] || '0')
+  const hours = parseFloat(m[3] || '0')
+  const minutes = parseFloat(m[4] || '0')
+  const seconds = parseFloat(m[5] || '0')
+  return weeks * 40 + days * 8 + hours + minutes / 60 + seconds / 3600
 }
 
 export const calculateTotalHours = (worklogs: Yandex.Worklog[]): number => {
@@ -33,7 +23,11 @@ export const formatHoursToFixed = (hours: number): number => {
 }
 
 export const formatHoursToHHMMSS = (hours: number): string => {
-  return Duration.fromObject({ hours }).toFormat('hh:mm:ss')
+  const totalSeconds = Math.round(hours * 3600)
+  const h = Math.floor(totalSeconds / 3600)
+  const m = Math.floor((totalSeconds % 3600) / 60)
+  const s = totalSeconds % 60
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
 export const calculateWorklogTimeByDay = (worklog: Yandex.Worklog): string => {

@@ -1,28 +1,13 @@
 import yandexTrackerApi from '../api/yandex-tracker.api'
+import { useTryCatchWithLoading } from '../composables/use-try-catch-with-loading'
 import type { Yandex } from '../types/api/yandex-tracker/yandex-tracker.entity'
 import { useAuthStore } from './use-auth-store'
+import { fetchAllPages } from '../utils/fetch-all-pages'
 
 export const useQueuesStore = defineStore('queues', () => {
   const { login } = storeToRefs(useAuthStore())
 
   const queuesModel = ref<Yandex.Queue[]>([])
-
-  const fetchMoreQueues = async (totalPages: number) => {
-    let counter = 2
-    const queues: Yandex.Queue[] = []
-
-    while (counter <= totalPages) {
-      const iterResponse = await yandexTrackerApi.queuesList({
-        page: String(counter)
-      })
-      if (iterResponse.status === 200 && iterResponse._data) {
-        queues.push(...iterResponse._data)
-      }
-      counter++
-    }
-
-    return queues
-  }
 
   const { runWithLoading: refresh, isLoading } = useTryCatchWithLoading(async () => {
     if (!login.value) {
@@ -41,7 +26,7 @@ export const useQueuesStore = defineStore('queues', () => {
 
     let allQueues: Yandex.Queue[] = []
     if (totalPages && totalCount && +totalCount > 50) {
-      allQueues = await fetchMoreQueues(+totalPages)
+      allQueues = await fetchAllPages(page => yandexTrackerApi.queuesList({ page }), +totalPages)
     }
 
     const merged = [...response._data, ...allQueues]

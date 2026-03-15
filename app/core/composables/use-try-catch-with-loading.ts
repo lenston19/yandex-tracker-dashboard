@@ -31,7 +31,7 @@ export function useTryCatchWithLoading<T extends UseTryCatchHandler<ReturnType<T
     isLoading,
     runWithLoading,
     runWithTryCatch,
-    startLoading: toggleLoading(true),
-    finishLoading: toggleLoading(false)
+    startLoading: () => toggleLoading(true),
+    finishLoading: () => toggleLoading(false)
   }
 }

@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon'
+import { addDays, isAfter, isSameMonth, parseISO } from 'date-fns'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import type { PieChartData, LineChartData } from '~/core/types'
 import { calculateTotalHours, formatHoursToFixed } from '~/core/utils/time'
@@ -6,6 +6,8 @@ import { useWorklogsStore } from '~/core/store/use-worklogs-store'
 import { useQueuesStore } from '~/core/store/use-queues-store'
 import { collectWorklogsByQueue } from '~/core/utils/collecting'
 import { createPastelColorPicker } from '~/core/utils/colors'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
+import { useSiteSettingsStore } from '~/modules/settings'
 
 export const useMonthlyReportStore = defineStore('monthly-report', () => {
   const worklogsStore = useWorklogsStore('month', 'monthly-report')
@@ -13,6 +15,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 
   const { queuesModel, isLoading: isLoadingQueue } = storeToRefs(queueStore)
   const { params, worklogsModel, isLoading: isLoadingWorklog, totalHours } = storeToRefs(worklogsStore)
+  const { formatDay, isSameDayInTz } = useDateFormatter()
 
   const monthLineChartData = ref<LineChartData>({
     labels: [],
@@ -38,9 +41,16 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
     ]
   })
 
+  const { timeZone } = storeToRefs(useSiteSettingsStore())
+
   const isLoading = computed(() => isLoadingQueue.value || isLoadingWorklog.value)
 
   watch(isLoading, () => {
+    calcPieMonthStats()
+    calcLineMonthStats()
+  })
+
+  watch(timeZone, () => {
     calcPieMonthStats()
     calcLineMonthStats()
   })
@@ -80,23 +90,23 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
   const calcLineMonthStats = () => {
     clearLineState()
 
-    const fromDateTime = DateTime.fromISO(params.value.from)
-    const toDateTime = DateTime.fromISO(params.value.to)
+    const fromDate = parseISO(params.value.from.slice(0, 10))
+    const toDate = parseISO(params.value.to.slice(0, 10))
 
-    let iterateDay = fromDateTime
+    let iterateDay = fromDate
 
     const labels = []
     const data = []
 
-    while (iterateDay <= toDateTime && iterateDay.hasSame(fromDateTime, 'month')) {
+    while (!isAfter(iterateDay, toDate) && isSameMonth(iterateDay, fromDate)) {
       const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) =>
-        DateTime.fromISO(item.start).hasSame(iterateDay, 'day')
+        isSameDayInTz(parseISO(item.start), iterateDay)
       )
 
-      labels.push(iterateDay.toFormat('dd'))
+      labels.push(formatDay(iterateDay))
       data.push(formatHoursToFixed(calculateTotalHours(dayItems)))
 
-      iterateDay = iterateDay.plus({ day: 1 })
+      iterateDay = addDays(iterateDay, 1)
     }
 
     monthLineChartData.value.labels = labels

@@ -1,28 +1,44 @@
 <script setup lang="ts">
-import OrganizationWidget from '../components/organization-widget.vue'
-import UserWidget from '../components/user-widget.vue'
-import TimeZoneWidget from '../components/time-zone-widget.vue'
-import MainSettingsWidget from '../components/main-settings-widget.vue'
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 import { useAuthStore } from '~/core/store/use-auth-store'
-import SeasonalThemeWidget from '../components/seasonal-theme-widget.vue'
+import {
+  SECTION_ACCOUNT,
+  SECTION_DISPLAY,
+  SECTION_WORKTIME,
+  SECTION_HEATMAP,
+  SECTION_DANGER
+} from '../models/constants/sections'
 
 useHead({ title: SITEMAP.settings.name })
 
-const authStore = useAuthStore()
+const { mySelf } = storeToRefs(useAuthStore())
 
-const { mySelf } = storeToRefs(authStore)
+const sections = computed(() => {
+  const items = [SECTION_ACCOUNT]
+  if (mySelf.value) {
+    items.push(SECTION_DISPLAY, SECTION_WORKTIME, SECTION_HEATMAP, SECTION_DANGER)
+  }
+  return items
+})
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    <user-widget />
-    <organization-widget />
-    <time-zone-widget v-if="mySelf" />
-    <seasonal-theme-widget v-if="mySelf" />
-    <main-settings-widget
-      v-if="mySelf"
-      class="col-span-auto sm:col-span-2 lg:col-span-3"
-    />
+  <div class="flex gap-6 lg:gap-10">
+    <aside class="hidden w-44 shrink-0 lg:block">
+      <u-navigation-menu
+        :items="sections.map(s => ({ label: s.label, href: `#${s.id}`, icon: s.icon }))"
+        orientation="vertical"
+        class="sticky top-4"
+      />
+    </aside>
+
+    <div class="min-w-0 flex-1 space-y-6">
+      <component
+        :is="section.component"
+        v-for="section in sections"
+        :id="section.id"
+        :key="section.id"
+      />
+    </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DateTime } from 'luxon'
+import { parseISO } from 'date-fns'
 import LineChart from '~/core/components/charts/line-chart.vue'
 import DonutChart from '~/core/components/charts/donut-chart.vue'
 import { useMonthlyReportStore } from '../store/use-monthly-report-store'
@@ -10,6 +10,7 @@ import UiCard from '~/core/components/ui/ui-card.vue'
 import { MONTHLY_REPORT_COLUMNS } from '../constants/columns'
 import type { UiColors } from '~/core/types'
 import { SITEMAP } from '~/core/utils/router/sitemap'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
 
 useHead({ title: SITEMAP.monthlyReport.name })
 
@@ -17,7 +18,8 @@ const monthlyReportStore = useMonthlyReportStore()
 const { monthLineChartData, monthPieChartData, params, isLoading, averageHoursByMonth, totalHours } =
   storeToRefs(monthlyReportStore)
 
-const title = computed(() => DateTime.fromISO(params.value.from).toFormat('LLLL yyyy'))
+const { formatMonthYear } = useDateFormatter()
+const title = computed(() => formatMonthYear(parseISO(params.value.from)))
 
 const averageBadgeColor = computed(() => {
   switch (true) {
