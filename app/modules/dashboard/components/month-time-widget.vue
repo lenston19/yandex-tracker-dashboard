@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useMonthTimeWidgetStore } from '../store/use-month-time-widget-store'
+import { useWorklogsStore } from '~/core/store/use-worklogs-store'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import { formatRUB } from '~/core/utils/format-money'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 
-const monthTimeWidgetStore = useMonthTimeWidgetStore()
+const worklogsStore = useWorklogsStore('month', 'month-time-widget')
 
-const { totalHours, isLoading } = storeToRefs(monthTimeWidgetStore)
+const { totalHours, isLoading } = storeToRefs(worklogsStore)
 const { needHoursInCurrentMonth, gold } = storeToRefs(useSiteSettingsStore())
 
 const currentRuble = computed(() => totalHours.value * gold.value)
@@ -18,7 +18,7 @@ const maxRuble = computed(() =>
 
 onMounted(async () => {
   if (!totalHours.value) {
-    await monthTimeWidgetStore.refresh()
+    await worklogsStore.refresh()
   }
 })
 </script>
@@ -60,7 +60,7 @@ onMounted(async () => {
     <template #footer>
       <worklog-actions
         class="ml-auto w-fit"
-        :refresh="monthTimeWidgetStore.refresh"
+        :refresh="worklogsStore.refresh"
         :loading="isLoading"
         type="month"
       />

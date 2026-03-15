@@ -1,3 +1,4 @@
+import { useObjectUrl } from '@vueuse/core'
 import yandexTrackerApi from '../api/yandex-tracker.api'
 import yandexInfoApi from '../api/yandex-info.api'
 import yandexAvatarApi from '../api/yandex-avatar.api'
@@ -41,29 +42,22 @@ export const useAuthStore = defineStore(
       pick: ['default_avatar_id']
     })
 
-    const {
-      data: avatar,
-      refresh: fetchAvatar,
-      pending: isLoadingAvatar
-    } = useLazyAsyncData(
-      'avatar',
-      async () => {
-        if (!user.value) {
-          return ''
-        }
-        return (
-          URL.createObjectURL(
-            new Blob([await yandexAvatarApi.fetchUserAvatar(user.value.default_avatar_id)], {
-              type: 'image/jpeg'
-            })
-          ) || ''
-        )
-      },
-      {
-        immediate: false,
-        server: false
+    const avatarBlob = ref<Blob | null>(null)
+    const avatar = useObjectUrl(avatarBlob)
+
+    const isLoadingAvatar = ref(false)
+
+    const fetchAvatar = async () => {
+      if (!user.value) return
+      isLoadingAvatar.value = true
+      try {
+        avatarBlob.value = new Blob([await yandexAvatarApi.fetchUserAvatar(user.value.default_avatar_id)], {
+          type: 'image/jpeg'
+        })
+      } finally {
+        isLoadingAvatar.value = false
       }
-    )
+    }
 
     function clearState() {
       mySelf.value = undefined
@@ -81,5 +75,5 @@ export const useAuthStore = defineStore(
       isLoading
     }
   },
-  { persist: true }
+  { persist: { omit: ['userAvatarUrl'] } }
 )

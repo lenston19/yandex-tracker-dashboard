@@ -17,6 +17,7 @@ import type { YandexTrackerApi } from '../types/api/yandex-tracker/yandex-tracke
 import type { Yandex } from '../types/api/yandex-tracker/yandex-tracker.entity'
 import { useAuthStore } from './use-auth-store'
 import { calculateTotalHours, formatHoursToFixed } from '../utils/time'
+import { fetchAllPages } from '../utils/fetch-all-pages'
 import type { WorklogFormat } from '../types/worklogs'
 import { useNow } from '@vueuse/core'
 import { useTryCatchWithLoading } from '../composables/use-try-catch-with-loading'
@@ -60,21 +61,6 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
       to: formatDate(periodEnd(now.value, format), LOCAL_UTC_ISO)
     })
 
-    const fetchMoreWorklog = async (body: YandexTrackerApi.worklogList.Body, totalPages: number) => {
-      let counter = 2
-      const worklogs: Yandex.Worklog[] = []
-      while (counter <= totalPages) {
-        const iterResponse = await yandexTrackerApi.worklogList(body, {
-          page: String(counter)
-        })
-        if (iterResponse.status === 200 && iterResponse._data) {
-          worklogs.push(...iterResponse._data)
-        }
-        counter++
-      }
-      return worklogs
-    }
-
     const { runWithLoading: refresh, isLoading } = useTryCatchWithLoading(async () => {
       if (!login.value) {
         worklogsModel.value = []
@@ -101,7 +87,7 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
 
       let allWorklogs: Yandex.Worklog[] = []
       if (totalPages && totalCount && +totalCount > 50) {
-        allWorklogs = await fetchMoreWorklog(body, +totalPages)
+        allWorklogs = await fetchAllPages(page => yandexTrackerApi.worklogList(body, { page }), +totalPages)
       }
 
       const merged = [...response._data, ...allWorklogs]
