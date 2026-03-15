@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import { DateTime } from 'luxon'
+import { parseISO } from 'date-fns'
 import { calculateWorklogTimeByDay } from '../../utils/time'
 import type { Yandex } from '../../types/api/yandex-tracker/yandex-tracker.entity'
 import UiPagination from '../ui/ui-pagination.vue'
 import { WORKLOG_COLUMNS } from '../../constants/worklogs'
 import UiCard from '../ui/ui-card.vue'
+import { useDateFormatter } from '../../composables/use-date-formatter'
 
 const props = defineProps<{
   worklogs: Yandex.Worklog[]
 }>()
 
+const { formatShortDate, formatTime } = useDateFormatter()
+
 const getKey = (row: Yandex.Worklog) => row.issue.key
 const getName = (row: Yandex.Worklog) => row.issue.display
 const getTime = (row: Yandex.Worklog) => calculateWorklogTimeByDay(row)
-const getDateCreatedAt = (row: Yandex.Worklog) => DateTime.fromISO(row.start).toFormat('dd.MM.yyyy')
-const getTimeCreatedAt = (row: Yandex.Worklog) => DateTime.fromISO(row.start).toFormat('HH:mm:ss')
+const getDateCreatedAt = (row: Yandex.Worklog) => formatShortDate(parseISO(row.start))
+const getTimeCreatedAt = (row: Yandex.Worklog) => formatTime(parseISO(row.start))
 
 const page = ref<number>(1)
 const pageCount = 5

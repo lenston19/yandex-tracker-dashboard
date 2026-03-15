@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { DateTime } from 'luxon'
+import { parseISO } from 'date-fns'
 import { useProjectsStore } from '~/modules/projects/store/use-projects-store'
 import GroupedWorklogsTable from '~/core/components/worklogs/grouped-worklogs-table.vue'
 import UiEmptyState from '~/core/components/ui/ui-empty-state.vue'
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 import UiPageHeader from '~/core/components/ui/ui-page-header.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
 
 useHead({ title: SITEMAP.projects.name })
 
@@ -13,7 +14,8 @@ const projectsStore = useProjectsStore()
 
 const { queueWorklogs, isLoading, params } = storeToRefs(projectsStore)
 
-const title = computed(() => DateTime.fromISO(params.value.from).toFormat('LLLL yyyy'))
+const { formatMonthYear } = useDateFormatter()
+const title = computed(() => formatMonthYear(parseISO(params.value.from)))
 </script>
 
 <template>

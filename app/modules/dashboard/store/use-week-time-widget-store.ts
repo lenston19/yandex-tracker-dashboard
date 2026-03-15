@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon'
+import { addDays, isSameISOWeek, parseISO } from 'date-fns'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import { calculateTotalHours, formatHoursToFixed } from '~/core/utils/time'
 import { useWorklogsStore } from '~/core/store/use-worklogs-store'
@@ -7,6 +7,7 @@ import { pickMeterColors } from '~/core/utils/colors'
 import { useModal } from 'vue-final-modal'
 import type { Weekday } from '../types'
 import { useQueuesStore } from '~/core/store/use-queues-store'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
 
 export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
   const worklogsStore = useWorklogsStore('week', 'week-time-widget')
@@ -17,24 +18,26 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
   const currentWeek = ref<Weekday[]>([])
   const weekTotalHours = ref<number>(0)
+  const { formatWeekday, formatFullDate, isSameDayInTz } = useDateFormatter()
 
   const calcWeekStats = () => {
     clearState()
-    let iterateDay = DateTime.fromISO(params.value.from)
-    while (iterateDay.hasSame(DateTime.fromISO(params.value.from), 'week')) {
+    const fromDate = parseISO(params.value.from.slice(0, 10))
+    let iterateDay = fromDate
+    while (isSameISOWeek(iterateDay, fromDate)) {
       const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) =>
-        DateTime.fromISO(item.start).hasSame(iterateDay, 'day')
+        isSameDayInTz(parseISO(item.start), iterateDay)
       )
       const dayHours = formatHoursToFixed(calculateTotalHours(dayItems))
       weekTotalHours.value = weekTotalHours.value + dayHours
 
       currentWeek.value.push({
-        weekday: iterateDay.toFormat('EEEE'),
-        monthDay: iterateDay.toFormat('dd MMMM yyyy'),
+        weekday: formatWeekday(iterateDay),
+        monthDay: formatFullDate(iterateDay),
         hours: dayHours,
         items: dayItems
       })
-      iterateDay = iterateDay.plus({ day: 1 })
+      iterateDay = addDays(iterateDay, 1)
     }
   }
 

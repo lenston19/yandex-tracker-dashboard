@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DateTime } from 'luxon'
+import { parseISO } from 'date-fns'
 import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { pluralize } from '~/core/utils/pluralize'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
@@ -8,6 +8,7 @@ import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import UiMeterGroup from '~/core/components/ui/ui-meter-group.vue'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
 const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue } =
@@ -15,10 +16,9 @@ const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoa
 
 const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
 
+const { formatShortDate } = useDateFormatter()
 const title = computed(() => {
-  const dateFrom = DateTime.fromISO(params.value.from)
-  const dateTo = DateTime.fromISO(params.value.to)
-  return `${dateFrom.toFormat('dd.MM.yyyy')} - ${dateTo.toFormat('dd.MM.yyyy')}`
+  return `${formatShortDate(parseISO(params.value.from))} - ${formatShortDate(parseISO(params.value.to))}`
 })
 
 const maxHoursInWeek = computed(() => pluralize(hoursInDay.value ? hoursInDay.value * 5 : 40, HOURS_PLURALIZE))

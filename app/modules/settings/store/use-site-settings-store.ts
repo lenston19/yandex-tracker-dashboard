@@ -1,4 +1,5 @@
-import { DateTime } from 'luxon'
+import { addDays, endOfMonth, getDay, isAfter, startOfMonth } from 'date-fns'
+import { useNow } from '@vueuse/core'
 import { useModal } from 'vue-final-modal'
 import { DEFAULT_TIME_ZONE } from '../constants/time-zone'
 import type { TimeZoneSelectOption } from '../types'
@@ -31,13 +32,16 @@ export const useSiteSettingsStore = defineStore(
       accessToken.value = ''
     }
 
+    const now = useNow()
+
     const needHoursInCurrentMonth = computed(() => {
-      const now = DateTime.now()
+      const end = endOfMonth(now.value)
 
       let weekdaysCount = 0
 
-      for (let date = now.startOf('month'); date <= now.endOf('month'); date = date.plus({ days: 1 })) {
-        if (date.weekday !== 6 && date.weekday !== 7) {
+      for (let date = startOfMonth(now.value); !isAfter(date, end); date = addDays(date, 1)) {
+        const day = getDay(date) // 0=Sun, 6=Sat
+        if (day !== 0 && day !== 6) {
           weekdaysCount++
         }
       }
