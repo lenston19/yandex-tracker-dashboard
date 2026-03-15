@@ -18,7 +18,10 @@ const { open } = useModal({
 </script>
 
 <template>
-  <ui-card v-if="mySelf">
+  <ui-card
+    v-if="mySelf"
+    :ui="{ body: 'sm:p-0 p-0' }"
+  >
     <template #header>
       <div class="flex items-center gap-4">
         <div class="text-xl font-bold">Пользователь</div>

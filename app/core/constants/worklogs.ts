@@ -1,5 +1,9 @@
 export const WORKLOG_COLUMNS = [
   {
+    accessorKey: 'key',
+    header: 'Ключ'
+  },
+  {
     accessorKey: 'name',
     header: 'Наименование задачи'
   },
