@@ -8,6 +8,7 @@ import { useModal } from 'vue-final-modal'
 import type { Weekday } from '../types'
 import { useQueuesStore } from '~/core/store/use-queues-store'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
+import { isWorkingDay } from '~/core/composables/use-production-calendar'
 
 export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
   const worklogsStore = useWorklogsStore('week', 'week-time-widget')
@@ -20,11 +21,12 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
   const weekTotalHours = ref<number>(0)
   const { formatWeekday, formatFullDate, isSameDayInTz } = useDateFormatter()
 
-  const calcWeekStats = () => {
+  const calcWeekStats = async () => {
     clearState()
     const fromDate = parseISO(params.value.from.slice(0, 10))
     let iterateDay = fromDate
     while (isSameISOWeek(iterateDay, fromDate)) {
+      const holiday = !(await isWorkingDay(iterateDay))
       const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) =>
         isSameDayInTz(parseISO(item.start), iterateDay)
       )
@@ -35,6 +37,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
         weekday: formatWeekday(iterateDay),
         monthDay: formatFullDate(iterateDay),
         hours: dayHours,
+        isHoliday: holiday,
         items: dayItems
       })
       iterateDay = addDays(iterateDay, 1)
@@ -72,9 +75,9 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
     weekTotalHours.value = 0
   }
 
-  watchEffect(() => {
+  watchEffect(async () => {
     if (!isLoading.value) {
-      calcWeekStats()
+      await calcWeekStats()
     }
   })
 

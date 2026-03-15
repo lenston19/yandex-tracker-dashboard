@@ -1,22 +1,33 @@
-import { addDays, endOfMonth, getDay, isAfter, startOfMonth } from 'date-fns'
+import { addDays, endOfMonth, isAfter, startOfDay, startOfMonth } from 'date-fns'
 import { useNow } from '@vueuse/core'
+import { isWorkingDay } from '~/core/composables/use-production-calendar'
 import { useModal } from 'vue-final-modal'
-import { DEFAULT_TIME_ZONE } from '../constants/time-zone'
-import type { TimeZoneSelectOption } from '../types'
+import { DEFAULT_TIME_ZONE } from '../models/constants/time-zone'
+import type { HeatmapWeeks, TimeZoneSelectOption } from '../types'
 import type { ThemeType } from '~/core/types'
+
+const YEAR = 60 * 60 * 24 * 30 * 12
 
 export const useSiteSettingsStore = defineStore(
   'site-settings',
   () => {
     const themeType = ref<ThemeType>(useRuntimeConfig().public.themeType as ThemeType)
-    const organizationId = useCookie('organizationId', { maxAge: 60 * 60 * 24 * 30 * 12 })
-    const accessToken = useCookie('accessToken', { maxAge: 60 * 60 * 24 * 30 * 12 })
+    const organizationId = useCookie('organizationId', { maxAge: YEAR })
+    const accessToken = useCookie('accessToken', { maxAge: YEAR })
 
     const hoursInDay = ref<number>(8)
     const gold = ref<number>(0)
     const timeZone = ref<TimeZoneSelectOption>({ ...DEFAULT_TIME_ZONE })
     const isNeedOrganizationId = computed(() => !organizationId.value)
     const isShowWeeklyLoading = ref<boolean>(false)
+
+    const heatmap = reactive<{
+      show: boolean
+      weeks: HeatmapWeeks
+    }>({
+      show: true,
+      weeks: 53
+    })
 
     const isHaveThemeType = computed(() => {
       return !!themeType.value?.length
@@ -34,20 +45,30 @@ export const useSiteSettingsStore = defineStore(
 
     const now = useNow()
 
-    const needHoursInCurrentMonth = computed(() => {
-      const end = endOfMonth(now.value)
+    const needHoursInCurrentMonth = ref<number>(0)
+    const remainingWorkdays = ref<number>(0)
 
-      let weekdaysCount = 0
+    async function updateCalendarStats() {
+      const today = now.value
+      const monthEnd = endOfMonth(today)
+      const todayStart = startOfDay(today)
+      let totalWorkdays = 0
+      let remaining = 0
 
-      for (let date = startOfMonth(now.value); !isAfter(date, end); date = addDays(date, 1)) {
-        const day = getDay(date) // 0=Sun, 6=Sat
-        if (day !== 0 && day !== 6) {
-          weekdaysCount++
+      for (let d = startOfMonth(today); !isAfter(d, monthEnd); d = addDays(d, 1)) {
+        if (await isWorkingDay(d)) {
+          totalWorkdays++
+          if (!isAfter(todayStart, d)) remaining++
         }
       }
 
-      return weekdaysCount * hoursInDay.value
-    })
+      needHoursInCurrentMonth.value = totalWorkdays * hoursInDay.value
+      remainingWorkdays.value = remaining
+    }
+
+    const currentDayKey = computed(() => now.value.toDateString())
+    watch(currentDayKey, updateCalendarStats, { immediate: true })
+    watch(hoursInDay, updateCalendarStats)
 
     const { open, close } = useModal({
       component: defineAsyncComponent(() => import('../components/modals/settings-organization-id-modal.vue'))
@@ -83,7 +104,10 @@ export const useSiteSettingsStore = defineStore(
       gold,
       timeZone,
       needHoursInCurrentMonth,
+      remainingWorkdays,
       isShowWeeklyLoading,
+
+      heatmap,
 
       seasonalTheme,
       themeType,

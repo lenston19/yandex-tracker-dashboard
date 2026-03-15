@@ -39,8 +39,12 @@ const rows = computed(() => props.worklogs.slice((page.value - 1) * pageCount, p
         th: 'first:whitespace-pre-wrap last:whitespace-pre-wrap w-fit first:w-80 last:w-50'
       }"
     >
-      <template #id-cell="{ row }">
-        {{ getKey(row.original) }}
+      <template #key-cell="{ row }">
+        <a
+          :href="`https://tracker.yandex.ru/${getKey(row.original)}`"
+          target="_blank"
+          class="font-mono text-primary hover:underline"
+        >{{ getKey(row.original) }}</a>
       </template>
       <template #name-cell="{ row }">
         {{ getName(row.original) }}

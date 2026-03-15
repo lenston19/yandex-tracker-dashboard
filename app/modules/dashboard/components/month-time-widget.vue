@@ -9,12 +9,18 @@ import UiCard from '~/core/components/ui/ui-card.vue'
 const worklogsStore = useWorklogsStore('month', 'month-time-widget')
 
 const { totalHours, isLoading } = storeToRefs(worklogsStore)
-const { needHoursInCurrentMonth, gold } = storeToRefs(useSiteSettingsStore())
+const { needHoursInCurrentMonth, remainingWorkdays, gold } = storeToRefs(useSiteSettingsStore())
 
 const currentRuble = computed(() => totalHours.value * gold.value)
 const maxRuble = computed(() =>
   needHoursInCurrentMonth.value ? needHoursInCurrentMonth.value * gold.value : currentRuble.value
 )
+
+const hoursPerDayNeeded = computed(() => {
+  const remaining = needHoursInCurrentMonth.value - totalHours.value
+  if (remaining <= 0 || !remainingWorkdays.value) return null
+  return +(remaining / remainingWorkdays.value).toFixed(1)
+})
 
 onMounted(async () => {
   if (!totalHours.value) {
@@ -31,7 +37,21 @@ onMounted(async () => {
         :hours="totalHours"
         :max="needHoursInCurrentMonth"
         show-max
-      />
+      >
+        <template #help-text>
+          <u-tooltip
+            v-if="!isLoading && hoursPerDayNeeded"
+            :delay-duration="0"
+            :text="`Чтобы выполнить план, нужно отрабатывать по ${hoursPerDayNeeded} ч в день. Осталось ${remainingWorkdays} раб. ${remainingWorkdays === 1 ? 'день' : remainingWorkdays < 5 ? 'дня' : 'дней'}`"
+          >
+            <div
+              class="cursor-help text-right text-sm text-muted italic underline decoration-dashed underline-offset-2"
+            >
+              нужно {{ hoursPerDayNeeded }} ч/день
+            </div>
+          </u-tooltip>
+        </template>
+      </day-linear-progress>
       <day-linear-progress
         v-else
         :hours="null"

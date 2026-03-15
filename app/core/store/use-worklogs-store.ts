@@ -36,7 +36,7 @@ const periodEnd = (d: Date, fmt: WorklogFormat): Date => {
   return endOfDay(d)
 }
 
-const shiftPeriod = (isoFrom: string, fmt: WorklogFormat, n: number) => {
+export const shiftPeriod = (isoFrom: string, fmt: WorklogFormat, n: number) => {
   const base = parseISO(isoFrom.slice(0, 10))
   let shifted: Date
   if (fmt === 'week') shifted = addWeeks(base, n)

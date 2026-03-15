@@ -1,4 +1,4 @@
-import type { TimeZoneSelectOption } from '../types'
+import type { TimeZoneSelectOption } from '../../types'
 
 export const DEFAULT_TIME_ZONE: TimeZoneSelectOption = {
   label: '(GMT+03:00) Moscow',

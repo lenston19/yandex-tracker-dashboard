@@ -81,6 +81,7 @@ onMounted(async () => {
           <day-linear-progress
             :hours="day.hours"
             :max="hoursInDay"
+            :is-holiday="day.isHoliday"
           />
         </div>
       </template>

@@ -28,6 +28,8 @@ export function useDateFormatter() {
   const formatWeekday = (d: Date | string | number) => fmt(d, DATE_FORMATS.WEEKDAY, { locale: ru })
   const formatFullDate = (d: Date | string | number) => fmt(d, DATE_FORMATS.FULL_DATE, { locale: ru })
   const formatDay = (d: Date | string | number) => fmt(d, DATE_FORMATS.DAY)
+  const formatDayKey = (d: Date | string | number) => fmt(d, 'yyyy-MM-dd')
+  const formatMonthShort = (d: Date | string | number) => fmt(d, 'LLL', { locale: ru })
 
   const isTodayInTz = (d: Date | string | number) => fmt(d, 'yyyy-MM-dd') === fmt(now.value, 'yyyy-MM-dd')
 
@@ -43,6 +45,8 @@ export function useDateFormatter() {
     formatWeekday,
     formatFullDate,
     formatDay,
+    formatDayKey,
+    formatMonthShort,
     isTodayInTz,
     isSameDayInTz
   }

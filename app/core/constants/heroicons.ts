@@ -16,5 +16,9 @@ export const HEROICONS = {
   CHECK: 'i-heroicons-check',
   CHEVRON_DOWN_20_SOLID: 'i-heroicons-chevron-down-20-solid',
   QUESTION_MARK_CIRCLE: 'i-heroicons-question-mark-circle',
-  X_MARK: 'i-heroicons-x-mark'
+  X_MARK: 'i-heroicons-x-mark',
+  USER: 'i-heroicons-user',
+  SWATCH: 'i-heroicons-swatch',
+  CLOCK: 'i-heroicons-clock',
+  EXCLAMATION_TRIANGLE: 'i-heroicons-exclamation-triangle'
 }
