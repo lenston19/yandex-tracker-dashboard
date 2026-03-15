@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDayTimeWidgetStore } from '../store/use-day-time-widget-store'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'

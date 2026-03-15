@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 

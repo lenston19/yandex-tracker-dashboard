@@ -2,7 +2,7 @@
 import { parseISO } from 'date-fns'
 import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { pluralize } from '~/core/utils/pluralize'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 import { useWeekTimeWidgetStore } from '../store/use-week-time-widget-store'
 import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'

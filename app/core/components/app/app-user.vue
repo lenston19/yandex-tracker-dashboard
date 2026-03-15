@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/core/store/use-auth-store'
 import hat from '~/assets/theme/new-year/hat.webp'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 
 const { userName, userAvatarUrl } = storeToRefs(useAuthStore())
 const { seasonalTheme } = storeToRefs(useSiteSettingsStore())

@@ -1,5 +1,5 @@
 import { SITEMAP } from '~/core/utils/router/sitemap'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 
 export default defineNuxtRouteMiddleware(() => {
   const { organizationId, accessToken } = storeToRefs(useSiteSettingsStore())

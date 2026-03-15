@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useWorklogsStore } from '~/core/store/use-worklogs-store'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 import { formatRUB } from '~/core/utils/format-money'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import DayLinearProgress from './ui/day-linear-progress.vue'

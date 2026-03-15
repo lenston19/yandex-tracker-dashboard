@@ -7,7 +7,7 @@ import { useQueuesStore } from '~/core/store/use-queues-store'
 import { collectWorklogsByQueue } from '~/core/utils/collecting'
 import { createPastelColorPicker } from '~/core/utils/colors'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 
 export const useMonthlyReportStore = defineStore('monthly-report', () => {
   const worklogsStore = useWorklogsStore('month', 'monthly-report')

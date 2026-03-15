@@ -2,7 +2,7 @@ import { useObjectUrl } from '@vueuse/core'
 import yandexTrackerApi from '../api/yandex-tracker.api'
 import yandexInfoApi from '../api/yandex-info.api'
 import yandexAvatarApi from '../api/yandex-avatar.api'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 
 export const useAuthStore = defineStore(
   'auth',

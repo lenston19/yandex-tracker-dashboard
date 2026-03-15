@@ -1,7 +1,7 @@
 import { formatInTimeZone } from 'date-fns-tz'
 import { ru, type Locale } from 'date-fns/locale'
 import { useNow } from '@vueuse/core'
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 
 export const DATE_FORMATS = {
   SHORT_DATE: 'dd.MM.yyyy',

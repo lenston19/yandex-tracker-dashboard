@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useSiteSettingsStore } from '~/modules/settings'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { APP_PAGES, UNAUTH_APP_PAGES } from '../../constants/menu'
 import { useToggle } from '@vueuse/core'
