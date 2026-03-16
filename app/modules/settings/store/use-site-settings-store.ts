@@ -18,6 +18,14 @@ export const useSiteSettingsStore = defineStore(
     const hoursInDay = ref<number>(8)
     const gold = ref<number>(0)
     const timeZone = ref<TimeZoneSelectOption>({ ...DEFAULT_TIME_ZONE })
+
+    // Migration: old format stored IANA id in `value` field, current format uses `id`
+    watchEffect(() => {
+      const tz = timeZone.value as TimeZoneSelectOption & { value?: string }
+      if (tz.id?.startsWith('(GMT') && tz.value) {
+        timeZone.value = { label: tz.label, id: tz.value }
+      }
+    })
     const isNeedOrganizationId = computed(() => !organizationId.value)
     const isShowWeeklyLoading = ref<boolean>(false)
 
