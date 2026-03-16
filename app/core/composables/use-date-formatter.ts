@@ -1,7 +1,7 @@
 import { formatInTimeZone } from 'date-fns-tz'
 import { ru, type Locale } from 'date-fns/locale'
 import { useNow } from '@vueuse/core'
-import { useSiteSettingsStore } from '~/modules/settings'
+import { useSiteSettingsStore, DEFAULT_TIME_ZONE, type TimeZoneSelectOption } from '~/modules/settings'
 
 export const DATE_FORMATS = {
   SHORT_DATE: 'dd.MM.yyyy',
@@ -15,11 +15,20 @@ export const DATE_FORMATS = {
 
 export function useDateFormatter() {
   const { timeZone } = storeToRefs(useSiteSettingsStore())
-  const tz = computed(() => timeZone.value.id)
+  const tz = computed(() => {
+    const tzData = timeZone.value as TimeZoneSelectOption & { value?: string }
+    // Legacy: id contains label like "(GMT+03:00) Moscow", real IANA id was in `value`
+    if (tzData.id?.startsWith('(GMT') && tzData.value) return tzData.value
+    return tzData.id ?? DEFAULT_TIME_ZONE.id
+  })
   const now = useNow()
 
-  const fmt = (date: Date | string | number, pattern: string, options?: { locale?: Locale }) =>
-    formatInTimeZone(date, tz.value, pattern, options)
+  const fmt = (date: Date | string | number, pattern: string, options?: { locale?: Locale }) => {
+    if (date == null) return ''
+    const d = date instanceof Date ? date : new Date(date)
+    if (isNaN(d.getTime())) return ''
+    return formatInTimeZone(d, tz.value, pattern, options)
+  }
 
   const formatShortDate = (d: Date | string | number) => fmt(d, DATE_FORMATS.SHORT_DATE)
   const formatTime = (d: Date | string | number) => fmt(d, DATE_FORMATS.TIME)

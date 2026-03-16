@@ -5,14 +5,12 @@ import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
-import { useNow } from '@vueuse/core'
 
 const dayTimeWidgetStore = useDayTimeWidgetStore()
 const { totalHours, isLoading } = storeToRefs(dayTimeWidgetStore)
 const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
 const { formatShortDate } = useDateFormatter()
-const now = useNow()
 
 onMounted(async () => {
   if (!totalHours.value) {
@@ -31,7 +29,7 @@ onMounted(async () => {
           color="primary"
           size="lg"
         >
-          {{ formatShortDate(now) }}
+          {{ formatShortDate(new Date()) }}
         </u-badge>
       </div>
     </template>
