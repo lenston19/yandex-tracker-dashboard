@@ -12,13 +12,13 @@ const { heatmap } = storeToRefs(useSiteSettingsStore())
 </script>
 
 <template>
-  <div class="grid grid-cols-4 gap-4">
+  <div class="grid grid-cols-4 gap-3">
     <week-time-widget class="order-3 col-span-4 md:order-1" />
     <day-time-widget class="order-1 col-span-4 md:order-2 md:col-span-2" />
     <month-time-widget class="order-2 col-span-4 md:order-3 md:col-span-2" />
     <activity-heatmap-widget
       v-if="heatmap.show"
-      class="order-4 col-span-4"
+      class="order-4 col-span-full"
     />
   </div>
 </template>

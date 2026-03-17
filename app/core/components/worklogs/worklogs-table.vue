@@ -40,11 +40,13 @@ const rows = computed(() => props.worklogs.slice((page.value - 1) * pageCount, p
       }"
     >
       <template #key-cell="{ row }">
-        <a
-          :href="`https://tracker.yandex.ru/${getKey(row.original)}`"
+        <u-link
+          :to="`https://tracker.yandex.ru/${getKey(row.original)}`"
           target="_blank"
           class="font-mono text-primary hover:underline"
-        >{{ getKey(row.original) }}</a>
+        >
+          {{ getKey(row.original) }}
+        </u-link>
       </template>
       <template #name-cell="{ row }">
         {{ getName(row.original) }}
