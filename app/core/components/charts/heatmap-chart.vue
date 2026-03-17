@@ -30,7 +30,7 @@ const today = new Date()
 const { formatDayKey, formatMonthShort } = useDateFormatter()
 
 const startDate = computed(() => {
-  const d = startOfWeek(subDays(today, props.weekCount * 7 - 1), { weekStartsOn: 1 })
+  const d = startOfWeek(subDays(today, (props.weekCount - 1) * 7), { weekStartsOn: 1 })
   return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0)
 })
 
