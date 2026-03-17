@@ -87,6 +87,15 @@ const calcByProject = (rows: CollectedWorklog[]) => {
           @click="row.toggleExpanded()"
         />
       </template>
+      <template #key-cell="{ row }">
+        <u-link
+          :to="`https://tracker.yandex.ru/${row.original.key}`"
+          target="_blank"
+          class="font-mono text-primary hover:underline"
+        >
+          {{ row.original.key }}
+        </u-link>
+      </template>
       <template #totalTime-cell="{ row }">
         <u-badge
           :label="getTotalTime(row.original)"
