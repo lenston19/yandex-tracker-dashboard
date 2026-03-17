@@ -3,7 +3,7 @@ import UiCard from '~/core/components/ui/ui-card.vue'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import { useActivityHeatmapStore } from '../store/use-activity-heatmap-store'
 import { useSiteSettingsStore } from '~/modules/settings'
-import HeatmapChart from '~/core/components/charts/heatmap-chart.vue'
+import UiHeatmap from '~/core/components/ui/heatmap/ui-heatmap.vue'
 
 const store = useActivityHeatmapStore()
 const { dayMap, isLoading } = storeToRefs(store)
@@ -20,11 +20,8 @@ const title = computed(() => TITLE_MAP[heatmap.value.weeks] ?? 'Активнос
 </script>
 
 <template>
-  <ui-card
-    :title="title"
-    :ui="{ body: 'sm:px-0 sm:pt-0' }"
-  >
-    <heatmap-chart
+  <ui-card :title="title">
+    <ui-heatmap
       :week-count="heatmap.weeks"
       :day-map="dayMap"
       :format-tooltip="store.formatTooltip"
