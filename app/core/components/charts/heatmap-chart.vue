@@ -27,9 +27,12 @@ const WEEKDAYS = [
 
 const today = new Date()
 
-const startDate = computed(() => startOfWeek(subDays(today, props.weekCount * 7 - 1), { weekStartsOn: 1 }))
-
 const { formatDayKey, formatMonthShort } = useDateFormatter()
+
+const startDate = computed(() => {
+  const d = startOfWeek(subDays(today, props.weekCount * 7 - 1), { weekStartsOn: 1 })
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0, 0)
+})
 
 const weeks = computed(() => {
   const result: { date: Date; key: string }[][] = []
@@ -59,15 +62,16 @@ const weekLabelMap = computed(() => {
   return map
 })
 
-const series = computed(() =>
-  WEEKDAYS.map(({ name, index: dayIndex }) => ({
+const series = computed(() => {
+  const todayKey = formatDayKey(today)
+  return WEEKDAYS.map(({ name, index: dayIndex }) => ({
     name,
     data: weeks.value.map(week => ({
       x: week[0]!.key,
-      y: week[dayIndex]!.date > today ? null : (props.dayMap.get(week[dayIndex]!.key) ?? 0)
+      y: week[dayIndex]!.key > todayKey ? null : (props.dayMap.get(week[dayIndex]!.key) ?? 0)
     }))
   }))
-)
+})
 
 const mode = useColorMode()
 const dark = computed(() => mode.value === 'dark')
@@ -121,7 +125,7 @@ const chartOptions = computed(() => ({
     custom: ({ seriesIndex, dataPointIndex }: { seriesIndex: number; dataPointIndex: number }) => {
       const week = weeks.value[dataPointIndex]
       const day = week?.[WEEKDAYS[seriesIndex]!.index]
-      if (!day || day.date > today) return '<div></div>'
+      if (!day || day.key > formatDayKey(today)) return '<div></div>'
       return `<div style="padding:6px 10px;font-size:12px">${props.formatTooltip(day.key)}</div>`
     }
   },

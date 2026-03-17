@@ -23,7 +23,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
   const calcWeekStats = async () => {
     clearState()
-    const fromDate = parseISO(params.value.from.slice(0, 10))
+    const fromDate = parseISO(params.value.from.slice(0, 10) + 'T12:00:00')
     let iterateDay = fromDate
     while (isSameISOWeek(iterateDay, fromDate)) {
       const holiday = !(await isWorkingDay(iterateDay))
