@@ -10,7 +10,8 @@ export const DATE_FORMATS = {
   MONTH_YEAR: 'LLLL yyyy',
   WEEKDAY: 'EEEE',
   FULL_DATE: 'dd MMMM yyyy',
-  DAY: 'dd'
+  DAY: 'dd',
+  DAY_MONTH: 'd MMM'
 } as const
 
 export function useDateFormatter() {
@@ -37,6 +38,7 @@ export function useDateFormatter() {
   const formatWeekday = (d: Date | string | number) => fmt(d, DATE_FORMATS.WEEKDAY, { locale: ru })
   const formatFullDate = (d: Date | string | number) => fmt(d, DATE_FORMATS.FULL_DATE, { locale: ru })
   const formatDay = (d: Date | string | number) => fmt(d, DATE_FORMATS.DAY)
+  const formatDayMonth = (d: Date | string | number) => fmt(d, DATE_FORMATS.DAY_MONTH, { locale: ru })
   const formatDayKey = (d: Date | string | number) => fmt(d, 'yyyy-MM-dd')
   const formatMonthShort = (d: Date | string | number) => fmt(d, 'LLL', { locale: ru })
 
@@ -54,6 +56,7 @@ export function useDateFormatter() {
     formatWeekday,
     formatFullDate,
     formatDay,
+    formatDayMonth,
     formatDayKey,
     formatMonthShort,
     isTodayInTz,

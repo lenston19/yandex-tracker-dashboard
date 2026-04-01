@@ -49,7 +49,14 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: ['@pinia/nuxt', 'pinia-plugin-persistedstate/nuxt', '@nuxt/eslint', '@nuxt/ui', '@nuxt/content'],
+  modules: [
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+    '@nuxt/eslint',
+    '@nuxt/ui',
+    '@nuxt/content',
+    '@nuxt/test-utils/module'
+  ],
 
   content: {
     build: {

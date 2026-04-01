@@ -19,12 +19,13 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
   const currentWeek = ref<Weekday[]>([])
   const weekTotalHours = ref<number>(0)
-  const { formatWeekday, formatFullDate, isSameDayInTz } = useDateFormatter()
+  const { formatWeekday, formatFullDate, formatDayMonth, formatDayKey, isSameDayInTz } = useDateFormatter()
 
   const calcWeekStats = async () => {
     clearState()
     const fromDate = parseISO(params.value.from.slice(0, 10) + 'T12:00:00')
     let iterateDay = fromDate
+    let prevMonthKey: string | null = null
     while (isSameISOWeek(iterateDay, fromDate)) {
       const holiday = !(await isWorkingDay(iterateDay))
       const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) =>
@@ -33,9 +34,15 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
       const dayHours = formatHoursToFixed(calculateTotalHours(dayItems))
       weekTotalHours.value = weekTotalHours.value + dayHours
 
+      const monthKey = formatDayKey(iterateDay).slice(0, 7)
+      const isNewMonth = prevMonthKey !== null && monthKey !== prevMonthKey
+      prevMonthKey = monthKey
+
       currentWeek.value.push({
         weekday: formatWeekday(iterateDay),
         monthDay: formatFullDate(iterateDay),
+        shortDate: formatDayMonth(iterateDay),
+        isNewMonth,
         hours: dayHours,
         isHoliday: holiday,
         items: dayItems
