@@ -57,7 +57,7 @@ onMounted(async () => {
         </u-badge>
       </div>
     </template>
-    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
       <template v-if="isLoading">
         <day-linear-progress
           v-for="day in 7"
@@ -71,12 +71,14 @@ onMounted(async () => {
           :key="`day-${day.weekday}-${day.hours}`"
           class="flex flex-col gap-0"
           :class="{
-            'cursor-pointer': day.hours > 0
+            'cursor-pointer': day.hours > 0,
+            'border-primary max-lg:-mt-2 max-lg:border-t-2 max-lg:pt-2 lg:-ml-2 lg:border-l-2 lg:pl-2': day.isNewMonth
           }"
           @click="weekTimeWidgetStore.openDetailDayDialog(day)"
         >
-          <div class="text-sm font-bold capitalize">
-            {{ day.weekday }}
+          <div class="flex items-baseline justify-between gap-1.5">
+            <span class="text-sm font-bold capitalize">{{ day.weekday }}</span>
+            <span class="text-xs text-muted">{{ day.shortDate }}</span>
           </div>
           <day-linear-progress
             :hours="day.hours"
