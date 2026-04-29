@@ -18,10 +18,20 @@ const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
 
 const { formatShortDate } = useDateFormatter()
 const title = computed(() => {
-  return `${formatShortDate(parseISO(params.value.from))} - ${formatShortDate(parseISO(params.value.to))}`
+  const from = parseISO(params.value.from.slice(0, 10) + 'T12:00:00')
+  const to = parseISO(params.value.to.slice(0, 10) + 'T12:00:00')
+  return `${formatShortDate(from)} - ${formatShortDate(to)}`
 })
 
-const maxHoursInWeek = computed(() => pluralize(hoursInDay.value ? hoursInDay.value * 5 : 40, HOURS_PLURALIZE))
+const workingDaysCount = computed(() => {
+  if (!currentWeek.value.length) return 5
+  return currentWeek.value.filter(day => !day.isHoliday).length
+})
+
+const maxHoursInWeek = computed(() =>
+  pluralize(hoursInDay.value ? hoursInDay.value * workingDaysCount.value : workingDaysCount.value * 8, HOURS_PLURALIZE)
+)
+
 const currentHoursInWeek = computed(() => pluralize(+weekTotalHours.value.toFixed(2), HOURS_PLURALIZE))
 
 const meterGroupItems = computed(() =>
@@ -69,10 +79,10 @@ onMounted(async () => {
         <div
           v-for="day in currentWeek"
           :key="`day-${day.weekday}-${day.hours}`"
-          class="flex flex-col gap-0"
+          class="flex flex-col gap-0 p-1 transition-colors"
           :class="{
-            'cursor-pointer': day.hours > 0,
-            'border-primary max-lg:-mt-2 max-lg:border-t-2 max-lg:pt-2 lg:-ml-2 lg:border-l-2 lg:pl-2': day.isNewMonth
+            'cursor-pointer hover:bg-elevated': day.hours > 0,
+            'border-primary max-sm:-mt-2 max-sm:border-t-2 max-sm:pt-2 sm:-ml-2 sm:border-l-2 sm:pl-2': day.isNewMonth
           }"
           @click="weekTimeWidgetStore.openDetailDayDialog(day)"
         >
