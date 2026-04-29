@@ -1,15 +1,15 @@
-name: Tests
+name: CI
 
 on:
   pull_request:
     branches:
       - dev
       - master
+  workflow_call:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
