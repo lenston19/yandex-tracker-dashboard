@@ -19,8 +19,10 @@ export const $api = $fetch.create({
       let description = ''
 
       const data = response._data
-      if (data?.errorMessages) {
+      if (data?.errorMessages?.length) {
         description = Array.isArray(data.errorMessages) ? data.errorMessages.join('. ') : data.errorMessages
+      } else if (data?.errors && typeof data.errors === 'object') {
+        description = Object.values(data.errors).join('. ')
       } else {
         description = response.url
       }
@@ -39,7 +41,7 @@ export const $api = $fetch.create({
 
     if (Array.isArray(error.message)) {
       description = error.message.join('. ')
-    } else if (!error.message) {
+    } else if (error.message) {
       description = error.message
     }
 
