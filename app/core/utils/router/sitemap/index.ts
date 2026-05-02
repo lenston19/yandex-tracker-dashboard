@@ -43,6 +43,13 @@ const auth: SitemapRoute = {
   }
 }
 
+const myIssues: SitemapRoute = {
+  name: 'Мои задачи',
+  route: {
+    name: AppRoutes.myIssues
+  }
+}
+
 const faq: SitemapRoute = {
   name: 'FAQ',
   route: {
@@ -50,12 +57,21 @@ const faq: SitemapRoute = {
   }
 }
 
+const dayView: SitemapRoute = {
+  name: 'Детали дня',
+  route: {
+    name: AppRoutes.dayView
+  }
+}
+
 export const SITEMAP = {
   main,
   monthlyReport,
   projects,
+  myIssues,
   settings,
   faq,
   changelog,
-  auth
+  auth,
+  dayView
 }
