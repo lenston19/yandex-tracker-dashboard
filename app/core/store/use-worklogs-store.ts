@@ -11,18 +11,12 @@ import {
   addMonths,
   addDays
 } from 'date-fns'
-import yandexTrackerApi from '../api/yandex-tracker.api'
 import type { DateDuration } from '../types'
-import type { YandexTrackerApi } from '../types/api/yandex-tracker/yandex-tracker.api'
-import type { Yandex } from '../types/api/yandex-tracker/yandex-tracker.entity'
 import { useAuthStore } from './use-auth-store'
-import { calculateTotalHours, formatHoursToFixed } from '../utils/time'
-import { fetchAllPages } from '../utils/fetch-all-pages'
+import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO } from '../utils/time'
 import type { WorklogFormat } from '../types/worklogs'
 import { useNow } from '@vueuse/core'
-import { useTryCatchWithLoading } from '../composables/use-try-catch-with-loading'
-
-const LOCAL_UTC_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+import { useWorklogsFetch } from '../composables/use-worklogs-fetch'
 
 const periodStart = (d: Date, fmt: WorklogFormat): Date => {
   if (fmt === 'week') return startOfWeek(d, { weekStartsOn: 1 })
@@ -52,8 +46,6 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
   defineStore(`worklogs:${format}:${key}`, () => {
     const { login } = storeToRefs(useAuthStore())
 
-    const worklogsModel = ref<Yandex.Worklog[]>([])
-
     const now = useNow()
 
     const params = ref<DateDuration>({
@@ -61,38 +53,10 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
       to: formatDate(periodEnd(now.value, format), LOCAL_UTC_ISO)
     })
 
-    const { runWithLoading: refresh, isLoading } = useTryCatchWithLoading(async () => {
-      if (!login.value) {
-        worklogsModel.value = []
-        return
-      }
+    const fromRef = computed(() => params.value.from)
+    const toRef = computed(() => params.value.to)
 
-      const body: YandexTrackerApi.worklogList.Body = {
-        createdBy: login.value,
-        start: {
-          from: params.value.from,
-          to: params.value.to
-        }
-      }
-
-      const response = await yandexTrackerApi.worklogList(body)
-
-      if (!response._data) {
-        worklogsModel.value = []
-        return
-      }
-
-      const totalPages = response.headers.get('X-Total-Pages')
-      const totalCount = response.headers.get('X-Total-Count')
-
-      let allWorklogs: Yandex.Worklog[] = []
-      if (totalPages && totalCount && +totalCount > 50) {
-        allWorklogs = await fetchAllPages(page => yandexTrackerApi.worklogList(body, { page }), +totalPages)
-      }
-
-      const merged = [...response._data, ...allWorklogs]
-      worklogsModel.value = merged.filter((w, i, arr) => arr.findIndex(x => x.id === w.id) === i)
-    })
+    const { worklogsModel, refresh, isLoading } = useWorklogsFetch(fromRef, toRef)
 
     const next = async () => {
       const { from, to } = shiftPeriod(params.value.from, format, 1)
