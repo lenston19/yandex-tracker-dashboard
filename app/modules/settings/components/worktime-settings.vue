@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useModal } from 'vue-final-modal'
 import { useSiteSettingsStore } from '~/modules/settings'
+import { HEROICONS } from '~/core/constants/heroicons'
 import { formatRUB } from '~/core/utils/format-money'
 import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { pluralize } from '~/core/utils/pluralize'
@@ -62,8 +63,8 @@ const hoursPlural = computed(() => (hoursInDay.value ? pluralize(hoursInDay.valu
         <u-switch
           v-model="isShowWeeklyLoading"
           class="shrink-0"
-          checked-icon="i-heroicons-check-20-solid"
-          unchecked-icon="i-heroicons-x-mark-20-solid"
+          :checked-icon="HEROICONS.CHECK_20_SOLID"
+          :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
         />
       </div>
     </div>

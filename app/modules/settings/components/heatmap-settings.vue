@@ -2,6 +2,7 @@
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import type { HeatmapWeeks } from '../types'
 import UiCard from '~/core/components/ui/ui-card.vue'
+import { HEROICONS } from '~/core/constants/heroicons'
 
 const { heatmap } = storeToRefs(useSiteSettingsStore())
 
@@ -34,8 +35,8 @@ const selectedRange = computed({
         <u-switch
           v-model="heatmap.show"
           class="shrink-0"
-          checked-icon="i-heroicons-check-20-solid"
-          unchecked-icon="i-heroicons-x-mark-20-solid"
+          :checked-icon="HEROICONS.CHECK_20_SOLID"
+          :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
         />
       </div>
 
