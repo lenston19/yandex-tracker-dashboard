@@ -4,7 +4,7 @@ const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
 const appVersion = packageJson.version
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: '2026-05-03',
   devtools: { enabled: true },
   ssr: false,
 
@@ -83,13 +83,11 @@ export default defineNuxtConfig({
   css: ['~/assets/styles/main.css', 'vue-final-modal/style.css'],
 
   piniaPluginPersistedstate: {
-    storage: 'cookies',
-    cookieOptions: {
-      maxAge: 60 * 60 * 24 * 30 * 12
-    }
+    storage: 'localStorage'
   },
 
   experimental: {
+    viteEnvironmentApi: true,
     payloadExtraction: false,
     defaults: {
       nuxtLink: {
