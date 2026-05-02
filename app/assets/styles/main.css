@@ -87,9 +87,8 @@
   --ui-color-black-500: #111214;
   --ui-color-black-700: #262930;
 
-  html.dark {
-    @apply bg-neutral-950;
-  }
+  --ui-container: 1440px;
+
   body {
     position: relative;
     width: 100%;
@@ -100,4 +99,8 @@
   #__nuxt {
     height: 100%;
   }
+}
+
+html.dark {
+  @apply bg-neutral-950;
 }
