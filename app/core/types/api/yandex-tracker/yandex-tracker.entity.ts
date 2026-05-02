@@ -78,6 +78,42 @@ export namespace Yandex {
     issueTypesConfig: IssueTypeConfig[]
   }
 
+  export interface Issue {
+    self: string
+    id: string
+    key: string
+    version: number
+    summary: string
+    description?: string
+    status: BaseWithKey
+    previousStatus?: BaseWithKey
+    priority: BaseWithKey
+    type: BaseWithKey
+    queue: BaseWithKey
+    assignee?: Base
+    reviewer?: Base
+    qaEngineer?: Base
+    createdBy: Base
+    updatedBy: Base
+    createdAt: string
+    updatedAt: string
+    lastCommentUpdatedAt?: string
+    parent?: BaseWithKey
+    sprint?: Base[]
+    project?: Base
+    followers?: Base[]
+    tags?: string[]
+    votes?: number
+    favorite?: boolean
+  }
+
+  export interface Transition {
+    self: string
+    id: string
+    display: string
+    to: Base
+  }
+
   export enum AvatarSizes {
     'islands-small' = 'islands-small',
     'islands-34' = 'islands-34',
