@@ -1,10 +1,10 @@
-import { addDays, isSameISOWeek, parseISO } from 'date-fns'
+import { addDays, isToday, isSameISOWeek, parseISO } from 'date-fns'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import { calculateTotalHours, formatHoursToFixed } from '~/core/utils/time'
 import { useWorklogsStore } from '~/core/store/use-worklogs-store'
+import { worklogBus } from '~/core/composables/use-worklog-events'
 import { collectWorklogsByQueue } from '~/core/utils/collecting'
 import { pickMeterColors } from '~/core/utils/colors'
-import { useModal } from 'vue-final-modal'
 import type { Weekday } from '../types'
 import { useQueuesStore } from '~/core/store/use-queues-store'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
@@ -24,35 +24,43 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
   const calcWeekStats = async () => {
     clearState()
     const fromDate = parseISO(params.value.from.slice(0, 10) + 'T12:00:00')
+
+    const daysInWeek: Date[] = []
     let iterateDay = fromDate
-    let prevMonthKey: string | null = null
     while (isSameISOWeek(iterateDay, fromDate)) {
-      const holiday = !(await isWorkingDay(iterateDay))
-      const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) =>
-        isSameDayInTz(parseISO(item.start), iterateDay)
-      )
+      daysInWeek.push(iterateDay)
+      iterateDay = addDays(iterateDay, 1)
+    }
+
+    const workingFlags = await Promise.all(daysInWeek.map(d => isWorkingDay(d)))
+
+    let prevMonthKey: string | null = null
+    daysInWeek.forEach((day, i) => {
+      const holiday = !workingFlags[i]
+      const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) => isSameDayInTz(parseISO(item.start), day))
       const dayHours = formatHoursToFixed(calculateTotalHours(dayItems))
       weekTotalHours.value = weekTotalHours.value + dayHours
 
-      const monthKey = formatDayKey(iterateDay).slice(0, 7)
+      const monthKey = formatDayKey(day).slice(0, 7)
       const isNewMonth = prevMonthKey !== null && monthKey !== prevMonthKey
       prevMonthKey = monthKey
 
       currentWeek.value.push({
-        weekday: formatWeekday(iterateDay),
-        monthDay: formatFullDate(iterateDay),
-        shortDate: formatDayMonth(iterateDay),
+        weekday: formatWeekday(day),
+        monthDay: formatFullDate(day),
+        shortDate: formatDayMonth(day),
+        dateKey: formatDayKey(day).slice(0, 10),
         isNewMonth,
         hours: dayHours,
         isHoliday: holiday,
+        isToday: isToday(day),
         items: dayItems
       })
-      iterateDay = addDays(iterateDay, 1)
-    }
+    })
   }
 
   const flatQueueWorklogs = computed(() => {
-    if (isLoading.value && isLoadingQueue.value && !worklogsModel.value.length && !queuesModel.value.length) {
+    if ((isLoading.value || isLoadingQueue.value) && !worklogsModel.value.length && !queuesModel.value.length) {
       return []
     }
 
@@ -82,20 +90,16 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
     weekTotalHours.value = 0
   }
 
-  watchEffect(async () => {
-    if (!isLoading.value) {
-      await calcWeekStats()
-    }
+  watch(isLoading, async loading => {
+    if (!loading) await calcWeekStats()
   })
 
-  const { open, patchOptions } = useModal({
-    component: defineAsyncComponent(() => import('../components/modals/day-info-modal.vue'))
-  })
+  const unsubscribeWorklogBus = worklogBus.on(() => worklogsStore.refresh())
+  onScopeDispose(() => unsubscribeWorklogBus())
 
-  function openDetailDayDialog(day: Weekday) {
+  function openDetailDay(day: Weekday) {
     if (day.hours > 0) {
-      patchOptions({ attrs: { day } })
-      open()
+      navigateTo(`/day/${day.dateKey}`)
     }
   }
 
@@ -107,7 +111,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
     currentWeek,
     isLoading,
     refresh: worklogsStore.refresh,
-    openDetailDayDialog,
+    openDetailDay,
     flatQueueWorklogs,
     isLoadingQueue
   }
