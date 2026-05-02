@@ -2,41 +2,28 @@
 import { useSiteSettingsStore } from '~/modules/settings'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import UiLoadingOverlay from '~/core/components/ui/ui-loading-overlay.vue'
-import { useScrollLock, useToggle } from '@vueuse/core'
-import AppMenu from '~/core/components/app/app-menu.vue'
 import AppUser from '~/core/components/app/app-user.vue'
+import TimerButton from '~/core/components/timer/timer-button.vue'
 import { SITEMAP } from '~/core/utils/router/sitemap'
+import { APP_PAGES, UNAUTH_APP_PAGES } from '~/core/constants/menu'
 
 const { seasonalTheme } = storeToRefs(useSiteSettingsStore())
 const { isLoading: isLoadingMySelf, userName } = storeToRefs(useAuthStore())
-
-const bodyContainer = ref<HTMLElement | null>(null)
-
-const isLockedBodyScroll = useScrollLock(bodyContainer)
-const toggleLockBodyScroll = useToggle(isLockedBodyScroll)
-
-watchEffect(() => {
-  toggleLockBodyScroll(isLoadingMySelf.value)
-})
-
-onMounted(() => {
-  nextTick(() => {
-    bodyContainer.value = document.body
-  })
-})
+const { login } = storeToRefs(useAuthStore())
+const { organizationId } = storeToRefs(useSiteSettingsStore())
 
 const seasonalThemeComponent = computed(() => {
   switch (seasonalTheme.value.type) {
     case 'halloween':
       return defineAsyncComponent(() => import('../components/theme/theme-halloween.vue'))
-
     case 'new-year':
       return defineAsyncComponent(() => import('../components/theme/theme-new-year.vue'))
-
     default:
       return null
   }
 })
+
+const pages = computed(() => (organizationId.value && login.value ? APP_PAGES : UNAUTH_APP_PAGES))
 </script>
 
 <template>
@@ -45,27 +32,52 @@ const seasonalThemeComponent = computed(() => {
     :is="seasonalThemeComponent"
     v-if="seasonalTheme.active && !isLoadingMySelf"
   />
-  <template v-if="!isLoadingMySelf">
-    <header
-      class="flex min-h-[61px] items-center justify-between border-b border-gray-200 px-4 py-2 dark:border-gray-800"
+
+  <u-dashboard-group
+    v-if="!isLoadingMySelf"
+    storage="local"
+  >
+    <u-dashboard-sidebar
+      :ui="{
+        footer: 'border-t border-default flex flex-col'
+      }"
     >
-      <app-menu />
-      <div
-        v-if="userName"
-        class="ml-auto flex items-center gap-1 lg:gap-4"
-      >
-        <u-button
-          variant="subtle"
-          :to="{ name: SITEMAP.settings.route.name }"
+      <template #header>
+        <nuxt-link
+          :to="SITEMAP.main.route"
+          class="flex items-center gap-2 truncate text-sm font-semibold text-highlighted"
         >
+          YTDashboard
+        </nuxt-link>
+      </template>
+
+      <u-navigation-menu
+        :items="pages"
+        orientation="vertical"
+        class="w-full"
+      />
+
+      <template
+        v-if="userName"
+        #footer
+      >
+        <timer-button class="w-full" />
+
+        <div class="w-full rounded-md bg-primary/20 px-2 py-1">
           <app-user />
-        </u-button>
-      </div>
-    </header>
-    <main>
-      <u-container class="my-4">
+        </div>
+
+        <u-color-mode-select
+          class="w-full"
+          :ui="{ content: 'z-9999' }"
+        />
+      </template>
+    </u-dashboard-sidebar>
+
+    <main class="flex min-h-svh flex-1 flex-col overflow-auto">
+      <u-container class="py-5 lg:py-10">
         <nuxt-page />
       </u-container>
     </main>
-  </template>
+  </u-dashboard-group>
 </template>
