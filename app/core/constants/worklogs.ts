@@ -1,15 +1,7 @@
 export const WORKLOG_COLUMNS = [
   {
-    accessorKey: 'key',
-    header: 'Ключ'
-  },
-  {
-    accessorKey: 'name',
-    header: 'Наименование задачи'
-  },
-  {
     accessorKey: 'time',
-    header: 'Потраченное время'
+    header: 'Время'
   },
   {
     accessorKey: 'dateCreatedAt',
@@ -17,11 +9,15 @@ export const WORKLOG_COLUMNS = [
   },
   {
     accessorKey: 'timeCreatedAt',
-    header: 'Время'
+    header: 'Начало'
   },
   {
     accessorKey: 'comment',
     header: 'Комментарий'
+  },
+  {
+    id: 'actions',
+    header: 'Действия'
   }
 ]
 
@@ -34,7 +30,11 @@ export const GROUPED_WORKLOG_COLUMNS = [
     header: 'Задача'
   },
   {
+    id: 'name',
+    header: 'Наименование'
+  },
+  {
     accessorKey: 'totalTime',
-    header: 'Всего времени'
+    header: 'Всего'
   }
 ]

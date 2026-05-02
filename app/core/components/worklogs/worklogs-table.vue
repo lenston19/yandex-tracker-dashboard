@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { parseISO } from 'date-fns'
+import { useModal } from 'vue-final-modal'
 import { calculateWorklogTimeByDay } from '../../utils/time'
 import type { Yandex } from '../../types/api/yandex-tracker/yandex-tracker.entity'
 import UiPagination from '../ui/ui-pagination.vue'
-import { WORKLOG_COLUMNS } from '../../constants/worklogs'
 import UiCard from '../ui/ui-card.vue'
 import { useDateFormatter } from '../../composables/use-date-formatter'
+import yandexTrackerApi from '../../api/yandex-tracker.api'
+import { useTryCatchWithLoading } from '../../composables/use-try-catch-with-loading'
+import { HEROICONS } from '../../constants/heroicons'
+import { AsyncModalConfirm } from '../modal'
+import { WORKLOG_COLUMNS } from '~/core/constants/worklogs'
 
 const props = defineProps<{
   worklogs: Yandex.Worklog[]
 }>()
+
+const emit = defineEmits<{ changed: [] }>()
 
 const { formatShortDate, formatTime } = useDateFormatter()
 
@@ -22,14 +29,44 @@ const getTimeCreatedAt = (row: Yandex.Worklog) => formatTime(parseISO(row.start)
 const page = ref<number>(1)
 const pageCount = 5
 const rows = computed(() => props.worklogs.slice((page.value - 1) * pageCount, page.value * pageCount))
+
+const pendingDelete = ref<Yandex.Worklog | null>(null)
+
+const {
+  open: openConfirmModal,
+  close: closeConfirmModal,
+  patchOptions: patchConfirmModal
+} = useModal({ component: AsyncModalConfirm })
+
+const { runWithLoading: confirmDelete, isLoading: isConfirmDeleting } = useTryCatchWithLoading(async () => {
+  if (!pendingDelete.value) return
+  await yandexTrackerApi.worklogDelete(pendingDelete.value.issue.key, pendingDelete.value.id)
+  await closeConfirmModal()
+  pendingDelete.value = null
+  emit('changed')
+})
+
+watch(isConfirmDeleting, loading => {
+  patchConfirmModal({ attrs: { loading } })
+})
+
+const openConfirm = (worklog: Yandex.Worklog) => {
+  pendingDelete.value = worklog
+  patchConfirmModal({
+    attrs: {
+      title: 'Удалить ворклог?',
+      description: 'Это действие необратимо.',
+      confirmLabel: 'Удалить',
+      loading: false,
+      onConfirm: confirmDelete
+    }
+  })
+  openConfirmModal()
+}
 </script>
 
 <template>
-  <ui-card
-    :ui="{
-      body: 'p-0 sm:p-0'
-    }"
-  >
+  <ui-card :ui="{ body: 'p-0 sm:p-0' }">
     <u-table
       :data="rows"
       :columns="WORKLOG_COLUMNS"
@@ -63,6 +100,21 @@ const rows = computed(() => props.worklogs.slice((page.value - 1) * pageCount, p
       </template>
       <template #timeCreatedAt-cell="{ row }">
         {{ getTimeCreatedAt(row.original) }}
+      </template>
+      <template #actions-cell="{ row }">
+        <u-tooltip
+          text="Удалить"
+          :delay-duration="0"
+        >
+          <u-button
+            :icon="HEROICONS.TRASH"
+            variant="ghost"
+            size="sm"
+            square
+            color="error"
+            @click="openConfirm(row.original)"
+          />
+        </u-tooltip>
       </template>
     </u-table>
 
