@@ -1,5 +1,4 @@
 import { readFileSync } from 'fs'
-
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
 const appVersion = packageJson.version
 
@@ -77,7 +76,10 @@ export default defineNuxtConfig({
   },
 
   icon: {
-    provider: 'iconify'
+    provider: 'server',
+    serverBundle: {
+      collections: ['heroicons', 'lucide']
+    }
   },
 
   css: ['~/assets/styles/main.css', 'vue-final-modal/style.css'],
