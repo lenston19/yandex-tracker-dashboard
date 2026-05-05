@@ -2,6 +2,7 @@
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import { getPriorityWeight, getStatusColor } from '~/core/utils/my-issues'
 import { HEROICONS } from '~/core/constants/heroicons'
+import { useTimerStore } from '~/core/store/use-timer-store'
 
 const props = withDefaults(
   defineProps<{
@@ -41,6 +42,9 @@ const chevrons = computed((): ChevronConfig => {
   return { icon: HEROICONS.CHEVRON_DOWN, color: 'text-neutral-500', count: 1, tooltip: label }
 })
 
+const { isRunning, issueKey: activeIssueKey } = storeToRefs(useTimerStore())
+const isActiveIssue = computed(() => isRunning.value && activeIssueKey.value === props.issue.key)
+
 const statusColor = computed(() => getStatusColor(props.issue.status))
 
 const hasMeta = computed(
@@ -52,7 +56,12 @@ const hasMeta = computed(
 </script>
 
 <template>
-  <div class="flex justify-between gap-3 py-2.5">
+  <div
+    class="flex justify-between gap-3 py-2.5 pr-1.5 pl-2 transition-colors"
+    :class="{
+      'bg-primary/8 ring-primary': isActiveIssue
+    }"
+  >
     <div class="flex min-w-0 flex-1 flex-col items-start">
       <div class="flex flex-wrap items-center gap-1.5">
         <u-tooltip
@@ -60,13 +69,24 @@ const hasMeta = computed(
           :text="chevrons.tooltip"
           :delay-duration="200"
         >
-          <span class="inline-flex cursor-default items-center">
+          <span class="inline-flex cursor-help items-center">
             <u-icon
               v-for="n in chevrons.count"
               :key="n"
               :name="chevrons.icon"
               :class="['-mx-0.5 size-3.5', chevrons.color]"
             />
+          </span>
+        </u-tooltip>
+
+        <u-tooltip
+          v-if="isActiveIssue"
+          text="Активная задача"
+          :delay-duration="200"
+        >
+          <span class="relative inline-flex size-2 shrink-0 cursor-help">
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-75" />
+            <span class="relative inline-flex size-2 rounded-full bg-success" />
           </span>
         </u-tooltip>
 
