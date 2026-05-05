@@ -24,7 +24,6 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
 
   watch(
     [login, () => myIssues.value.statuses, () => myIssues.value.roles],
-    [login, () => myIssues.value.statuses],
     async ([newLogin]) => {
       if (newLogin) {
         await refresh()
