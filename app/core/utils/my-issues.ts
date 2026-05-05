@@ -6,8 +6,27 @@ export interface IssueFilters {
   queue: string
 }
 
-export const buildFetchQuery = (login: string, filters: IssueFilters): string => {
-  const parts = [`Assignee: ${login}`]
+export interface IssueRoles {
+  assignee: boolean
+  reviewer: boolean
+  qaEngineer: boolean
+}
+
+const ROLE_FIELD: Record<keyof IssueRoles, string> = {
+  assignee: 'Assignee',
+  reviewer: 'Reviewer',
+  qaEngineer: 'QA'
+}
+
+export const buildFetchQuery = (login: string, filters: IssueFilters, roles?: IssueRoles): string => {
+  const activeRoles = roles
+    ? (Object.keys(roles) as (keyof IssueRoles)[]).filter(k => roles[k])
+    : (['assignee'] as (keyof IssueRoles)[])
+
+  const roleParts = activeRoles.map(r => `${ROLE_FIELD[r]}: ${login}`)
+  const roleClause = roleParts.length > 1 ? `(${roleParts.join(' OR ')})` : (roleParts[0] ?? `Assignee: ${login}`)
+
+  const parts = [roleClause]
   if (filters.statuses.length) parts.push(`Status: ${filters.statuses.join(', ')}`)
   if (filters.priority) parts.push(`Priority: ${filters.priority}`)
   if (filters.queue) parts.push(`Queue: ${filters.queue}`)
@@ -46,7 +65,7 @@ export const getStatusColor = (status: Yandex.BaseWithKey): BadgeColor => {
   if (['closed', 'resolved'].includes(key) || display.includes('закрыт') || display.includes('решён')) return 'success'
   if (['rejected', 'cancelled', 'wontfix'].includes(key) || display.includes('отклон') || display.includes('отмен'))
     return 'error'
-  if (['needinfo', 'reopened'].includes(key) || display.includes('нужна инф') || display.includes('переоткрыт'))
+  if (['needinfo', 'rediscovered'].includes(key) || display.includes('нужна инф') || display.includes('переоткрыт'))
     return 'warning'
   if (['testing', 'review'].includes(key) || display.includes('тест') || display.includes('ревью')) return 'secondary'
   return 'neutral'

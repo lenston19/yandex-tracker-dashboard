@@ -3,8 +3,7 @@ import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.enti
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { useTryCatchWithLoading } from '~/core/composables/use-try-catch-with-loading'
 import { useSiteSettingsStore } from '~/modules/settings'
-import { sortByPriority } from '~/core/utils/my-issues'
-import { worklogBus } from '~/core/composables/use-worklog-events'
+import { buildFetchQuery, sortByPriority } from '~/core/utils/my-issues'
 
 export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
   const { login } = storeToRefs(useAuthStore())
@@ -17,12 +16,14 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
       issues.value = []
       return
     }
-    const statuses = myIssues.value.statuses.join(', ') || 'open, reopened'
-    const data = await yandexTrackerApi.issueSearch({ query: `Assignee: ${login.value} Status: ${statuses}` }, 50)
+    const statuses = myIssues.value.statuses.length ? myIssues.value.statuses : ['open', 'rediscovered']
+    const query = buildFetchQuery(login.value, { statuses, priority: null, queue: '' }, myIssues.value.roles)
+    const data = await yandexTrackerApi.issueSearch({ query }, 50)
     issues.value = sortByPriority(data ?? [])
   })
 
   watch(
+    [login, () => myIssues.value.statuses, () => myIssues.value.roles],
     [login, () => myIssues.value.statuses],
     async ([newLogin]) => {
       if (newLogin) {

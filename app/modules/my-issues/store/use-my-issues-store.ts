@@ -4,12 +4,14 @@ import { useAuthStore } from '~/core/store/use-auth-store'
 import { useTryCatchWithLoading } from '~/core/composables/use-try-catch-with-loading'
 import { buildFetchQuery, groupIssuesByQueue, sortByPriority } from '~/core/utils/my-issues'
 import type { IssueFilters } from '~/core/utils/my-issues'
+import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 
 const MAX_FETCH = 200
 export const PAGE_SIZE = 20
 
 export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const { login } = storeToRefs(useAuthStore())
+  const { myIssues } = storeToRefs(useSiteSettingsStore())
   const route = useRoute()
   const router = useRouter()
 
@@ -46,7 +48,7 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const issuesByQueue = computed(() => groupIssuesByQueue(paginatedIssues.value))
   const totalIssues = computed(() => allIssues.value.length)
 
-  const fetchQuery = computed(() => buildFetchQuery(login.value ?? '', filters))
+  const fetchQuery = computed(() => buildFetchQuery(login.value ?? '', filters, myIssues.value.roles))
 
   const { runWithLoading: fetch, isLoading } = useTryCatchWithLoading(async () => {
     if (!login.value) {

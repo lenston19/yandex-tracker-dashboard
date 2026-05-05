@@ -12,6 +12,11 @@ export function useDisplaySettings() {
   const myIssues = reactive<{
     show: boolean
     statuses: string[]
+    roles: {
+      assignee: boolean
+      reviewer: boolean
+      qaEngineer: boolean
+    }
     display: {
       priority: boolean
       status: boolean
@@ -21,7 +26,11 @@ export function useDisplaySettings() {
     }
   }>({
     show: true,
-    statuses: ['open', 'reopened'],
+    roles: {
+      assignee: true,
+      reviewer: false,
+      qaEngineer: false
+    },
     display: {
       priority: true,
       status: true,

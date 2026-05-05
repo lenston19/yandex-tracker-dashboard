@@ -20,8 +20,8 @@ const makeIssue = (key: string, queueKey: string, queueDisplay: string): Yandex.
 
 describe('buildFetchQuery', () => {
   it('базовый запрос с логином и статусами', () => {
-    expect(buildFetchQuery('user1', { statuses: ['open', 'reopened'], priority: null, queue: '' })).toBe(
-      'Assignee: user1 Status: open, reopened'
+    expect(buildFetchQuery('user1', { statuses: ['open', 'rediscovered'], priority: null, queue: '' })).toBe(
+      'Assignee: user1 Status: open, rediscovered'
     )
   })
 
@@ -40,8 +40,8 @@ describe('buildFetchQuery', () => {
   })
 
   it('все фильтры одновременно', () => {
-    expect(buildFetchQuery('user', { statuses: ['open', 'reopened'], priority: 'high', queue: 'PROJ' })).toBe(
-      'Assignee: user Status: open, reopened Priority: high Queue: PROJ'
+    expect(buildFetchQuery('user', { statuses: ['open', 'rediscovered'], priority: 'high', queue: 'PROJ' })).toBe(
+      'Assignee: user Status: open, rediscovered Priority: high Queue: PROJ'
     )
   })
 

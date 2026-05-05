@@ -5,10 +5,17 @@ import { HEROICONS } from '~/core/constants/heroicons'
 import { ISSUE_STATUS_OPTIONS } from '~/core/constants/issues'
 
 const ACTIVE_STATUS_OPTIONS = ISSUE_STATUS_OPTIONS.filter(o =>
-  ['open', 'reopened', 'inProgress', 'needInfo'].includes(o.value)
+  ['open', 'rediscovered', 'inProgress', 'needInfo'].includes(o.value)
 )
 
+type RoleKey = 'assignee' | 'reviewer' | 'qaEngineer'
 type DisplayKey = 'priority' | 'status' | 'assignee' | 'reviewer' | 'qaEngineer'
+
+const ROLE_OPTIONS: { key: RoleKey; label: string }[] = [
+  { key: 'assignee', label: 'Исполнитель' },
+  { key: 'reviewer', label: 'Ревьюер' },
+  { key: 'qaEngineer', label: 'QA-инженер' }
+]
 
 const DISPLAY_OPTIONS: { key: DisplayKey; label: string }[] = [
   { key: 'priority', label: 'Приоритет' },
@@ -58,6 +65,25 @@ const selectedStatuses = computed({
         class="w-48 shrink-0"
         placeholder="Выберите статусы"
       />
+    </div>
+    <u-separator />
+    <div class="px-2 py-1.5 lg:px-4 lg:py-3">
+      <p class="mb-2 text-sm font-medium">Искать задачи по роли</p>
+      <div class="flex flex-col gap-1.5">
+        <div
+          v-for="item in ROLE_OPTIONS"
+          :key="item.key"
+          class="flex items-center justify-between gap-4"
+        >
+          <p class="text-sm text-muted">{{ item.label }}</p>
+          <u-switch
+            v-model="myIssues.roles[item.key]"
+            size="sm"
+            :checked-icon="HEROICONS.CHECK_20_SOLID"
+            :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
+          />
+        </div>
+      </div>
     </div>
     <u-separator />
     <div class="px-2 py-1.5 lg:px-4 lg:py-3">
