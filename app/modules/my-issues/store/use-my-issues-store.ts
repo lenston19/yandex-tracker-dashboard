@@ -6,7 +6,7 @@ import { buildFetchQuery, groupIssuesByQueue, sortByPriority } from '~/core/util
 import type { IssueFilters } from '~/core/utils/my-issues'
 import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
-import { useIssueBus } from '~/core/composables/use-issue-events'
+import { useIssueBus } from '~/core/composables/use-issue-bus'
 
 const MAX_FETCH = 200
 export const PAGE_SIZE = 20

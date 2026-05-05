@@ -4,6 +4,7 @@ import { useAuthStore } from '~/core/store/use-auth-store'
 import { useTryCatchWithLoading } from '~/core/composables/use-try-catch-with-loading'
 import { useSiteSettingsStore } from '~/modules/settings'
 import { buildFetchQuery, sortByPriority } from '~/core/utils/my-issues'
+import { useIssueBus } from '~/core/composables/use-issue-bus'
 
 export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
   const { login } = storeToRefs(useAuthStore())
@@ -33,7 +34,7 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
   )
 
   const unsubscribeWorklogBus = worklogBus.on(() => refresh())
-  onScopeDispose(() => unsubscribeWorklogBus())
+  useIssueBus(refresh)
 
   return { issues, isLoading, refresh }
 })

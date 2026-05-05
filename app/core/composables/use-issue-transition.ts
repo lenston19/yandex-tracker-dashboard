@@ -1,6 +1,7 @@
 import yandexTrackerApi from '../api/yandex-tracker.api'
 import type { Yandex } from '../types/api/yandex-tracker/yandex-tracker.entity'
 import { useTimerStore } from '../store/use-timer-store'
+import { useIssueBus } from './use-issue-bus'
 
 export const useIssueTransition = () => {
   const timerStore = useTimerStore()
@@ -44,6 +45,7 @@ export const useIssueTransition = () => {
       isTransitioning.value = false
     }
     timerStore.start(issue.key, issue.summary)
+    useIssueBus().emit('Refresh issue')
   }
 
   const cancelTransition = (issue: Yandex.Issue) => {
