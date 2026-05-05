@@ -118,7 +118,7 @@ onMounted(async () => {
           v-if="!isLoading"
           class="flex flex-wrap gap-1 text-lg"
         >
-          Всего: <span class="text-base font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }} </span>
+          Всего: <span class="font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }} </span>
         </div>
         <u-skeleton
           v-else
