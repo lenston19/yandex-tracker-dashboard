@@ -1,4 +1,5 @@
 import type { HeatmapWeeks } from '../types'
+import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 
 export function useDisplaySettings() {
   const heatmap = reactive<{
@@ -26,6 +27,7 @@ export function useDisplaySettings() {
     }
   }>({
     show: true,
+    statuses: [...DEFAULT_ISSUE_STATUSES],
     roles: {
       assignee: true,
       reviewer: false,

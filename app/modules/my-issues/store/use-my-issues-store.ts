@@ -4,7 +4,9 @@ import { useAuthStore } from '~/core/store/use-auth-store'
 import { useTryCatchWithLoading } from '~/core/composables/use-try-catch-with-loading'
 import { buildFetchQuery, groupIssuesByQueue, sortByPriority } from '~/core/utils/my-issues'
 import type { IssueFilters } from '~/core/utils/my-issues'
+import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { useIssueBus } from '~/core/composables/use-issue-events'
 
 const MAX_FETCH = 200
 export const PAGE_SIZE = 20
@@ -21,7 +23,7 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const parseStatuses = (): string[] => {
     const raw = route.query.statuses
     if (typeof raw === 'string' && raw) return raw.split(',')
-    return ['open', 'reopened']
+    return [...DEFAULT_ISSUE_STATUSES]
   }
 
   const filters = reactive<IssueFilters>({
@@ -77,6 +79,8 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
     },
     { immediate: true }
   )
+
+  useIssueBus(fetch)
 
   return {
     allIssues,

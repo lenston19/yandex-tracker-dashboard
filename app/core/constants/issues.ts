@@ -1,6 +1,8 @@
+export const DEFAULT_ISSUE_STATUSES = ['open', 'rediscovered', 'inProgress']
+
 export const ISSUE_STATUS_OPTIONS = [
   { label: 'Открыт', value: 'open' },
-  { label: 'Переоткрыт', value: 'reopened' },
+  { label: 'Переоткрыт', value: 'rediscovered' },
   { label: 'В работе', value: 'inProgress' },
   { label: 'На ревью', value: 'review' },
   { label: 'Тестирование', value: 'testing' },
