@@ -75,6 +75,17 @@ const pages = computed(() => (organizationId.value && login.value ? APP_PAGES : 
     </u-dashboard-sidebar>
 
     <main class="flex min-h-svh flex-1 flex-col overflow-auto">
+      <div
+        class="sticky top-0 z-10 flex items-center justify-between border-b border-default px-4 py-2 backdrop-blur-sm lg:hidden"
+      >
+        <nuxt-link
+          :to="SITEMAP.main.route"
+          class="text-sm font-semibold text-highlighted"
+        >
+          YTDashboard
+        </nuxt-link>
+        <u-dashboard-sidebar-toggle />
+      </div>
       <u-container class="py-5 lg:py-10">
         <nuxt-page />
       </u-container>
