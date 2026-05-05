@@ -11,7 +11,7 @@ import GroupedWorklogsTable from '~/core/components/worklogs/grouped-worklogs-ta
 import UiCard from '~/core/components/ui/ui-card.vue'
 import UiEmptyState from '~/core/components/ui/ui-empty-state.vue'
 import { HEROICONS } from '~/core/constants/heroicons'
-import { worklogBus } from '~/core/composables/use-worklog-events'
+import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 
 const route = useRoute()
 const router = useRouter()
@@ -31,12 +31,18 @@ const dateLabel = computed(() => {
 const from = computed(() => formatDate(startOfDay(parseISO(dateParam.value)), LOCAL_UTC_ISO))
 const to = computed(() => formatDate(endOfDay(parseISO(dateParam.value)), LOCAL_UTC_ISO))
 
-const { worklogsModel: worklogs, refresh: fetchWorklogs, isLoading } = useWorklogsFetch(from, to)
+const {
+  worklogsModel: worklogs,
+  refresh: fetchWorklogs,
+  isLoading,
+  addWorklog,
+  removeWorklog
+} = useWorklogsFetch(from, to)
 
 watch([login, dateParam], () => fetchWorklogs(), { immediate: true })
 
-const unsubscribeWorklogBus = worklogBus.on(() => fetchWorklogs())
-onUnmounted(() => unsubscribeWorklogBus())
+useWorklogBus('saved', addWorklog)
+useWorklogBus('deleted', removeWorklog)
 
 const tableRows = computed(() => collectWorklogs(worklogs.value).result)
 

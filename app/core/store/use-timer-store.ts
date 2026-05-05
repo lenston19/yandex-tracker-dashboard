@@ -2,7 +2,7 @@ import type { PiniaPluginContext } from 'pinia'
 import yandexTrackerApi from '../api/yandex-tracker.api'
 import { calculateElapsedSeconds, buildWorklogPayload } from '../utils/time'
 import { useTryCatchWithLoading } from '../composables/use-try-catch-with-loading'
-import { worklogBus } from '../composables/use-worklog-events'
+import { useWorklogBus } from '../composables/use-worklog-bus'
 
 export const useTimerStore = defineStore(
   'timer',
@@ -26,8 +26,8 @@ export const useTimerStore = defineStore(
         const seconds = customSeconds ?? calculateElapsedSeconds(startedAt.value)
         const payload = buildWorklogPayload(startedAt.value, seconds, comment)
 
-        await yandexTrackerApi.worklogCreate(issueKey.value, payload)
-        worklogBus.emit(undefined)
+        const response = await yandexTrackerApi.worklogCreate(issueKey.value, payload)
+        useWorklogBus().emit('saved', response)
         reset()
       }
     )

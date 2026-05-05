@@ -1,3 +1,4 @@
+import { parseISO } from 'date-fns'
 import yandexTrackerApi from '../api/yandex-tracker.api'
 import type { YandexTrackerApi } from '../types/api/yandex-tracker/yandex-tracker.api'
 import type { Yandex } from '../types/api/yandex-tracker/yandex-tracker.entity'
@@ -38,5 +39,21 @@ export function useWorklogsFetch(from: Ref<string>, to: Ref<string>) {
     worklogsModel.value = merged.filter((w, i, arr) => arr.findIndex(x => x.id === w.id) === i)
   })
 
-  return { worklogsModel, refresh, isLoading }
+  const removeWorklog = (id: string) => {
+    worklogsModel.value = worklogsModel.value.filter(w => w.id !== id)
+  }
+
+  const addWorklog = (worklog: Yandex.Worklog) => {
+    const start = parseISO(worklog.start)
+
+    if (
+      start >= parseISO(from.value) &&
+      start <= parseISO(to.value) &&
+      !worklogsModel.value.some(w => w.id === worklog.id)
+    ) {
+      worklogsModel.value = [...worklogsModel.value, worklog]
+    }
+  }
+
+  return { worklogsModel, refresh, isLoading, addWorklog, removeWorklog }
 }

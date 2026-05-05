@@ -2,7 +2,7 @@ import { addDays, isToday, isSameISOWeek, parseISO } from 'date-fns'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import { calculateTotalHours, formatHoursToFixed } from '~/core/utils/time'
 import { useWorklogsStore } from '~/core/store/use-worklogs-store'
-import { worklogBus } from '~/core/composables/use-worklog-events'
+import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 import { collectWorklogsByQueue } from '~/core/utils/collecting'
 import { pickMeterColors } from '~/core/utils/colors'
 import type { Weekday } from '../types'
@@ -94,8 +94,12 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
     if (!loading) await calcWeekStats()
   })
 
-  const unsubscribeWorklogBus = worklogBus.on(() => worklogsStore.refresh())
-  onScopeDispose(() => unsubscribeWorklogBus())
+  watch(worklogsModel, async () => {
+    if (!isLoading.value) await calcWeekStats()
+  })
+
+  useWorklogBus('saved', worklogsStore.addWorklog)
+  useWorklogBus('deleted', worklogsStore.removeWorklog)
 
   function openDetailDay(day: Weekday) {
     if (day.hours > 0) {

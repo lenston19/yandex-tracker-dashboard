@@ -4,6 +4,7 @@ import { useSiteSettingsStore } from '~/modules/settings'
 import { useWorklogsFetch } from '~/core/composables/use-worklogs-fetch'
 import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO } from '~/core/utils/time'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
+import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 
 export const useActivityHeatmapStore = defineStore('activity-heatmap', () => {
   const { login } = storeToRefs(useAuthStore())
@@ -13,7 +14,7 @@ export const useActivityHeatmapStore = defineStore('activity-heatmap', () => {
   const from = computed(() => formatDate(startOfDay(subDays(new Date(), heatmap.value.weeks * 7)), LOCAL_UTC_ISO))
   const to = computed(() => formatDate(endOfDay(new Date()), LOCAL_UTC_ISO))
 
-  const { worklogsModel, refresh, isLoading } = useWorklogsFetch(from, to)
+  const { worklogsModel, refresh, isLoading, addWorklog, removeWorklog } = useWorklogsFetch(from, to)
 
   const dayMap = computed(() => {
     const map = new Map<string, number>()
@@ -48,6 +49,9 @@ export const useActivityHeatmapStore = defineStore('activity-heatmap', () => {
       refresh()
     }
   )
+
+  useWorklogBus('saved', addWorklog)
+  useWorklogBus('deleted', removeWorklog)
 
   return { dayMap, isLoading, refresh, formatTooltip }
 })

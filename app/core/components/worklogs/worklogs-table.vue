@@ -11,12 +11,11 @@ import { useTryCatchWithLoading } from '../../composables/use-try-catch-with-loa
 import { HEROICONS } from '../../constants/heroicons'
 import { AsyncModalConfirm } from '../modal'
 import { WORKLOG_COLUMNS } from '~/core/constants/worklogs'
+import { useWorklogBus } from '../../composables/use-worklog-bus'
 
 const props = defineProps<{
   worklogs: Yandex.Worklog[]
 }>()
-
-const emit = defineEmits<{ changed: [] }>()
 
 const { formatShortDate, formatTime } = useDateFormatter()
 
@@ -40,10 +39,11 @@ const {
 
 const { runWithLoading: confirmDelete, isLoading: isConfirmDeleting } = useTryCatchWithLoading(async () => {
   if (!pendingDelete.value) return
-  await yandexTrackerApi.worklogDelete(pendingDelete.value.issue.key, pendingDelete.value.id)
+  const deletedId = pendingDelete.value.id
+  await yandexTrackerApi.worklogDelete(pendingDelete.value.issue.key, deletedId)
   await closeConfirmModal()
   pendingDelete.value = null
-  emit('changed')
+  useWorklogBus().emit('deleted', deletedId)
 })
 
 watch(isConfirmDeleting, loading => {

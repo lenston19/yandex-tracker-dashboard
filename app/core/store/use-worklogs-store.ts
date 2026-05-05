@@ -56,7 +56,7 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
     const fromRef = computed(() => params.value.from)
     const toRef = computed(() => params.value.to)
 
-    const { worklogsModel, refresh, isLoading } = useWorklogsFetch(fromRef, toRef)
+    const { worklogsModel, refresh, isLoading, addWorklog, removeWorklog } = useWorklogsFetch(fromRef, toRef)
 
     const next = async () => {
       const { from, to } = shiftPeriod(params.value.from, format, 1)
@@ -93,6 +93,8 @@ export const useWorklogsStore = (format: WorklogFormat, key: string) =>
       prev,
       refresh,
       isLoading,
-      totalHours
+      totalHours,
+      addWorklog,
+      removeWorklog
     }
   })()
