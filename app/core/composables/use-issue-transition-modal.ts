@@ -1,6 +1,7 @@
 import { useModal } from 'vue-final-modal'
-import { AsyncModalConfirm } from '../components/modal'
+import { AsyncModalTransition } from '../components/modal'
 import { useIssueTransition } from './use-issue-transition'
+import { parseRuDuration } from '../utils/time'
 import type { Yandex } from '../types/api/yandex-tracker/yandex-tracker.entity'
 
 export const useIssueTransitionModal = () => {
@@ -9,14 +10,12 @@ export const useIssueTransitionModal = () => {
   const pendingIssue = ref<Yandex.Issue | null>(null)
 
   const { open, close, patchOptions } = useModal({
-    component: AsyncModalConfirm,
+    component: AsyncModalTransition,
     attrs: {
-      title: 'Перевести задачу в работу?',
-      confirmLabel: 'Перевести и запустить',
-      cancelLabel: 'Просто запустить',
-      onConfirm: async () => {
+      onConfirm: async (estimationInput?: string) => {
         if (!pendingIssue.value) return
-        await confirmTransition(pendingIssue.value)
+        const originalEstimation = estimationInput ? parseRuDuration(estimationInput) : undefined
+        await confirmTransition(pendingIssue.value, originalEstimation)
         close()
       },
       onCancel: () => {
@@ -31,7 +30,10 @@ export const useIssueTransitionModal = () => {
     selectIssue(issue, i => {
       pendingIssue.value = i
       patchOptions({
-        attrs: { description: `Задача ${i.key} сейчас открыта.\nПеревести в 'В работе' и запустить таймер?` }
+        attrs: {
+          description: `Задача ${i.key} сейчас открыта.\nПеревести в 'В работе' и запустить таймер?`,
+          existingEstimation: i.estimation && i.estimation !== 'PT0S' ? i.estimation : undefined
+        }
       })
       open()
     })

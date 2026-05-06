@@ -3,3 +3,4 @@ export const AsyncModalDrawer = defineAsyncComponent(() => import('./modal-drawe
 export const AsyncModalSlideover = defineAsyncComponent(() => import('./modal-slideover.vue'))
 
 export const AsyncModalConfirm = defineAsyncComponent(() => import('./modal-confirm.vue'))
+export const AsyncModalTransition = defineAsyncComponent(() => import('./modal-transition.vue'))

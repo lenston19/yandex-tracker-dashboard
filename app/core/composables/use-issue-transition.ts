@@ -23,7 +23,7 @@ export const useIssueTransition = () => {
     }
   }
 
-  const confirmTransition = async (issue: Yandex.Issue) => {
+  const confirmTransition = async (issue: Yandex.Issue, originalEstimation?: string) => {
     isTransitioning.value = true
     try {
       const transitions = await yandexTrackerApi.issueTransitionsList(issue.key)
@@ -31,7 +31,9 @@ export const useIssueTransition = () => {
         t => t.to.id.toLowerCase().includes('inprogress') || t.to.display.toLowerCase().includes('работ')
       )
       if (inProgressTransition) {
-        await yandexTrackerApi.issueTransitionExecute(issue.key, inProgressTransition.id)
+        const body = originalEstimation ? { estimation: originalEstimation } : undefined
+        await yandexTrackerApi.issueTransitionExecute(issue.key, inProgressTransition.id, body)
+        useIssueBus().emit({ key: issue.key, status: inProgressTransition.to })
       } else {
         toast.add({ title: 'Переход не найден', description: 'Таймер запущен без смены статуса', color: 'warning' })
       }
@@ -45,7 +47,6 @@ export const useIssueTransition = () => {
       isTransitioning.value = false
     }
     timerStore.start(issue.key, issue.summary)
-    useIssueBus().emit('Refresh issue')
   }
 
   const cancelTransition = (issue: Yandex.Issue) => {
