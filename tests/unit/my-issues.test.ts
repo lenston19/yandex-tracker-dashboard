@@ -51,16 +51,16 @@ describe('buildFetchQuery', () => {
 })
 
 describe('groupIssuesByQueue', () => {
-  it('группирует задачи по display имени очереди', () => {
+  it('группирует задачи по ключу очереди', () => {
     const issues = [
       makeIssue('A-1', 'A', 'Проект А'),
       makeIssue('A-2', 'A', 'Проект А'),
       makeIssue('B-1', 'B', 'Проект Б')
     ]
     const result = groupIssuesByQueue(issues)
-    expect(Object.keys(result)).toEqual(['Проект А', 'Проект Б'])
-    expect(result['Проект А']).toHaveLength(2)
-    expect(result['Проект Б']).toHaveLength(1)
+    expect(Object.keys(result)).toEqual(['A', 'B'])
+    expect(result['A']).toHaveLength(2)
+    expect(result['B']).toHaveLength(1)
   })
 
   it('пустой массив → пустой объект', () => {
@@ -69,18 +69,18 @@ describe('groupIssuesByQueue', () => {
 
   it('одна задача — одна группа', () => {
     const issues = [makeIssue('A-1', 'A', 'Проект А')]
-    expect(groupIssuesByQueue(issues)).toEqual({ 'Проект А': [issues[0]] })
+    expect(groupIssuesByQueue(issues)).toEqual({ A: [issues[0]] })
   })
 
   it('все задачи из одной очереди — один ключ', () => {
     const issues = [makeIssue('A-1', 'A', 'Общая'), makeIssue('A-2', 'A', 'Общая')]
     const result = groupIssuesByQueue(issues)
     expect(Object.keys(result)).toHaveLength(1)
-    expect(result['Общая']).toHaveLength(2)
+    expect(result['A']).toHaveLength(2)
   })
 
   it('порядок групп соответствует первому появлению очереди', () => {
     const issues = [makeIssue('C-1', 'C', 'Ц'), makeIssue('A-1', 'A', 'А'), makeIssue('C-2', 'C', 'Ц')]
-    expect(Object.keys(groupIssuesByQueue(issues))).toEqual(['Ц', 'А'])
+    expect(Object.keys(groupIssuesByQueue(issues))).toEqual(['C', 'A'])
   })
 })
