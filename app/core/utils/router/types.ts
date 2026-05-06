@@ -5,6 +5,7 @@ export const enum AppRoutes {
   monthlyReport = 'monthly-report',
   projects = 'projects',
   myIssues = 'my-issues',
+  myIssuesQueue = 'my-issues-queue',
   settings = 'settings',
   changelog = 'changelog',
   auth = 'auth',

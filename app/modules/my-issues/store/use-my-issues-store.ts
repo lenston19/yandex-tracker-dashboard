@@ -2,14 +2,14 @@ import yandexTrackerApi from '~/core/api/yandex-tracker.api'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { useTryCatchWithLoading } from '~/core/composables/use-try-catch-with-loading'
-import { buildFetchQuery, groupIssuesByQueue, sortByPriority } from '~/core/utils/my-issues'
+import { buildFetchQuery, groupIssuesByQueue, sortByStatusPriority, QUEUE_PREVIEW_SIZE } from '~/core/utils/my-issues'
 import type { IssueFilters } from '~/core/utils/my-issues'
 import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import { useIssueBus } from '~/core/composables/use-issue-bus'
+import { fetchAllPages } from '~/core/utils/fetch-all-pages'
 
-const MAX_FETCH = 200
-export const PAGE_SIZE = 20
+const PER_PAGE = 50
 
 export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const { login } = storeToRefs(useAuthStore())
@@ -17,7 +17,6 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const route = useRoute()
   const router = useRouter()
 
-  const page = ref(1)
   const allIssues = ref<Yandex.Issue[]>([])
 
   const parseStatuses = (): string[] => {
@@ -42,13 +41,31 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
     })
   }
 
-  const paginatedIssues = computed(() => {
-    const start = (page.value - 1) * PAGE_SIZE
-    return allIssues.value.slice(start, start + PAGE_SIZE)
+  const search = ref('')
+
+  const filteredIssues = computed(() => {
+    const q = search.value.trim().toLowerCase()
+    if (!q) return allIssues.value
+    return allIssues.value.filter(i => i.summary.toLowerCase().includes(q) || i.key.toLowerCase().includes(q))
   })
 
-  const issuesByQueue = computed(() => groupIssuesByQueue(paginatedIssues.value))
+  const allIssuesByQueue = computed(() => groupIssuesByQueue(filteredIssues.value))
+
+  const issuesByQueue = computed(() =>
+    Object.fromEntries(
+      Object.entries(allIssuesByQueue.value).map(([key, issues]) => [
+        key,
+        sortByStatusPriority(issues).slice(0, QUEUE_PREVIEW_SIZE)
+      ])
+    )
+  )
+
+  const issueTotalByQueue = computed(() =>
+    Object.fromEntries(Object.entries(allIssuesByQueue.value).map(([key, issues]) => [key, issues.length]))
+  )
+
   const totalIssues = computed(() => allIssues.value.length)
+  const filteredTotal = computed(() => filteredIssues.value.length)
 
   const fetchQuery = computed(() => buildFetchQuery(login.value ?? '', filters, myIssues.value.roles))
 
@@ -57,18 +74,36 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
       allIssues.value = []
       return
     }
-    const data = await yandexTrackerApi.issueSearch({ query: fetchQuery.value }, MAX_FETCH, 1)
-    allIssues.value = sortByPriority(data ?? [])
+
+    const response = await yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, PER_PAGE)
+
+    if (!response._data) {
+      allIssues.value = []
+      return
+    }
+
+    const totalPages = response.headers.get('X-Total-Pages')
+    const totalCount = response.headers.get('X-Total-Count')
+
+    let result: Yandex.Issue[] = [...response._data]
+
+    if (totalPages && totalCount && +totalCount > PER_PAGE) {
+      const rest = await fetchAllPages(
+        page => yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, PER_PAGE, page),
+        +totalPages
+      )
+      result = [...result, ...rest]
+    }
+
+    allIssues.value = result
   })
 
   const applyFilters = async () => {
-    page.value = 1
     pushFiltersToUrl()
     await fetch()
   }
 
   const refresh = async () => {
-    page.value = 1
     await fetch()
   }
 
@@ -80,14 +115,19 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
     { immediate: true }
   )
 
-  useIssueBus(fetch)
+  useIssueBus(({ key, status }) => {
+    const issue = allIssues.value.find(i => i.key === key)
+    if (issue) issue.status = status
+  })
 
   return {
     allIssues,
     issuesByQueue,
+    issueTotalByQueue,
     filters,
-    page,
+    search,
     totalIssues,
+    filteredTotal,
     isLoading,
     fetch,
     applyFilters,

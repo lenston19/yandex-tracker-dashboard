@@ -73,9 +73,27 @@ export const getStatusColor = (status: Yandex.BaseWithKey): BadgeColor => {
 
 export const groupIssuesByQueue = (issues: Yandex.Issue[]): Record<string, Yandex.Issue[]> => {
   return issues.reduce<Record<string, Yandex.Issue[]>>((acc, issue) => {
-    const key = issue.queue.display
+    const key = issue.queue.key
     if (!acc[key]) acc[key] = []
     acc[key].push(issue)
     return acc
   }, {})
 }
+
+export const QUEUE_PREVIEW_SIZE = 5
+
+const STATUS_SORT_ORDER: Record<string, number> = {
+  inProgress: 0,
+  review: 1,
+  testing: 2,
+  rediscovered: 3,
+  open: 4,
+  needInfo: 5
+}
+
+export const sortByStatusPriority = (issues: Yandex.Issue[]): Yandex.Issue[] =>
+  [...issues].sort((a, b) => {
+    const wa = STATUS_SORT_ORDER[a.status.key] ?? 99
+    const wb = STATUS_SORT_ORDER[b.status.key] ?? 99
+    return wa - wb
+  })

@@ -64,11 +64,19 @@ const dayView: SitemapRoute = {
   }
 }
 
+const myIssuesQueue: SitemapRoute = {
+  name: 'Очередь задач',
+  route: {
+    name: AppRoutes.myIssuesQueue
+  }
+}
+
 export const SITEMAP = {
   main,
   monthlyReport,
   projects,
   myIssues,
+  myIssuesQueue,
   settings,
   faq,
   changelog,
