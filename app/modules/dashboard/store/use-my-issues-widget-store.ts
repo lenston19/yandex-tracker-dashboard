@@ -35,7 +35,10 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
   )
 
   useWorklogBus('saved', refresh)
-  useIssueBus(refresh)
+  useIssueBus(({ key, status }) => {
+    const issue = issues.value.find(i => i.key === key)
+    if (issue) issue.status = status
+  })
 
   return { issues, isLoading, refresh }
 })
