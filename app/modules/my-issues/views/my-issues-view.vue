@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
 import { useMyIssuesStore } from '../store/use-my-issues-store'
 import { useQueuesStore } from '~/core/store/use-queues-store'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
@@ -7,10 +6,10 @@ import UiCard from '~/core/components/ui/ui-card.vue'
 import UiEmptyState from '~/core/components/ui/ui-empty-state.vue'
 import IssueTimerButton from '~/core/components/issues/issue-timer-button.vue'
 import IssueItem from '~/core/components/issues/issue-item.vue'
+import MyIssuesFilters from '../components/my-issues-filters.vue'
 import { HEROICONS } from '~/core/constants/heroicons'
 import { SITEMAP } from '~/core/utils/router/sitemap'
 import { AppRoutes } from '~/core/utils/router/types'
-import { ISSUE_STATUS_OPTIONS, ISSUE_PRIORITY_OPTIONS } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 
 useHead({ title: SITEMAP.myIssues.name })
@@ -21,32 +20,12 @@ const { issuesByQueue, issueTotalByQueue, filters, search, totalIssues, filtered
 const { myIssues } = storeToRefs(useSiteSettingsStore())
 const { queuesModel } = storeToRefs(useQueuesStore())
 
-const statusesModel = computed({
-  get: () => ISSUE_STATUS_OPTIONS.filter(o => filters.value.statuses.includes(o.value)),
-  set: val => {
-    filters.value.statuses = val.map(o => o.value)
-  }
-})
-
-const priorityModel = computed({
-  get: () => filters.value.priority,
-  set: (v: string | null) => {
-    filters.value.priority = v
-  }
-})
-
 const queueModel = computed({
   get: () => queuesModel.value.find(q => q.key === filters.value.queue),
   set: (q: Yandex.Queue | undefined) => {
     filters.value.queue = q?.key ?? ''
   }
 })
-
-const searchInput = ref('')
-const updateSearch = useDebounceFn((val: string) => {
-  store.search = val
-}, 300)
-watch(searchInput, updateSearch)
 
 const getQueueRoute = (queueKey: string) => ({
   name: AppRoutes.myIssuesQueue,
@@ -76,78 +55,38 @@ const getQueueRoute = (queueKey: string) => ({
       </div>
     </div>
 
-    <ui-card title="Фильтрация">
-      <div class="flex flex-wrap items-end gap-4">
-        <u-form-field label="Поиск">
-          <u-input
-            v-model="searchInput"
-            placeholder="Название или ключ задачи"
-            class="w-64"
-            :trailing-icon="searchInput ? undefined : HEROICONS.MAGNIFYING_GLASS"
-          >
-            <template
-              v-if="searchInput"
-              #trailing
-            >
-              <u-button
-                :icon="HEROICONS.X_MARK"
-                variant="ghost"
-                size="xs"
-                square
-                @click="searchInput = ''"
-              />
-            </template>
-          </u-input>
-        </u-form-field>
-
-        <u-form-field label="Статус">
-          <u-select-menu
-            v-model="statusesModel"
-            :items="ISSUE_STATUS_OPTIONS"
-            multiple
-            class="w-56"
-            placeholder="Выберите статусы"
-          />
-        </u-form-field>
-
-        <u-form-field label="Приоритет">
-          <u-select
-            v-model="priorityModel"
-            :items="ISSUE_PRIORITY_OPTIONS"
-            value-key="value"
-            label-key="label"
-            class="w-44"
-          />
-        </u-form-field>
-
-        <u-form-field label="Очередь">
+    <my-issues-filters
+      v-model:statuses="filters.statuses"
+      v-model:priority="filters.priority"
+      v-model:search="store.search"
+      :is-loading="isLoading"
+      @apply="store.applyFilters()"
+    >
+      <template #extra>
+        <u-form-field
+          label="Очередь"
+          class="w-full lg:w-56"
+        >
           <u-select-menu
             v-model="queueModel"
             :items="queuesModel"
             label-key="name"
-            class="w-56"
+            class="w-full"
             placeholder="Все очереди"
           />
         </u-form-field>
-
-        <div class="flex items-end gap-2">
-          <u-button
-            label="Применить"
-            size="md"
-            :loading="isLoading"
-            @click="store.applyFilters()"
-          />
-          <u-button
-            v-if="queueModel"
-            label="Сбросить очередь"
-            size="md"
-            variant="ghost"
-            :disabled="isLoading"
-            @click="queueModel = undefined"
-          />
-        </div>
-      </div>
-    </ui-card>
+      </template>
+      <template #actions>
+        <u-button
+          v-if="queueModel"
+          label="Сбросить очередь"
+          size="md"
+          variant="ghost"
+          :disabled="isLoading"
+          @click="queueModel = undefined"
+        />
+      </template>
+    </my-issues-filters>
 
     <template v-if="isLoading">
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
