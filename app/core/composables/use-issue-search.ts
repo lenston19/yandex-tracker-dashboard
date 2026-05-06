@@ -9,6 +9,7 @@ export const useIssueSearch = (statuses?: string[]) => {
   const { login } = storeToRefs(useAuthStore())
 
   const query = ref('')
+  const myOnly = ref(true)
   const results = ref<Yandex.Issue[]>([])
 
   const { runWithLoading: search, isLoading } = useTryCatchWithLoading(
@@ -18,8 +19,8 @@ export const useIssueSearch = (statuses?: string[]) => {
         return
       }
       const data = await yandexTrackerApi.issueSearch({
-        query: buildIssueSearchQuery(login.value ?? '', q, statuses),
-        fields: 'summary,status,assignee,reviewer,qaEngineer'
+        query: buildIssueSearchQuery(q, myOnly.value ? (login.value ?? undefined) : undefined, statuses),
+        fields: 'summary,status,priority,assignee,reviewer,qaEngineer'
       })
       results.value = data ?? []
     },
@@ -33,6 +34,7 @@ export const useIssueSearch = (statuses?: string[]) => {
   const debouncedSearch = useDebounceFn(search, 500)
 
   watch(query, debouncedSearch)
+  watch(myOnly, () => { if (query.value.trim()) search(query.value) })
 
   const clear = () => {
     query.value = ''
@@ -41,6 +43,7 @@ export const useIssueSearch = (statuses?: string[]) => {
 
   return {
     query,
+    myOnly,
     results,
     isLoading,
     clear

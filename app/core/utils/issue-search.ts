@@ -4,9 +4,9 @@ const KEY_PATTERN = /^[A-Za-z]+-\d+$/
  * Формирует YQL-запрос для поиска задач.
  *
  * - Точный ключ (например, HZ-230) → `Key: "HZ-230"`
- * - Произвольный текст → `Assignee: {login} Summary: ~"{q}" OR Assignee: {login} Key: ~"{q}"`
+ * - Произвольный текст → `[Assignee: {login} ]Summary: ~"{q}"`
  */
-export const buildIssueSearchQuery = (login: string, q: string, statuses?: string[]): string => {
+export const buildIssueSearchQuery = (q: string, login?: string, statuses?: string[]): string => {
   const trimmed = q.trim()
   const statusPart = statuses?.length ? ` Status: ${statuses.join(', ')}` : ''
 
@@ -15,5 +15,6 @@ export const buildIssueSearchQuery = (login: string, q: string, statuses?: strin
   }
 
   const escaped = trimmed.replace(/"/g, '\\"')
-  return `Assignee: ${login} Summary: ~"${escaped}"${statusPart}`
+  const assigneePart = login ? `Assignee: ${login} ` : ''
+  return `${assigneePart}Summary: "${escaped}"${statusPart}`
 }

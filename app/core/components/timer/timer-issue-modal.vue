@@ -10,7 +10,7 @@ import IssueItem from '../issues/issue-item.vue'
 const modelValue = defineModel<boolean>({ default: false })
 const emit = defineEmits<{ select: [issue: Yandex.Issue] }>()
 
-const { query, results, isLoading } = useIssueSearch()
+const { query, myOnly, results, isLoading } = useIssueSearch()
 
 const select = (issue: Yandex.Issue) => {
   emit('select', issue)
@@ -26,13 +26,23 @@ const select = (issue: Yandex.Issue) => {
       </template>
 
       <div class="flex min-h-50 flex-col gap-3">
-        <u-input
-          v-model="query"
-          placeholder="Поиск по ключу или названию..."
-          :loading="isLoading"
-          :icon="HEROICONS.MAGNIFYING_GLASS"
-          autofocus
-        />
+        <div class="flex flex-col gap-3">
+          <u-input
+            v-model="query"
+            placeholder="Поиск по ключу или названию..."
+            :loading="isLoading"
+            :icon="HEROICONS.MAGNIFYING_GLASS"
+            autofocus
+            class="flex-1"
+          />
+
+          <u-switch
+            v-model="myOnly"
+            :checked-icon="HEROICONS.CHECK_20_SOLID"
+            :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
+            label="Только мои задачи"
+          />
+        </div>
 
         <div
           v-if="results.length"
@@ -48,7 +58,7 @@ const select = (issue: Yandex.Issue) => {
           >
             <issue-item
               :issue="issue"
-              show-assignee
+              :display="{ assignee: true, reviewer: true, qaEngineer: true }"
             />
           </u-button>
         </div>
