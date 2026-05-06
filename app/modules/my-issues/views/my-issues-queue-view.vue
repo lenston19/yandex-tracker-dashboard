@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
 import { useMyIssuesQueueStore, PAGE_SIZE } from '../store/use-my-issues-queue-store'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import UiEmptyState from '~/core/components/ui/ui-empty-state.vue'
 import UiPagination from '~/core/components/ui/ui-pagination.vue'
 import IssueTimerButton from '~/core/components/issues/issue-timer-button.vue'
 import IssueItem from '~/core/components/issues/issue-item.vue'
+import MyIssuesFilters from '../components/my-issues-filters.vue'
 import { HEROICONS } from '~/core/constants/heroicons'
 import { SITEMAP } from '~/core/utils/router/sitemap'
-import { ISSUE_STATUS_OPTIONS, ISSUE_PRIORITY_OPTIONS } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 
 const route = useRoute()
@@ -21,26 +20,9 @@ const { paginatedIssues, filters, search, totalIssues, isLoading } = storeToRefs
 
 const { myIssues } = storeToRefs(useSiteSettingsStore())
 
-const statusesModel = computed({
-  get: () => ISSUE_STATUS_OPTIONS.filter(o => filters.value.statuses.includes(o.value)),
-  set: val => {
-    filters.value.statuses = val.map(o => o.value)
-  }
-})
-
-const priorityModel = computed({
-  get: () => filters.value.priority,
-  set: (v: string | null) => {
-    filters.value.priority = v
-  }
-})
-
-const searchInput = ref('')
-const updateSearch = useDebounceFn((val: string) => {
-  store.search = val
+watch(search, () => {
   store.page = 1
-}, 300)
-watch(searchInput, updateSearch)
+})
 </script>
 
 <template>
@@ -74,60 +56,13 @@ watch(searchInput, updateSearch)
       </div>
     </div>
 
-    <ui-card title="Фильтрация">
-      <div class="flex flex-wrap items-end gap-4">
-        <u-form-field label="Поиск">
-          <u-input
-            v-model="searchInput"
-            placeholder="Название или ключ задачи"
-            class="w-64"
-            :trailing-icon="searchInput ? undefined : HEROICONS.MAGNIFYING_GLASS"
-          >
-            <template
-              v-if="searchInput"
-              #trailing
-            >
-              <u-button
-                :icon="HEROICONS.X_MARK"
-                variant="ghost"
-                size="xs"
-                square
-                @click="searchInput = ''"
-              />
-            </template>
-          </u-input>
-        </u-form-field>
-
-        <u-form-field label="Статус">
-          <u-select-menu
-            v-model="statusesModel"
-            :items="ISSUE_STATUS_OPTIONS"
-            multiple
-            class="w-56"
-            placeholder="Выберите статусы"
-          />
-        </u-form-field>
-
-        <u-form-field label="Приоритет">
-          <u-select
-            v-model="priorityModel"
-            :items="ISSUE_PRIORITY_OPTIONS"
-            value-key="value"
-            label-key="label"
-            class="w-44"
-          />
-        </u-form-field>
-
-        <div class="flex items-end">
-          <u-button
-            label="Применить"
-            size="md"
-            :loading="isLoading"
-            @click="store.applyFilters()"
-          />
-        </div>
-      </div>
-    </ui-card>
+    <my-issues-filters
+      v-model:statuses="filters.statuses"
+      v-model:priority="filters.priority"
+      v-model:search="store.search"
+      :is-loading="isLoading"
+      @apply="store.applyFilters()"
+    />
 
     <template v-if="isLoading">
       <ui-card

@@ -1,9 +1,4 @@
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { breakpointsTailwind, useMediaQuery } from '@vueuse/core'
 
-export const useIsMobile = () => {
-  const { isSmallerOrEqual } = useBreakpoints(breakpointsTailwind)
-
-  const isMobile = isSmallerOrEqual('md')
-
-  return isMobile
-}
+export const useIsMobile = (breakpoint: keyof typeof breakpointsTailwind = 'md') =>
+  useMediaQuery(`(max-width: ${breakpointsTailwind[breakpoint] - 1}px)`)
