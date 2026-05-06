@@ -35,4 +35,10 @@ export namespace YandexTrackerApi {
       comment?: string
     }
   }
+
+  export namespace issueTransitionExecute {
+    export type Body = {
+      estimation?: string
+    }
+  }
 }

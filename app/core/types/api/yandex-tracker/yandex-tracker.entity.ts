@@ -85,6 +85,7 @@ export namespace Yandex {
     version: number
     summary: string
     description?: string
+    estimation?: string
     status: BaseWithKey
     previousStatus?: BaseWithKey
     priority: BaseWithKey
@@ -111,7 +112,7 @@ export namespace Yandex {
     self: string
     id: string
     display: string
-    to: Base
+    to: BaseWithKey
   }
 
   export enum AvatarSizes {
