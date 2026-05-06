@@ -12,7 +12,7 @@ const modelValue = defineModel<boolean>({ default: false })
 const mergedUI = computed(() => {
   return {
     overlay: twMerge('fixed inset-0 bg-neutral-950/75 backdrop-blur-[0.25rem] transition-opacity duration-300'),
-    header: twMerge('border-b border-gray-200 p-3 sm:px-8 sm:py-7'),
+    header: twMerge('border-b border-default p-3'),
     body: twMerge('px-6 py-4.5', props.ui?.body),
     content: twMerge(
       'fixed inset-y-0 left-0 flex h-svh w-full transform flex-col bg-default text-default transition-transform duration-300 md:w-60 dark:bg-neutral-900',
