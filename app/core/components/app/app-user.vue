@@ -11,7 +11,7 @@ const { seasonalTheme } = storeToRefs(useSiteSettingsStore())
 <template>
   <u-user
     :name="userName"
-    :ui="{ name: 'truncate whitespace-nowrap' }"
+    :ui="{ name: 'wrap-break-word' }"
   >
     <template #avatar>
       <div class="relative">

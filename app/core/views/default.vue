@@ -1,16 +1,14 @@
 <script setup lang="ts">
+import { useModal } from 'vue-final-modal'
 import { useSiteSettingsStore } from '~/modules/settings'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import UiLoadingOverlay from '~/core/components/ui/ui-loading-overlay.vue'
-import AppUser from '~/core/components/app/app-user.vue'
-import TimerButton from '~/core/components/timer/timer-button.vue'
-import { SITEMAP } from '~/core/utils/router/sitemap'
-import { APP_PAGES, UNAUTH_APP_PAGES } from '~/core/constants/menu'
+import AppSidebarContent from '~/core/components/app/app-sidebar-content.vue'
+import AppLogo from '~/core/components/app/app-logo.vue'
+import { HEROICONS } from '~/core/constants/heroicons'
 
 const { seasonalTheme } = storeToRefs(useSiteSettingsStore())
-const { isLoading: isLoadingMySelf, userName } = storeToRefs(useAuthStore())
-const { login } = storeToRefs(useAuthStore())
-const { organizationId } = storeToRefs(useSiteSettingsStore())
+const { isLoading: isLoadingMySelf } = storeToRefs(useAuthStore())
 
 const seasonalThemeComponent = computed(() => {
   switch (seasonalTheme.value.type) {
@@ -23,7 +21,12 @@ const seasonalThemeComponent = computed(() => {
   }
 })
 
-const pages = computed(() => (organizationId.value && login.value ? APP_PAGES : UNAUTH_APP_PAGES))
+const { open: openSidebar, close: closeSidebar } = useModal({
+  component: defineAsyncComponent(() => import('~/core/components/app/app-mobile-sidebar.vue'))
+})
+
+const route = useRoute()
+watch(route, () => closeSidebar())
 </script>
 
 <template>
@@ -33,62 +36,35 @@ const pages = computed(() => (organizationId.value && login.value ? APP_PAGES : 
     v-if="seasonalTheme.active && !isLoadingMySelf"
   />
 
-  <u-dashboard-group
+  <div
     v-if="!isLoadingMySelf"
-    storage="local"
+    class="flex h-svh"
   >
-    <u-dashboard-sidebar
-      :ui="{
-        footer: 'border-t border-default flex flex-col'
-      }"
-    >
-      <template #header>
-        <nuxt-link
-          :to="SITEMAP.main.route"
-          class="flex items-center gap-2 truncate text-sm font-semibold text-highlighted"
-        >
-          YTDashboard
-        </nuxt-link>
-      </template>
-
-      <u-navigation-menu
-        :items="pages"
-        orientation="vertical"
-        class="w-full"
-      />
-
-      <template
-        v-if="userName"
-        #footer
-      >
-        <timer-button class="w-full" />
-
-        <div class="w-full rounded-md bg-primary/20 px-2 py-1">
-          <app-user />
-        </div>
-
-        <u-color-mode-select
-          class="w-full"
-          :ui="{ content: 'z-9999' }"
-        />
-      </template>
-    </u-dashboard-sidebar>
-
-    <main class="flex min-h-svh flex-1 flex-col overflow-auto">
-      <div
-        class="sticky top-0 z-10 flex items-center justify-between border-b border-default px-4 py-2 backdrop-blur-sm lg:hidden"
-      >
-        <nuxt-link
-          :to="SITEMAP.main.route"
-          class="text-sm font-semibold text-highlighted"
-        >
-          YTDashboard
-        </nuxt-link>
-        <u-dashboard-sidebar-toggle />
+    <aside class="hidden w-60 shrink-0 flex-col border-r border-default lg:flex lg:h-svh">
+      <div class="flex h-14 items-center px-4">
+        <app-logo />
       </div>
+      <div class="min-h-0 flex-1">
+        <app-sidebar-content />
+      </div>
+    </aside>
+
+    <main class="flex h-svh flex-1 flex-col overflow-auto">
+      <div
+        class="sticky top-0 z-10 flex items-center justify-between border-b border-default px-4 py-3 backdrop-blur-sm lg:hidden"
+      >
+        <app-logo />
+        <u-button
+          :icon="HEROICONS.BARS_3"
+          size="sm"
+          square
+          @click="openSidebar()"
+        />
+      </div>
+
       <u-container class="py-5 lg:py-10">
         <nuxt-page />
       </u-container>
     </main>
-  </u-dashboard-group>
+  </div>
 </template>
