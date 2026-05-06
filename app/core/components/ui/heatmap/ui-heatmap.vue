@@ -87,13 +87,13 @@ onClickOutside(gridRef, () => {
 })
 
 function handleCellClick(key: string) {
-  if (isMobile) {
+  if (isMobile.value) {
     openKey.value = openKey.value === key ? null : key
   }
 }
 
 function tooltipOpen(key: string): boolean | undefined {
-  if (isMobile) {
+  if (isMobile.value) {
     return openKey.value === key
   }
 
