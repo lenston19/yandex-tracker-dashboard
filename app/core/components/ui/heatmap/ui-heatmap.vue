@@ -114,7 +114,7 @@ function tooltipOpen(key: string): boolean | undefined {
         </span>
       </div>
 
-      <div class="-mb-2 min-w-0 overflow-x-auto overflow-y-hidden pb-2">
+      <div class="-mb-2 w-full min-w-0 overflow-x-auto overflow-y-hidden pb-2">
         <div
           ref="gridRef"
           class="grid auto-cols-[1rem] grid-flow-col grid-rows-[repeat(7,1rem)] gap-0.75 lg:auto-cols-[0.75rem] lg:grid-rows-[repeat(7,0.75rem)]"
