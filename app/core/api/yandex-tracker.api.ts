@@ -57,6 +57,14 @@ export default {
     })
   },
 
+  async issueSearchRaw(body: YandexTrackerApi.issueSearch.Body, countPerPage: number = 50, page: string = '1') {
+    return await $api.raw<Yandex.Issue[]>('/tracker/issues/_search', {
+      method: 'POST',
+      params: { perPage: countPerPage, page },
+      body
+    })
+  },
+
   async issueGet(issueId: string) {
     return await $api<Yandex.Issue>(`/tracker/issues/${issueId}`, {
       method: 'GET'
@@ -89,10 +97,14 @@ export default {
     })
   },
 
-  async issueTransitionExecute(issueId: string, transitionId: string) {
-    return await $api(`/tracker/issues/${issueId}/transitions/${transitionId}/_execute`, {
+  async issueTransitionExecute(
+    issueId: string,
+    transitionId: string,
+    body?: YandexTrackerApi.issueTransitionExecute.Body
+  ) {
+    return await $api<Yandex.Transition[]>(`/tracker/issues/${issueId}/transitions/${transitionId}/_execute`, {
       method: 'POST',
-      body: {}
+      body: body ?? {}
     })
   }
 }
