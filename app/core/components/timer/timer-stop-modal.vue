@@ -3,12 +3,17 @@ import ModalBase from '~/core/components/modal/modal-base.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import UiDurationInput from '~/core/components/ui/form/ui-duration-input.vue'
 import { useTimerStore } from '~/core/store/use-timer-store'
+import yandexTrackerApi from '~/core/api/yandex-tracker.api'
+import { useIssueBus } from '~/core/composables/use-issue-bus'
+import { HEROICONS } from '~/core/constants/heroicons'
+import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 
 const props = defineProps<{ frozenSeconds: number }>()
 const modelValue = defineModel<boolean>({ default: false })
+const toast = useToast()
 
 const timerStore = useTimerStore()
-const { issueKey, issueSummary, isSaving } = storeToRefs(timerStore)
+const { issueKey, issueSummary, isSaving, isRunning } = storeToRefs(timerStore)
 
 const comment = ref('')
 const totalSeconds = ref(0)
@@ -21,8 +26,54 @@ watch(
   { immediate: true }
 )
 
+const transitions = ref<Yandex.Transition[]>([])
+const isLoadingTransitions = ref(false)
+const withTransition = ref(false)
+const selectedTransitionId = ref<string>()
+const isTransitioning = ref(false)
+
+const transitionOptions = computed(() => transitions.value.map(t => ({ label: t.to.display, value: t.id })))
+
+const fetchTransitions = async () => {
+  if (!issueKey.value) return
+  transitions.value = []
+  isLoadingTransitions.value = true
+  try {
+    transitions.value = (await yandexTrackerApi.issueTransitionsList(issueKey.value)) ?? []
+    selectedTransitionId.value = transitions.value[0]?.id ?? undefined
+  } catch {
+    toast.add({ title: 'Не удалось загрузить доступные переходы', color: 'warning' })
+  } finally {
+    isLoadingTransitions.value = false
+  }
+}
+
+onMounted(fetchTransitions)
+
 const confirm = async () => {
+  const savedIssueKey = issueKey.value
   await timerStore.stop(comment.value || undefined, totalSeconds.value)
+  if (isRunning.value || !savedIssueKey) return
+
+  if (withTransition.value && selectedTransitionId.value) {
+    const transition = transitions.value.find(t => t.id === selectedTransitionId.value)
+    if (transition) {
+      isTransitioning.value = true
+      try {
+        await yandexTrackerApi.issueTransitionExecute(savedIssueKey, selectedTransitionId.value)
+        useIssueBus().emit({ key: savedIssueKey, status: transition.to })
+      } catch {
+        toast.add({
+          title: 'Не удалось сменить статус',
+          description: 'Выберите другой статус или смените вручную',
+          color: 'error'
+        })
+      } finally {
+        isTransitioning.value = false
+      }
+    }
+  }
+
   modelValue.value = false
 }
 
@@ -67,6 +118,37 @@ const discard = () => {
             placeholder="Что делали?"
           />
         </div>
+
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center justify-between gap-4">
+            <span class="text-sm">Перевести задачу в другой статус</span>
+            <u-switch
+              v-model="withTransition"
+              :disabled="isLoadingTransitions || !transitions.length"
+              :checked-icon="HEROICONS.CHECK_20_SOLID"
+              :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
+            />
+          </div>
+
+          <template v-if="withTransition">
+            <div
+              v-if="isLoadingTransitions"
+              class="flex justify-center py-2"
+            >
+              <u-icon
+                :name="HEROICONS.ARROW_PATH"
+                class="size-4 animate-spin text-neutral-400"
+              />
+            </div>
+            <u-select
+              v-else
+              v-model="selectedTransitionId"
+              :items="transitionOptions"
+              value-key="value"
+              label-key="label"
+            />
+          </template>
+        </div>
       </div>
 
       <template #footer>
@@ -79,7 +161,7 @@ const discard = () => {
             @click="discard"
           />
           <u-button
-            :loading="isSaving"
+            :loading="isSaving || isTransitioning"
             color="error"
             label="Сохранить и остановить"
             class="w-fit max-sm:ml-auto sm:w-auto"
