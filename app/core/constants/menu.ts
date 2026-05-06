@@ -9,6 +9,12 @@ export const AUTH_APP_PAGES = [
     prefetch: false
   },
   {
+    to: SITEMAP.myIssues.route,
+    label: SITEMAP.myIssues.name,
+    icon: HEROICONS.CLIPBOARD_DOCUMENT_LIST,
+    prefetch: false
+  },
+  {
     to: SITEMAP.projects.route,
     label: SITEMAP.projects.name,
     icon: HEROICONS.FOLDER,

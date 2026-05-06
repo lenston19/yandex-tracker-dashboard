@@ -47,5 +47,64 @@ export default {
       params: queryParams,
       body
     })
+  },
+
+  async issueSearch(body: YandexTrackerApi.issueSearch.Body, countPerPage: number = 20, page: number = 1) {
+    return await $api<Yandex.Issue[]>('/tracker/issues/_search', {
+      method: 'POST',
+      params: { perPage: countPerPage, page },
+      body
+    })
+  },
+
+  async issueSearchRaw(body: YandexTrackerApi.issueSearch.Body, countPerPage: number = 50, page: string = '1') {
+    return await $api.raw<Yandex.Issue[]>('/tracker/issues/_search', {
+      method: 'POST',
+      params: { perPage: countPerPage, page },
+      body
+    })
+  },
+
+  async issueGet(issueId: string) {
+    return await $api<Yandex.Issue>(`/tracker/issues/${issueId}`, {
+      method: 'GET'
+    })
+  },
+
+  async worklogCreate(issueId: string, body: YandexTrackerApi.worklogCreate.Body) {
+    return await $api<Yandex.Worklog>(`/tracker/issues/${issueId}/worklog`, {
+      method: 'POST',
+      body
+    })
+  },
+
+  async worklogUpdate(issueId: string, worklogId: string, body: YandexTrackerApi.worklogUpdate.Body) {
+    return await $api<Yandex.Worklog>(`/tracker/issues/${issueId}/worklog/${worklogId}`, {
+      method: 'PATCH',
+      body
+    })
+  },
+
+  async worklogDelete(issueId: string, worklogId: string) {
+    return await $api(`/tracker/issues/${issueId}/worklog/${worklogId}`, {
+      method: 'DELETE'
+    })
+  },
+
+  async issueTransitionsList(issueId: string) {
+    return await $api<Yandex.Transition[]>(`/tracker/issues/${issueId}/transitions`, {
+      method: 'GET'
+    })
+  },
+
+  async issueTransitionExecute(
+    issueId: string,
+    transitionId: string,
+    body?: YandexTrackerApi.issueTransitionExecute.Body
+  ) {
+    return await $api<Yandex.Transition[]>(`/tracker/issues/${issueId}/transitions/${transitionId}/_execute`, {
+      method: 'POST',
+      body: body ?? {}
+    })
   }
 }

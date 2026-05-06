@@ -39,7 +39,7 @@ const heightClass = computed(() => {
       <div
         v-for="(item, index) in items"
         :key="index"
-        class="absolute top-0 bottom-0"
+        class="absolute inset-y-0"
         :style="{
           left: `${items.slice(0, index).reduce((acc, i) => acc + ((i.value - min) / total) * 100, 0)}%`,
           width: `${((item.value - min) / total) * 100}%`,
@@ -55,7 +55,7 @@ const heightClass = computed(() => {
         class="flex items-center gap-2"
       >
         <span
-          class="h-3 w-3 rounded-full"
+          class="size-3 rounded-full"
           :style="{ backgroundColor: item.color }"
         />
         <span :style="{ color: item.color }">{{ item.label }}</span>

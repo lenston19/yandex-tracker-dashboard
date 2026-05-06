@@ -19,7 +19,7 @@ const { data: page } = await useAsyncData(route.path, () => {
 
     <div
       v-else
-      class="text-h4"
+      class="text-2xl"
     >
       Документ не найден
     </div>

@@ -1,57 +1,20 @@
 import { format as formatDate, subDays, startOfDay, endOfDay } from 'date-fns'
-import yandexTrackerApi from '~/core/api/yandex-tracker.api'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { useSiteSettingsStore } from '~/modules/settings'
-import { useTryCatchWithLoading } from '~/core/composables/use-try-catch-with-loading'
-import { calculateTotalHours, formatHoursToFixed } from '~/core/utils/time'
+import { useWorklogsFetch } from '~/core/composables/use-worklogs-fetch'
+import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO } from '~/core/utils/time'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
-import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
-
-const LOCAL_UTC_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 
 export const useActivityHeatmapStore = defineStore('activity-heatmap', () => {
   const { login } = storeToRefs(useAuthStore())
   const { heatmap } = storeToRefs(useSiteSettingsStore())
   const { formatShortDate } = useDateFormatter()
 
-  const worklogsModel = ref<Yandex.Worklog[]>([])
+  const from = computed(() => formatDate(startOfDay(subDays(new Date(), heatmap.value.weeks * 7)), LOCAL_UTC_ISO))
+  const to = computed(() => formatDate(endOfDay(new Date()), LOCAL_UTC_ISO))
 
-  const { runWithLoading: refresh, isLoading } = useTryCatchWithLoading(async () => {
-    if (!login.value) {
-      worklogsModel.value = []
-      return
-    }
-
-    const now = new Date()
-    const from = formatDate(startOfDay(subDays(now, heatmap.value.weeks * 7)), LOCAL_UTC_ISO)
-    const to = formatDate(endOfDay(now), LOCAL_UTC_ISO)
-
-    const body = {
-      createdBy: login.value,
-      start: { from, to }
-    }
-
-    const response = await yandexTrackerApi.worklogList(body)
-
-    if (!response._data) {
-      worklogsModel.value = []
-      return
-    }
-
-    const allWorklogs = [...response._data]
-
-    const totalPages = response.headers.get('X-Total-Pages')
-    const totalCount = response.headers.get('X-Total-Count')
-
-    if (totalPages && totalCount && +totalCount > 50) {
-      for (let page = 2; page <= +totalPages; page++) {
-        const pageResp = await yandexTrackerApi.worklogList(body, { page: String(page) })
-        if (pageResp._data) allWorklogs.push(...pageResp._data)
-      }
-    }
-
-    worklogsModel.value = allWorklogs
-  })
+  const { worklogsModel, refresh, isLoading, addWorklog, removeWorklog } = useWorklogsFetch(from, to)
 
   const dayMap = computed(() => {
     const map = new Map<string, number>()
@@ -86,6 +49,9 @@ export const useActivityHeatmapStore = defineStore('activity-heatmap', () => {
       refresh()
     }
   )
+
+  useWorklogBus('saved', addWorklog)
+  useWorklogBus('deleted', removeWorklog)
 
   return { dayMap, isLoading, refresh, formatTooltip }
 })

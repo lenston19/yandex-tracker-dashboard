@@ -13,12 +13,12 @@ const modelValue = defineModel<boolean>({ default: false })
   >
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-[9999] bg-gray-200 transition-opacity dark:bg-neutral-900"
+      class="fixed inset-0 z-9999 bg-gray-200 transition-opacity dark:bg-neutral-900"
     ></div>
   </transition>
   <div
     v-if="modelValue"
-    class="fixed top-1/2 left-1/2 z-[9999] -translate-x-1/2"
+    class="fixed top-1/2 left-1/2 z-9999 -translate-x-1/2"
   >
     <div class="container">
       <div class="dot"></div>

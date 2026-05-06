@@ -5,8 +5,12 @@ import { formatRUB } from '~/core/utils/format-money'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
+import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 
 const worklogsStore = useWorklogsStore('month', 'month-time-widget')
+
+useWorklogBus('saved', worklogsStore.addWorklog)
+useWorklogBus('deleted', worklogsStore.removeWorklog)
 
 const { totalHours, isLoading } = storeToRefs(worklogsStore)
 const { needHoursInCurrentMonth, remainingWorkdays, gold } = storeToRefs(useSiteSettingsStore())

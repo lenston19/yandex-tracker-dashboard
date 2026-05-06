@@ -2,6 +2,7 @@
 import { useAuthStore } from '~/core/store/use-auth-store'
 import hat from '~/assets/theme/new-year/hat.webp'
 import { useSiteSettingsStore } from '~/modules/settings'
+import { HEROICONS } from '~/core/constants/heroicons'
 
 const { userName, userAvatarUrl } = storeToRefs(useAuthStore())
 const { seasonalTheme } = storeToRefs(useSiteSettingsStore())
@@ -10,15 +11,13 @@ const { seasonalTheme } = storeToRefs(useSiteSettingsStore())
 <template>
   <u-user
     :name="userName"
-    :ui="{
-      name: 'truncate whitespace-nowrap'
-    }"
+    :ui="{ name: 'truncate whitespace-nowrap' }"
   >
     <template #avatar>
       <div class="relative">
         <u-avatar
           :src="userAvatarUrl"
-          icon="i-heroicons-user"
+          :icon="HEROICONS.USER"
         />
 
         <img

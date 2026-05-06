@@ -50,11 +50,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ui-card
-    :ui="{
-      footer: 'w-full'
-    }"
-  >
+  <ui-card :ui="{ footer: 'w-full' }">
     <template #header>
       <div class="flex items-center gap-2">
         <div class="text-lg font-medium">Неделя</div>
@@ -78,16 +74,25 @@ onMounted(async () => {
       <template v-else>
         <div
           v-for="day in currentWeek"
-          :key="`day-${day.weekday}-${day.hours}`"
+          :key="day.dateKey"
           class="flex flex-col gap-0 p-1 transition-colors"
           :class="{
             'cursor-pointer hover:bg-elevated': day.hours > 0,
             'border-primary max-sm:-mt-2 max-sm:border-t-2 max-sm:pt-2 sm:-ml-2 sm:border-l-2 sm:pl-2': day.isNewMonth
           }"
-          @click="weekTimeWidgetStore.openDetailDayDialog(day)"
+          @click="weekTimeWidgetStore.openDetailDay(day)"
         >
           <div class="flex items-baseline justify-between gap-1.5">
-            <span class="text-sm font-bold capitalize">{{ day.weekday }}</span>
+            <span
+              class="flex items-center gap-1 text-sm font-bold capitalize"
+              :class="{ 'text-primary': day.isToday }"
+            >
+              <span
+                v-if="day.isToday"
+                class="inline-block size-1.5 rounded-full bg-primary"
+              />
+              {{ day.weekday }}
+            </span>
             <span class="text-xs text-muted">{{ day.shortDate }}</span>
           </div>
           <day-linear-progress
@@ -113,11 +118,11 @@ onMounted(async () => {
           v-if="!isLoading"
           class="flex flex-wrap gap-1 text-lg"
         >
-          Всего: <span class="text-md font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }} </span>
+          Всего: <span class="font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }} </span>
         </div>
         <u-skeleton
           v-else
-          class="h-6 w-[160px]"
+          class="h-6 w-40"
         />
         <worklog-actions
           class="ml-auto"

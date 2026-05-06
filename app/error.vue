@@ -23,7 +23,7 @@ const errorCode = props.error?.statusCode ?? 404
       {{ errorCode }}
     </div>
 
-    <div class="text-md italic">{{ props.error?.message }}</div>
+    <div class="text-base italic">{{ props.error?.message }}</div>
 
     <template v-if="errorCode === 404">
       <h1 class="mt-4 text-xl font-bold text-default">Страница не найдена</h1>
