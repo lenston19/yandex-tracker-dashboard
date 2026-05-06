@@ -56,6 +56,40 @@ export const secondsToIsoDuration = (totalSeconds: number): string => {
   return result
 }
 
+/** Конвертирует ISO 8601 duration в строку русского формата "1н2д3ч4м5с" */
+export const isoDurationToRu = (duration: string): string => {
+  const m = duration.match(ISO_DURATION_RE)
+  if (!m) return ''
+  const parts = [
+    m[1] && `${parseInt(m[1])}н`,
+    m[2] && `${parseInt(m[2])}д`,
+    m[3] && `${parseInt(m[3])}ч`,
+    m[4] && `${parseInt(m[4])}м`,
+    m[5] && `${parseInt(m[5])}с`
+  ].filter(Boolean)
+  return parts.join('')
+}
+
+/**
+ * Парсит строку временной оценки в формате "1н2д3ч4м5с" в ISO 8601 duration.
+ * Пример: "1д2ч30м" → "P1DT2H30M"
+ */
+export const parseRuDuration = (input: string): string => {
+  const weeks = input.match(/(\d+)н/)?.[1]
+  const days = input.match(/(\d+)д/)?.[1]
+  const hours = input.match(/(\d+)ч/)?.[1]
+  const minutes = input.match(/(\d+)м/)?.[1]
+  const seconds = input.match(/(\d+)с/)?.[1]
+
+  let result = 'P'
+  if (weeks) result += `${weeks}W`
+  if (days) result += `${days}D`
+  const timePart = [hours && `${hours}H`, minutes && `${minutes}M`, seconds && `${seconds}S`].filter(Boolean).join('')
+  if (timePart) result += `T${timePart}`
+
+  return result.length > 1 ? result : 'PT1M'
+}
+
 /** Строит тело запроса создания ворклога из параметров таймера */
 export const buildWorklogPayload = (
   startedAt: string,
