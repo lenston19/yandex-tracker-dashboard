@@ -37,7 +37,7 @@ const hoursPlural = computed(() => (props.hours !== null ? pluralize(props.hours
 const maxPlural = computed(() => props.max > 0 && `/ ${pluralize(props.max, HOURS_PLURALIZE)}`)
 
 const percent = computed(() => {
-  if (!props.hours) return 0
+  if (props.hours == null) return 0
   return Math.round((props.hours / props.max) * 100)
 })
 
@@ -87,7 +87,7 @@ const modelValue = computed(() => {
       </template>
       <u-skeleton
         v-else
-        class="ml-auto h-[20px] w-[100px]"
+        class="ml-auto h-5 w-25"
       />
     </div>
   </div>

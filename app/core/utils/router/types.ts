@@ -4,10 +4,13 @@ export const enum AppRoutes {
   index = 'index',
   monthlyReport = 'monthly-report',
   projects = 'projects',
+  myIssues = 'my-issues',
+  myIssuesQueue = 'my-issues-queue',
   settings = 'settings',
   changelog = 'changelog',
   auth = 'auth',
-  faq = 'faq'
+  faq = 'faq',
+  dayView = 'day-date'
 }
 
 export interface AppRoute extends RouteLocationNamedRaw {

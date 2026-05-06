@@ -70,7 +70,7 @@ onMounted(() => {
 <template>
   <div
     v-if="show"
-    class="animate-appear pointer-events-none fixed inset-0 z-[9999] overflow-hidden opacity-0 select-none"
+    class="animate-appear pointer-events-none fixed inset-0 z-9999 overflow-hidden opacity-0 select-none"
     aria-hidden="true"
   >
     <div

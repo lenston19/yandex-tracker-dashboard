@@ -3,7 +3,8 @@ import {
   calculateTotalHours,
   formatHoursToFixed,
   formatHoursToHHMMSS,
-  calculateWorklogTimeByDay
+  calculateWorklogTimeByDay,
+  secondsToIsoDuration
 } from '../../app/core/utils/time'
 import type { Yandex } from '../../app/core/types/api/yandex-tracker/yandex-tracker.entity'
 
@@ -35,6 +36,14 @@ describe('calculateTotalHours', () => {
     const worklogs = [makeWorklog('PT1H', '1'), makeWorklog('P1D', '2')]
     // 1 hour + 8 hours (1 рабочий день)
     expect(calculateTotalHours(worklogs)).toBeCloseTo(9)
+  })
+
+  it('PT0S → 0 часов', () => {
+    expect(calculateTotalHours([makeWorklog('PT0S')])).toBeCloseTo(0)
+  })
+
+  it('один worklog', () => {
+    expect(calculateTotalHours([makeWorklog('PT2H')])).toBeCloseTo(2)
   })
 })
 
@@ -72,6 +81,28 @@ describe('formatHoursToFixed', () => {
 
   it('возвращает число (не строку)', () => {
     expect(typeof formatHoursToFixed(1.5)).toBe('number')
+  })
+})
+
+describe('secondsToIsoDuration', () => {
+  it('3600 секунд → "PT1H"', () => {
+    expect(secondsToIsoDuration(3600)).toBe('PT1H')
+  })
+
+  it('90 секунд → "PT1M30S"', () => {
+    expect(secondsToIsoDuration(90)).toBe('PT1M30S')
+  })
+
+  it('5400 секунд (1.5ч) → "PT1H30M"', () => {
+    expect(secondsToIsoDuration(5400)).toBe('PT1H30M')
+  })
+
+  it('0 секунд → "PT1M" (минимум)', () => {
+    expect(secondsToIsoDuration(0)).toBe('PT1M')
+  })
+
+  it('30 секунд → "PT30S"', () => {
+    expect(secondsToIsoDuration(30)).toBe('PT30S')
   })
 })
 

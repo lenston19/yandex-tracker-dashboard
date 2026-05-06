@@ -1,24 +1,15 @@
 <script setup lang="ts">
 import { SITEMAP } from '~/core/utils/router/sitemap/index'
 import { useAuthStore } from '~/core/store/use-auth-store'
-import {
-  SECTION_ACCOUNT,
-  SECTION_DISPLAY,
-  SECTION_WORKTIME,
-  SECTION_HEATMAP,
-  SECTION_DANGER
-} from '../models/constants/sections'
+import { UNAUTH_SECTIONS, AUTH_SECTIONS } from '../models/constants/sections'
 
 useHead({ title: SITEMAP.settings.name })
 
 const { mySelf } = storeToRefs(useAuthStore())
 
 const sections = computed(() => {
-  const items = [SECTION_ACCOUNT]
-  if (mySelf.value) {
-    items.push(SECTION_DISPLAY, SECTION_WORKTIME, SECTION_HEATMAP, SECTION_DANGER)
-  }
-  return items
+  if (!mySelf.value) return UNAUTH_SECTIONS
+  return AUTH_SECTIONS
 })
 </script>
 

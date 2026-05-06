@@ -14,7 +14,7 @@ onMounted(() => {
 <template>
   <div
     v-if="show"
-    class="pointer-events-none fixed inset-0 z-[9999] overflow-hidden select-none"
+    class="pointer-events-none fixed inset-0 z-9999 overflow-hidden select-none"
   >
     <img
       :src="bat"

@@ -13,7 +13,7 @@ const makeWorklog = (id: string, issueKey: string | undefined, duration = 'PT1H'
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-01T00:00:00Z',
   start: '2024-01-01T09:00:00Z',
-  duration,
+  duration
 })
 
 const makeQueue = (key: string, name: string): Yandex.Queue => ({
@@ -32,7 +32,7 @@ const makeQueue = (key: string, name: string): Yandex.Queue => ({
   versions: [],
   workflows: [],
   denyVoting: false,
-  issueTypesConfig: [],
+  issueTypesConfig: []
 })
 
 describe('collectWorklogs', () => {
@@ -60,6 +60,12 @@ describe('collectWorklogs', () => {
     const worklogs = [makeWorklog('1', 'TEST-1')]
     const { groupedWorklogs } = collectWorklogs(worklogs)
     expect(groupedWorklogs.has('TEST-1')).toBe(true)
+  })
+
+  it('не теряет worklogs с одинаковым id в одной задаче', () => {
+    const worklogs = [makeWorklog('1', 'TEST-1'), makeWorklog('1', 'TEST-1')]
+    const { result } = collectWorklogs(worklogs)
+    expect(result.find(r => r.key === 'TEST-1')?.items).toHaveLength(2)
   })
 })
 

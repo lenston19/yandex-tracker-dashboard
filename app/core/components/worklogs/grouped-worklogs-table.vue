@@ -5,6 +5,7 @@ import type { CollectedWorklog } from '../../types/worklogs'
 import UiPagination from '../ui/ui-pagination.vue'
 import UiCard from '../ui/ui-card.vue'
 import { GROUPED_WORKLOG_COLUMNS } from '~/core/constants/worklogs'
+import { HEROICONS } from '~/core/constants/heroicons'
 
 const props = withDefaults(
   defineProps<{
@@ -29,19 +30,15 @@ const data = computed(() => {
   return props.rows.slice((page.value - 1) * props.pageCount, page.value * props.pageCount)
 })
 
-const calcByProject = (rows: CollectedWorklog[]) => {
-  if (!props.showTotal) return
-  const total = rows.reduce((acc, item) => acc + calculateTotalHours(item.items), 0)
+const totalTime = computed(() => {
+  if (!props.showTotal) return undefined
+  const total = props.rows.reduce((acc, item) => acc + calculateTotalHours(item.items), 0)
   return formatHoursToHHMMSS(total)
-}
+})
 </script>
 
 <template>
-  <ui-card
-    :ui="{
-      body: 'p-0 sm:p-0'
-    }"
-  >
+  <ui-card :ui="{ body: 'p-0 sm:p-0' }">
     <template
       v-if="title || showTotal"
       #header
@@ -64,7 +61,7 @@ const calcByProject = (rows: CollectedWorklog[]) => {
             variant="subtle"
             size="lg"
           >
-            {{ calcByProject(rows) }}
+            {{ totalTime }}
           </u-badge>
         </div>
       </div>
@@ -78,7 +75,7 @@ const calcByProject = (rows: CollectedWorklog[]) => {
         <u-button
           color="neutral"
           variant="ghost"
-          icon="i-lucide-chevron-down"
+          :icon="HEROICONS.CHEVRON_DOWN"
           square
           aria-label="Expand"
           :ui="{
@@ -95,6 +92,9 @@ const calcByProject = (rows: CollectedWorklog[]) => {
         >
           {{ row.original.key }}
         </u-link>
+      </template>
+      <template #name-cell="{ row }">
+        <span class="text-sm">{{ row.original.items[0]?.issue.display }}</span>
       </template>
       <template #totalTime-cell="{ row }">
         <u-badge
