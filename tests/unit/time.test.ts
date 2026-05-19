@@ -4,7 +4,8 @@ import {
   formatHoursToFixed,
   formatHoursToHHMMSS,
   calculateWorklogTimeByDay,
-  secondsToIsoDuration
+  secondsToIsoDuration,
+  parseDateOnly
 } from '../../app/core/utils/time'
 import type { Yandex } from '../../app/core/types/api/yandex-tracker/yandex-tracker.entity'
 
@@ -103,6 +104,39 @@ describe('secondsToIsoDuration', () => {
 
   it('30 секунд → "PT30S"', () => {
     expect(secondsToIsoDuration(30)).toBe('PT30S')
+  })
+})
+
+describe('parseDateOnly', () => {
+  it('date-only строка — возвращает полдень того же дня', () => {
+    const d = parseDateOnly('2026-05-19')
+    expect(d.getFullYear()).toBe(2026)
+    expect(d.getMonth()).toBe(4) // май = 4
+    expect(d.getDate()).toBe(19)
+    expect(d.getHours()).toBe(12)
+    expect(d.getMinutes()).toBe(0)
+  })
+
+  it('полная ISO строка — берёт только дату, игнорирует время', () => {
+    const d = parseDateOnly('2026-05-19T00:00:00.000Z')
+    expect(d.getFullYear()).toBe(2026)
+    expect(d.getMonth()).toBe(4)
+    expect(d.getDate()).toBe(19)
+    expect(d.getHours()).toBe(12)
+  })
+
+  it('LOCAL_UTC_ISO строка — берёт только дату', () => {
+    const d = parseDateOnly('2026-01-01T23:59:59.999Z')
+    expect(d.getFullYear()).toBe(2026)
+    expect(d.getMonth()).toBe(0) // январь = 0
+    expect(d.getDate()).toBe(1)
+    expect(d.getHours()).toBe(12)
+  })
+
+  it('возвращает валидный Date объект', () => {
+    const d = parseDateOnly('2026-05-19')
+    expect(d).toBeInstanceOf(Date)
+    expect(isNaN(d.getTime())).toBe(false)
   })
 })
 

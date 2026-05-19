@@ -1,10 +1,17 @@
 # Yandex Tracker Dashboard
 
+[![Release](https://img.shields.io/github/v/release/lenston19/yandex-tracker-dashboard)](https://github.com/lenston19/yandex-tracker-dashboard/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/lenston19/yandex-tracker-dashboard)](https://hub.docker.com/r/lenston19/yandex-tracker-dashboard)
+[![Node](https://img.shields.io/badge/node-%3E%3D24-brightgreen)](https://nodejs.org/)
+[![License](https://img.shields.io/github/license/lenston19/yandex-tracker-dashboard)](LICENSE)
+
 Клиентская панель для работы с API Яндекс Трекера. Позволяет отслеживать трудозатраты, управлять задачами и формировать отчёты через удобный интерфейс.
 
-## Авторизация
+[English version](README.en.md)
 
-Для авторизации необходимо получить ID организации по [ссылке](https://tracker.yandex.ru/admin/orgs) и выполнить вход через Yandex OAuth.
+|                  Светлая тема                   |               Тёмная тема                |
+| :---------------------------------------------: | :--------------------------------------: |
+| ![Light](./docs/screenshot-dashboard-light.png) | ![Dark](./docs/screenshot-dashboard.png) |
 
 ## Функциональность
 
@@ -17,7 +24,7 @@
 - **Месячный отчёт** — график списания за месяц со средним значением.
 - **Настройки** — ставка, плановые часы в день, часовой пояс, отображение.
 
-## Установка
+## Быстрый старт
 
 ### Требования
 
@@ -42,14 +49,10 @@
     cp .env.example .env
     ```
 
-4. Укажите `NUXT_PUBLIC_YANDEX_CLIENT_ID` — получить можно в [Yandex OAuth](https://oauth.yandex.ru/client/new/).
-
-5. Запустите dev-сервер:
+4. Запустите dev-сервер:
     ```sh
     pnpm dev
     ```
-
-> Для локальной авторизации получите ACCESS_TOKEN и откройте `http://localhost:3000/auth#access_token=<TOKEN>`
 
 ### Docker
 
@@ -62,26 +65,26 @@ docker run -p 3000:3000 \
 
 Доступны теги: `latest` (стабильная), `unstable` (dev-сборка).
 
-## Переменные окружения
+## Настройка
 
-| Переменная | Описание |
-|---|---|
-| `NUXT_PUBLIC_YANDEX_TRACKER_API` | URL API Яндекс Трекера |
-| `NUXT_PUBLIC_YANDEX_CLIENT_ID` | OAuth Client ID |
-| `NUXT_PUBLIC_ORGANIZATION_ID_LINK` | Ссылка на получение ID организации |
-| `NUXT_PUBLIC_THEME_TYPE` | Сезонная тема: `halloween`, `new-year` |
+### Авторизация
 
-## Команды
+Получите ID организации по [ссылке](https://center.yandex.cloud/) и выполните вход через Yandex OAuth.
 
-```sh
-pnpm dev          # Dev-сервер
-pnpm build        # Продакшн-сборка
-pnpm preview      # Превью сборки
-pnpm test         # Тесты
-pnpm lint         # Линтер
-```
+Укажите `NUXT_PUBLIC_YANDEX_CLIENT_ID` — получить можно в [Yandex OAuth](https://oauth.yandex.ru/client/new/).
 
-## Основные зависимости
+> Для локальной авторизации получите ACCESS_TOKEN и откройте `http://localhost:3000/auth#access_token=<TOKEN>`
+
+### Переменные окружения
+
+| Переменная                         | Описание                               |
+| ---------------------------------- | -------------------------------------- |
+| `NUXT_PUBLIC_YANDEX_TRACKER_API`   | URL API Яндекс Трекера                 |
+| `NUXT_PUBLIC_YANDEX_CLIENT_ID`     | OAuth Client ID                        |
+| `NUXT_PUBLIC_ORGANIZATION_ID_LINK` | Ссылка на получение ID организации     |
+| `NUXT_PUBLIC_THEME_TYPE`           | Сезонная тема: `halloween`, `new-year` |
+
+## Стек
 
 - [Nuxt 4](https://nuxt.com/)
 - [Nuxt UI 4](https://ui.nuxt.com/)
