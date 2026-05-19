@@ -1,6 +1,13 @@
+import { parseISO } from 'date-fns'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 
 export const LOCAL_UTC_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+
+/**
+ * Парсит строку даты (YYYY-MM-DD или полный ISO) в Date, устанавливая время 12:00:00 локального
+ * часового пояса. Безопасно для любых часовых поясов (±12ч): дата всегда остаётся той же.
+ */
+export const parseDateOnly = (dateStr: string): Date => parseISO(dateStr.slice(0, 10) + 'T12:00:00')
 
 const ISO_DURATION_RE =
   /P(?:(\d+(?:[.,]\d+)?)W)?(?:(\d+(?:[.,]\d+)?)D)?(?:T(?:(\d+(?:[.,]\d+)?)H)?(?:(\d+(?:[.,]\d+)?)M)?(?:(\d+(?:[.,]\d+)?)S)?)?/

@@ -1,6 +1,5 @@
 import {
   format as formatDate,
-  parseISO,
   startOfWeek,
   endOfWeek,
   startOfMonth,
@@ -13,7 +12,7 @@ import {
 } from 'date-fns'
 import type { DateDuration } from '../types'
 import { useAuthStore } from './use-auth-store'
-import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO } from '../utils/time'
+import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO, parseDateOnly } from '../utils/time'
 import type { WorklogFormat } from '../types/worklogs'
 import { useNow } from '@vueuse/core'
 import { useWorklogsFetch } from '../composables/use-worklogs-fetch'
@@ -31,7 +30,7 @@ const periodEnd = (d: Date, fmt: WorklogFormat): Date => {
 }
 
 export const shiftPeriod = (isoFrom: string, fmt: WorklogFormat, n: number) => {
-  const base = parseISO(isoFrom.slice(0, 10))
+  const base = parseDateOnly(isoFrom)
   let shifted: Date
   if (fmt === 'week') shifted = addWeeks(base, n)
   else if (fmt === 'month') shifted = addMonths(base, n)

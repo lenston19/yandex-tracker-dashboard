@@ -2,7 +2,7 @@ import { format as formatDate, subDays, startOfDay, endOfDay } from 'date-fns'
 import { useAuthStore } from '~/core/store/use-auth-store'
 import { useSiteSettingsStore } from '~/modules/settings'
 import { useWorklogsFetch } from '~/core/composables/use-worklogs-fetch'
-import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO } from '~/core/utils/time'
+import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO, parseDateOnly } from '~/core/utils/time'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
 import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 
@@ -28,7 +28,7 @@ export const useActivityHeatmapStore = defineStore('activity-heatmap', () => {
 
   const formatTooltip = (dateKey: string) => {
     const hours = dayMap.value.get(dateKey) ?? 0
-    const label = formatShortDate(new Date(dateKey + 'T12:00:00'))
+    const label = formatShortDate(parseDateOnly(dateKey))
     return hours > 0 ? `${label}: ${formatHoursToFixed(hours)} ч` : label
   }
 

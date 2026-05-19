@@ -1,6 +1,6 @@
 import { addDays, isToday, isSameISOWeek, parseISO } from 'date-fns'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
-import { calculateTotalHours, formatHoursToFixed } from '~/core/utils/time'
+import { calculateTotalHours, formatHoursToFixed, parseDateOnly } from '~/core/utils/time'
 import { useWorklogsStore } from '~/core/store/use-worklogs-store'
 import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 import { collectWorklogsByQueue } from '~/core/utils/collecting'
@@ -23,7 +23,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
   const calcWeekStats = async () => {
     clearState()
-    const fromDate = parseISO(params.value.from.slice(0, 10) + 'T12:00:00')
+    const fromDate = parseDateOnly(params.value.from)
 
     const daysInWeek: Date[] = []
     let iterateDay = fromDate

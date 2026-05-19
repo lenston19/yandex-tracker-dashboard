@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { parseISO } from 'date-fns'
 import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { pluralize } from '~/core/utils/pluralize'
 import { useSiteSettingsStore } from '~/modules/settings'
@@ -9,6 +8,7 @@ import UiCard from '~/core/components/ui/ui-card.vue'
 import UiMeterGroup from '~/core/components/ui/ui-meter-group.vue'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
+import { parseDateOnly } from '~/core/utils/time'
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
 const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue } =
@@ -18,8 +18,8 @@ const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
 
 const { formatShortDate } = useDateFormatter()
 const title = computed(() => {
-  const from = parseISO(params.value.from.slice(0, 10) + 'T12:00:00')
-  const to = parseISO(params.value.to.slice(0, 10) + 'T12:00:00')
+  const from = parseDateOnly(params.value.from)
+  const to = parseDateOnly(params.value.to)
   return `${formatShortDate(from)} - ${formatShortDate(to)}`
 })
 
