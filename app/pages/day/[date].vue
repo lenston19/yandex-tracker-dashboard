@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { format as formatDate, parseISO, startOfDay, endOfDay } from 'date-fns'
+import { format as formatDate, startOfDay, endOfDay } from 'date-fns'
 import { collectWorklogs } from '~/core/utils/collecting'
-import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO } from '~/core/utils/time'
+import { calculateTotalHours, formatHoursToFixed, LOCAL_UTC_ISO, parseDateOnly } from '~/core/utils/time'
 import { pluralize } from '~/core/utils/pluralize'
 import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
@@ -22,14 +22,14 @@ const dateParam = computed(() => route.params.date as string)
 
 const dateLabel = computed(() => {
   try {
-    return formatFullDate(parseISO(dateParam.value))
+    return formatFullDate(parseDateOnly(dateParam.value))
   } catch {
     return dateParam.value
   }
 })
 
-const from = computed(() => formatDate(startOfDay(parseISO(dateParam.value)), LOCAL_UTC_ISO))
-const to = computed(() => formatDate(endOfDay(parseISO(dateParam.value)), LOCAL_UTC_ISO))
+const from = computed(() => formatDate(startOfDay(parseDateOnly(dateParam.value)), LOCAL_UTC_ISO))
+const to = computed(() => formatDate(endOfDay(parseDateOnly(dateParam.value)), LOCAL_UTC_ISO))
 
 const {
   worklogsModel: worklogs,
