@@ -67,18 +67,18 @@ const cancel = () => {
       </div>
 
       <template #footer>
-        <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <div class="flex flex-col-reverse gap-2 max-sm:items-end sm:flex-row sm:justify-end">
           <u-button
             variant="subtle"
             label="Просто запустить"
-            class="w-full sm:w-auto"
+            class="w-fit sm:w-auto"
             @click="cancel"
           />
           <u-button
             color="primary"
             label="Перевести и запустить"
             :loading="loading"
-            class="w-full sm:w-auto"
+            class="w-fit sm:w-auto"
             @click="confirm"
           />
         </div>
