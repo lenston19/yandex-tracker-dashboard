@@ -50,6 +50,26 @@ describe('buildFetchQuery', () => {
   })
 })
 
+describe('buildFetchQuery с roles', () => {
+  const filters = { statuses: [], priority: null, queue: '' }
+
+  it('только qaEngineer', () => {
+    expect(buildFetchQuery('u', filters, { assignee: false, reviewer: false, qaEngineer: true })).toBe('"QA-Engineer": u')
+  })
+
+  it('все три роли', () => {
+    expect(buildFetchQuery('u', filters, { assignee: true, reviewer: true, qaEngineer: true })).toBe(
+      '(Assignee: u OR Reviewer: u OR "QA-Engineer": u)'
+    )
+  })
+
+  it('assignee и qaEngineer', () => {
+    expect(buildFetchQuery('u', filters, { assignee: true, reviewer: false, qaEngineer: true })).toBe(
+      '(Assignee: u OR "QA-Engineer": u)'
+    )
+  })
+})
+
 describe('groupIssuesByQueue', () => {
   it('группирует задачи по ключу очереди', () => {
     const issues = [

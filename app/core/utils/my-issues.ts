@@ -15,7 +15,7 @@ export interface IssueRoles {
 const ROLE_FIELD: Record<keyof IssueRoles, string> = {
   assignee: 'Assignee',
   reviewer: 'Reviewer',
-  qaEngineer: 'QA'
+  qaEngineer: 'QA-Engineer'
 }
 
 export const buildFetchQuery = (login: string, filters: IssueFilters, roles?: IssueRoles): string => {
@@ -23,7 +23,11 @@ export const buildFetchQuery = (login: string, filters: IssueFilters, roles?: Is
     ? (Object.keys(roles) as (keyof IssueRoles)[]).filter(k => roles[k])
     : (['assignee'] as (keyof IssueRoles)[])
 
-  const roleParts = activeRoles.map(r => `${ROLE_FIELD[r]}: ${login}`)
+  const roleParts = activeRoles.map(r => {
+    const field = ROLE_FIELD[r]
+    const quotedField = field.includes('-') ? `"${field}"` : field
+    return `${quotedField}: ${login}`
+  })
   const roleClause = roleParts.length > 1 ? `(${roleParts.join(' OR ')})` : (roleParts[0] ?? `Assignee: ${login}`)
 
   const parts = [roleClause]
