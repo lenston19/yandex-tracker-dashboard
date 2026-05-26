@@ -36,8 +36,14 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
 
   useWorklogBus('saved', refresh)
   useIssueBus(({ key, status }) => {
-    const issue = issues.value.find(i => i.key === key)
-    if (issue) issue.status = status
+    const index = issues.value.findIndex(i => i.key === key)
+    if (index === -1) return
+    const allowedStatuses = myIssues.value.statuses.length ? myIssues.value.statuses : ['open', 'rediscovered']
+    if (!allowedStatuses.includes(status.key)) {
+      issues.value.splice(index, 1)
+    } else {
+      issues.value[index]!.status = status
+    }
   })
 
   return { issues, isLoading, refresh }

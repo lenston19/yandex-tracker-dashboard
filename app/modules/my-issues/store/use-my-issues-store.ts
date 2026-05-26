@@ -116,8 +116,13 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   )
 
   useIssueBus(({ key, status }) => {
-    const issue = allIssues.value.find(i => i.key === key)
-    if (issue) issue.status = status
+    const index = allIssues.value.findIndex(i => i.key === key)
+    if (index === -1) return
+    if (!filters.statuses.includes(status.key)) {
+      allIssues.value.splice(index, 1)
+    } else {
+      allIssues.value[index]!.status = status
+    }
   })
 
   return {

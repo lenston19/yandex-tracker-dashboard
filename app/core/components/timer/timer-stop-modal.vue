@@ -124,7 +124,8 @@ const discard = () => {
             <span class="text-sm">Перевести задачу в другой статус</span>
             <u-switch
               v-model="withTransition"
-              :disabled="isLoadingTransitions || !transitions.length"
+              :disabled="!transitions.length"
+              :loading="isLoadingTransitions"
               :checked-icon="HEROICONS.CHECK_20_SOLID"
               :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
             />
