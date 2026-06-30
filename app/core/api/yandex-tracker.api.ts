@@ -71,6 +71,12 @@ export default {
     })
   },
 
+  async worklogListByIssue(issueId: string) {
+    return await $api<Yandex.Worklog[]>(`/tracker/issues/${issueId}/worklog`, {
+      method: 'GET'
+    })
+  },
+
   async worklogCreate(issueId: string, body: YandexTrackerApi.worklogCreate.Body) {
     return await $api<Yandex.Worklog>(`/tracker/issues/${issueId}/worklog`, {
       method: 'POST',
