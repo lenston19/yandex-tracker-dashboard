@@ -9,6 +9,8 @@ import type { Weekday } from '../types'
 import { useQueuesStore } from '~/core/store/use-queues-store'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
 import { isWorkingDay } from '~/core/composables/use-production-calendar'
+import { useSiteSettingsStore } from '~/modules/settings'
+import { SITEMAP } from '~/core/utils/router/sitemap'
 
 export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
   const worklogsStore = useWorklogsStore('week', 'week-time-widget')
@@ -16,6 +18,8 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
   const queuesStore = useQueuesStore()
   const { queuesModel, isLoading: isLoadingQueue } = storeToRefs(queuesStore)
+
+  const { hoursInDay } = storeToRefs(useSiteSettingsStore())
 
   const currentWeek = ref<Weekday[]>([])
   const weekTotalHours = ref<number>(0)
@@ -103,9 +107,25 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
 
   function openDetailDay(day: Weekday) {
     if (day.hours > 0) {
-      navigateTo(`/day/${day.dateKey}`)
+      navigateTo({ ...SITEMAP.dayView.route, params: { date: day.dateKey } })
     }
   }
+
+  const weekProgressStatus = computed((): 'ahead' | 'on-track' | 'behind' | 'neutral' => {
+    const todayInWeek = currentWeek.value.find(d => d.isToday)
+    if (!todayInWeek || !currentWeek.value.length) return 'neutral'
+
+    const todayIndex = currentWeek.value.indexOf(todayInWeek)
+    const passedWorkingDays = currentWeek.value.slice(0, todayIndex + 1).filter(d => !d.isHoliday).length
+
+    const dayHours = hoursInDay.value ?? 8
+    const expectedByNow = passedWorkingDays * dayHours
+    const diff = weekTotalHours.value - expectedByNow
+
+    if (diff > 1) return 'ahead'
+    if (diff < -1) return 'behind'
+    return 'on-track'
+  })
 
   return {
     params,
@@ -117,6 +137,7 @@ export const useWeekTimeWidgetStore = defineStore('week-time-widget', () => {
     refresh: worklogsStore.refresh,
     openDetailDay,
     flatQueueWorklogs,
-    isLoadingQueue
+    isLoadingQueue,
+    weekProgressStatus
   }
 })

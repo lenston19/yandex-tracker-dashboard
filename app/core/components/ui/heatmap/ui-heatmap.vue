@@ -77,6 +77,8 @@ function getColor(hours: number | null): string {
   return colorRanges.value[0]!.color
 }
 
+const emit = defineEmits<{ 'click:day': [key: string] }>()
+
 const openKey = ref<string | null>(null)
 const gridRef = useTemplateRef('gridRef')
 
@@ -87,8 +89,16 @@ onClickOutside(gridRef, () => {
 })
 
 function handleCellClick(key: string) {
+  if (!(props.dayMap.get(key) ?? 0)) return
   if (isMobile.value) {
-    openKey.value = openKey.value === key ? null : key
+    if (openKey.value === key) {
+      openKey.value = null
+      emit('click:day', key)
+    } else {
+      openKey.value = key
+    }
+  } else {
+    emit('click:day', key)
   }
 }
 

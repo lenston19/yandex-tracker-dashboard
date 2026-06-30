@@ -12,7 +12,7 @@ import IssueItem from '~/core/components/issues/issue-item.vue'
 const PAGE_SIZE = 5
 
 const store = useMyIssuesWidgetStore()
-const { issues, isLoading } = storeToRefs(store)
+const { issues, issueSpentHoursMap, isLoading } = storeToRefs(store)
 
 const { myIssues } = storeToRefs(useSiteSettingsStore())
 
@@ -71,6 +71,7 @@ watch(issues, () => {
         :key="issue.key"
         :issue="issue"
         :display="myIssues.display"
+        :spent-hours="issueSpentHoursMap.get(issue.key) ?? null"
       >
         <template #action>
           <issue-timer-button :issue="issue" />

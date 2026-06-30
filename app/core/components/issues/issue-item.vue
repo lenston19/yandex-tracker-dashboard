@@ -4,30 +4,43 @@ import { getPriorityWeight, getStatusColor } from '~/core/utils/my-issues'
 import { highlightText } from '~/core/utils/text'
 import { HEROICONS } from '~/core/constants/heroicons'
 import { useTimerStore } from '~/core/store/use-timer-store'
+import { isoDurationToRu, formatHoursToFixed, calculateDurationInHours } from '~/core/utils/time'
 
 const props = withDefaults(
   defineProps<{
     issue: Yandex.Issue
     highlightQuery?: string
+    spentHours?: number | null
     display?: {
       priority?: boolean
       status?: boolean
       assignee?: boolean
       reviewer?: boolean
       qaEngineer?: boolean
+      estimation?: boolean
     }
   }>(),
   {
     highlightQuery: '',
+    spentHours: undefined,
     display: () => ({
       priority: true,
       status: true,
       assignee: false,
       reviewer: false,
-      qaEngineer: false
+      qaEngineer: false,
+      estimation: false
     })
   }
 )
+
+const hasEstimation = computed(() => props.issue.estimation && props.issue.estimation !== 'PT0S')
+
+const estimationText = computed(() => (hasEstimation.value ? isoDurationToRu(props.issue.estimation!) : ''))
+const estimationHours = computed(() => (hasEstimation.value ? calculateDurationInHours(props.issue.estimation!) : 0))
+
+const spentText = computed(() => (props.spentHours != null ? `${formatHoursToFixed(props.spentHours)}ч` : null))
+const isOverEstimation = computed(() => props.spentHours != null && props.spentHours > estimationHours.value)
 
 const highlightedKey = computed(() => highlightText(props.issue.key, props.highlightQuery))
 const highlightedSummary = computed(() => highlightText(props.issue.summary, props.highlightQuery))
@@ -131,6 +144,48 @@ const hasMeta = computed(
         <span v-if="display.qaEngineer && issue.qaEngineer">
           <span class="text-neutral-600">QA:</span> {{ issue.qaEngineer.display }}
         </span>
+      </div>
+
+      <div
+        v-if="display.estimation && hasEstimation"
+        class="mt-1 flex items-center gap-1.5 text-xs"
+      >
+        <u-tooltip
+          text="Оценка задачи"
+          :delay-duration="300"
+        >
+          <span class="flex cursor-help items-center gap-0.5 text-muted">
+            <u-icon
+              :name="HEROICONS.CLOCK"
+              class="size-3 shrink-0"
+            />
+            <span>{{ estimationText }}</span>
+          </span>
+        </u-tooltip>
+
+        <template v-if="spentHours !== undefined">
+          <span class="text-neutral-400">/</span>
+          <u-skeleton
+            v-if="spentHours === null"
+            class="h-3 w-10"
+          />
+          <u-tooltip
+            v-else
+            text="Всего залогировано"
+            :delay-duration="300"
+          >
+            <span
+              class="flex cursor-help items-center gap-0.5"
+              :class="spentHours! > 0 ? (isOverEstimation ? 'text-error' : 'text-success') : 'text-muted'"
+            >
+              <u-icon
+                :name="isOverEstimation ? HEROICONS.EXCLAMATION_TRIANGLE : HEROICONS.CHECK"
+                class="size-3 shrink-0"
+              />
+              <span>{{ spentText }}</span>
+            </span>
+          </u-tooltip>
+        </template>
       </div>
     </div>
 

@@ -8,6 +8,7 @@ import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import { useIssueBus } from '~/core/composables/use-issue-bus'
 import { fetchAllPages } from '~/core/utils/fetch-all-pages'
+import { useIssueSpentHours } from '~/core/composables/use-issue-spent-hours'
 
 const PER_PAGE = 50
 
@@ -18,6 +19,7 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const router = useRouter()
 
   const allIssues = ref<Yandex.Issue[]>([])
+  const { issueSpentHoursMap, fetchSpentHours } = useIssueSpentHours(computed(() => myIssues.value.display.estimation))
 
   const parseStatuses = (): string[] => {
     const raw = route.query.statuses
@@ -96,6 +98,7 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
     }
 
     allIssues.value = result
+    await fetchSpentHours(allIssues.value)
   })
 
   const applyFilters = async () => {
@@ -129,6 +132,7 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
     allIssues,
     issuesByQueue,
     issueTotalByQueue,
+    issueSpentHoursMap,
     filters,
     search,
     totalIssues,
