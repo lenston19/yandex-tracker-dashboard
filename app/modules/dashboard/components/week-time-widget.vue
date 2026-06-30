@@ -11,7 +11,7 @@ import { useDateFormatter } from '~/core/composables/use-date-formatter'
 import { parseDateOnly } from '~/core/utils/time'
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
-const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue } =
+const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue, weekProgressStatus } =
   storeToRefs(weekTimeWidgetStore)
 
 const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
@@ -116,9 +116,27 @@ onMounted(async () => {
       <div class="flex w-full items-center justify-between">
         <div
           v-if="!isLoading"
-          class="flex flex-wrap gap-1 text-lg"
+          class="flex flex-wrap items-center gap-2 text-lg"
+          :class="{
+            'text-success': weekProgressStatus === 'ahead',
+            'text-error': weekProgressStatus === 'behind'
+          }"
         >
-          Всего: <span class="font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }} </span>
+          Всего: <span class="font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }}</span>
+          <u-badge
+            v-if="weekProgressStatus === 'behind'"
+            color="error"
+            variant="subtle"
+            label="Отстаёте"
+            size="sm"
+          />
+          <u-badge
+            v-else-if="weekProgressStatus === 'ahead'"
+            color="success"
+            variant="subtle"
+            label="Опережаете"
+            size="sm"
+          />
         </div>
         <u-skeleton
           v-else
