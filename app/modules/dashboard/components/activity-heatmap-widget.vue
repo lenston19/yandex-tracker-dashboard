@@ -4,6 +4,7 @@ import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import { useActivityHeatmapStore } from '../store/use-activity-heatmap-store'
 import { useSiteSettingsStore } from '~/modules/settings'
 import UiHeatmap from '~/core/components/ui/heatmap/ui-heatmap.vue'
+import { SITEMAP } from '~/core/utils/router/sitemap'
 
 const store = useActivityHeatmapStore()
 const { dayMap, isLoading } = storeToRefs(store)
@@ -26,6 +27,7 @@ const title = computed(() => TITLE_MAP[heatmap.value.weeks] ?? 'Активнос
       :day-map="dayMap"
       :format-tooltip="store.formatTooltip"
       :loading="isLoading"
+      @click:day="date => navigateTo({ ...SITEMAP.dayView.route, params: { date } })"
     />
 
     <template #footer>
