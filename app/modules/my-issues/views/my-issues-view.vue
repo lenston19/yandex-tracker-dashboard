@@ -15,7 +15,8 @@ import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings
 useHead({ title: SITEMAP.myIssues.name })
 
 const store = useMyIssuesStore()
-const { issuesByQueue, issueTotalByQueue, filters, search, totalIssues, filteredTotal, isLoading } = storeToRefs(store)
+const { issuesByQueue, issueTotalByQueue, issueSpentHoursMap, filters, search, totalIssues, filteredTotal, isLoading } =
+  storeToRefs(store)
 
 const { myIssues } = storeToRefs(useSiteSettingsStore())
 const { queuesModel } = storeToRefs(useQueuesStore())
@@ -132,6 +133,7 @@ const getQueueRoute = (queueKey: string) => ({
             :issue="issue"
             :display="myIssues.display"
             :highlight-query="search"
+            :spent-hours="issueSpentHoursMap.get(issue.key) ?? null"
           >
             <template #action>
               <issue-timer-button :issue="issue" />

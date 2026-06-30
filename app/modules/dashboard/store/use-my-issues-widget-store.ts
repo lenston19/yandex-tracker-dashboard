@@ -6,22 +6,26 @@ import { useSiteSettingsStore } from '~/modules/settings'
 import { buildFetchQuery, sortByPriority } from '~/core/utils/my-issues'
 import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 import { useIssueBus } from '~/core/composables/use-issue-bus'
+import { useIssueSpentHours } from '~/core/composables/use-issue-spent-hours'
 
 export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
   const { login } = storeToRefs(useAuthStore())
   const { myIssues } = storeToRefs(useSiteSettingsStore())
 
   const issues = ref<Yandex.Issue[]>([])
+  const { issueSpentHoursMap, fetchSpentHours } = useIssueSpentHours(computed(() => myIssues.value.display.estimation))
 
   const { runWithLoading: refresh, isLoading } = useTryCatchWithLoading(async () => {
     if (!login.value) {
       issues.value = []
+      issueSpentHoursMap.value = new Map()
       return
     }
     const statuses = myIssues.value.statuses.length ? myIssues.value.statuses : ['open', 'rediscovered']
     const query = buildFetchQuery(login.value, { statuses, priority: null, queue: '' }, myIssues.value.roles)
     const data = await yandexTrackerApi.issueSearch({ query }, 50)
     issues.value = sortByPriority(data ?? [])
+    await fetchSpentHours(issues.value)
   })
 
   watch(
@@ -46,5 +50,5 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
     }
   })
 
-  return { issues, isLoading, refresh }
+  return { issues, issueSpentHoursMap, isLoading, refresh }
 })
