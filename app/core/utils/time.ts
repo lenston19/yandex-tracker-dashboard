@@ -12,7 +12,7 @@ export const parseDateOnly = (dateStr: string): Date => parseISO(dateStr.slice(0
 const ISO_DURATION_RE =
   /P(?:(\d+(?:[.,]\d+)?)W)?(?:(\d+(?:[.,]\d+)?)D)?(?:T(?:(\d+(?:[.,]\d+)?)H)?(?:(\d+(?:[.,]\d+)?)M)?(?:(\d+(?:[.,]\d+)?)S)?)?/
 
-const calculateDurationInHours = (duration: string): number => {
+export const calculateDurationInHours = (duration: string): number => {
   const m = duration.match(ISO_DURATION_RE)
   if (!m) return 0
   const weeks = parseFloat(m[1] || '0')
