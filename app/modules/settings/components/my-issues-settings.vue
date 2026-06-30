@@ -9,7 +9,7 @@ const ACTIVE_STATUS_OPTIONS = ISSUE_STATUS_OPTIONS.filter(o =>
 )
 
 type RoleKey = 'assignee' | 'reviewer' | 'qaEngineer'
-type DisplayKey = 'priority' | 'status' | 'assignee' | 'reviewer' | 'qaEngineer'
+type DisplayKey = 'priority' | 'status' | 'assignee' | 'reviewer' | 'qaEngineer' | 'estimation'
 
 const ROLE_OPTIONS: { key: RoleKey; label: string }[] = [
   { key: 'assignee', label: 'Исполнитель' },
@@ -22,7 +22,8 @@ const DISPLAY_OPTIONS: { key: DisplayKey; label: string }[] = [
   { key: 'status', label: 'Статус' },
   { key: 'assignee', label: 'Исполнитель' },
   { key: 'reviewer', label: 'Ревьюер' },
-  { key: 'qaEngineer', label: 'QA-инженер' }
+  { key: 'qaEngineer', label: 'QA-инженер' },
+  { key: 'estimation', label: 'Оценка / факт' }
 ]
 
 const { myIssues } = storeToRefs(useSiteSettingsStore())
