@@ -39,12 +39,12 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'US/Mountain'
   },
   {
-    label: '(GMT-07:00) Chihuahua',
-    id: 'America/Chihuahua'
-  },
-  {
     label: '(GMT-07:00) Mazatlan',
     id: 'America/Mazatlan'
+  },
+  {
+    label: '(GMT-06:00) Chihuahua',
+    id: 'America/Chihuahua'
   },
   {
     label: '(GMT-06:00) Mexico City',
@@ -79,7 +79,7 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'America/Lima'
   },
   {
-    label: '(GMT-04:30) Caracas',
+    label: '(GMT-04:00) Caracas',
     id: 'America/Caracas'
   },
   {
@@ -100,15 +100,15 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
   },
   {
     label: '(GMT-03:00) Buenos Aires',
-    id: 'America/Buenos_Aires'
+    id: 'America/Argentina/Buenos_Aires'
+  },
+  {
+    label: '(GMT-03:00) Stanley',
+    id: 'Atlantic/Stanley'
   },
   {
     label: '(GMT-03:00) Greenland',
-    id: 'Greenland'
-  },
-  {
-    label: '(GMT-02:00) Stanley',
-    id: 'Atlantic/Stanley'
+    id: 'America/Nuuk'
   },
   {
     label: '(GMT-01:00) Azores',
@@ -117,10 +117,6 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
   {
     label: '(GMT-01:00) Cape Verde Is.',
     id: 'Atlantic/Cape_Verde'
-  },
-  {
-    label: '(GMT) Casablanca',
-    id: 'Africa/Casablanca'
   },
   {
     label: '(GMT) Dublin',
@@ -137,6 +133,10 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
   {
     label: '(GMT) Monrovia',
     id: 'Africa/Monrovia'
+  },
+  {
+    label: '(GMT+01:00) Casablanca',
+    id: 'Africa/Casablanca'
   },
   {
     label: '(GMT+01:00) Amsterdam',
@@ -231,20 +231,12 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Europe/Helsinki'
   },
   {
-    label: '(GMT+02:00) Istanbul',
-    id: 'Europe/Istanbul'
-  },
-  {
     label: '(GMT+02:00) Jerusalem',
     id: 'Asia/Jerusalem'
   },
   {
     label: '(GMT+02:00) Kyiv',
-    id: 'Europe/Kiev'
-  },
-  {
-    label: '(GMT+02:00) Minsk',
-    id: 'Europe/Minsk'
+    id: 'Europe/Kyiv'
   },
   {
     label: '(GMT+02:00) Riga',
@@ -267,8 +259,20 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Asia/Baghdad'
   },
   {
+    label: '(GMT+03:00) Istanbul',
+    id: 'Europe/Istanbul'
+  },
+  {
     label: '(GMT+03:00) Kuwait',
     id: 'Asia/Kuwait'
+  },
+  {
+    label: '(GMT+03:00) Minsk',
+    id: 'Europe/Minsk'
+  },
+  {
+    label: '(GMT+03:00) Moscow',
+    id: 'Europe/Moscow'
   },
   {
     label: '(GMT+03:00) Nairobi',
@@ -279,8 +283,8 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Asia/Riyadh'
   },
   {
-    label: '(GMT+03:00) Moscow',
-    id: 'Europe/Moscow'
+    label: '(GMT+03:00) Volgograd',
+    id: 'Europe/Volgograd'
   },
   {
     label: '(GMT+03:30) Tehran',
@@ -289,10 +293,6 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
   {
     label: '(GMT+04:00) Baku',
     id: 'Asia/Baku'
-  },
-  {
-    label: '(GMT+04:00) Volgograd',
-    id: 'Europe/Volgograd'
   },
   {
     label: '(GMT+04:00) Muscat',
@@ -311,6 +311,10 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Asia/Kabul'
   },
   {
+    label: '(GMT+05:00) Ekaterinburg',
+    id: 'Asia/Yekaterinburg'
+  },
+  {
     label: '(GMT+05:00) Karachi',
     id: 'Asia/Karachi'
   },
@@ -327,16 +331,16 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Asia/Kathmandu'
   },
   {
-    label: '(GMT+06:00) Ekaterinburg',
-    id: 'Asia/Yekaterinburg'
-  },
-  {
     label: '(GMT+06:00) Almaty',
     id: 'Asia/Almaty'
   },
   {
     label: '(GMT+06:00) Dhaka',
     id: 'Asia/Dhaka'
+  },
+  {
+    label: '(GMT+07:00) Krasnoyarsk',
+    id: 'Asia/Krasnoyarsk'
   },
   {
     label: '(GMT+07:00) Novosibirsk',
@@ -351,8 +355,8 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Asia/Jakarta'
   },
   {
-    label: '(GMT+08:00) Krasnoyarsk',
-    id: 'Asia/Krasnoyarsk'
+    label: '(GMT+08:00) Irkutsk',
+    id: 'Asia/Irkutsk'
   },
   {
     label: '(GMT+08:00) Chongqing',
@@ -387,8 +391,8 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Asia/Urumqi'
   },
   {
-    label: '(GMT+09:00) Irkutsk',
-    id: 'Asia/Irkutsk'
+    label: '(GMT+09:00) Yakutsk',
+    id: 'Asia/Yakutsk'
   },
   {
     label: '(GMT+09:00) Seoul',
@@ -407,8 +411,8 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Australia/Darwin'
   },
   {
-    label: '(GMT+10:00) Yakutsk',
-    id: 'Asia/Yakutsk'
+    label: '(GMT+10:00) Vladivostok',
+    id: 'Asia/Vladivostok'
   },
   {
     label: '(GMT+10:00) Brisbane',
@@ -439,11 +443,7 @@ export const TIME_ZONE_LIST: TimeZoneSelectOption[] = [
     id: 'Australia/Sydney'
   },
   {
-    label: '(GMT+11:00) Vladivostok',
-    id: 'Asia/Vladivostok'
-  },
-  {
-    label: '(GMT+12:00) Magadan',
+    label: '(GMT+11:00) Magadan',
     id: 'Asia/Magadan'
   },
   {
