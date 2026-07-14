@@ -7,7 +7,7 @@ import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { pluralize } from '~/core/utils/pluralize'
 import UiCard from '~/core/components/ui/ui-card.vue'
 
-const { isShowWeeklyLoading, gold, hoursInDay } = storeToRefs(useSiteSettingsStore())
+const { isShowWeeklyLoading, isShowWeekProgress, gold, hoursInDay } = storeToRefs(useSiteSettingsStore())
 
 const { open: openHoursModal } = useModal({
   component: defineAsyncComponent(() => import('./modals/settings-hours-in-day-modal.vue'))
@@ -62,6 +62,19 @@ const hoursPlural = computed(() => (hoursInDay.value ? pluralize(hoursInDay.valu
         </div>
         <u-switch
           v-model="isShowWeeklyLoading"
+          class="shrink-0"
+          :checked-icon="HEROICONS.CHECK_20_SOLID"
+          :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
+        />
+      </div>
+
+      <div class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
+        <div class="min-w-0">
+          <p class="text-sm font-medium">Прогресс недели</p>
+          <p class="text-xs text-muted">Показывать цветовой акцент и бейджи опережения/отставания по времени</p>
+        </div>
+        <u-switch
+          v-model="isShowWeekProgress"
           class="shrink-0"
           :checked-icon="HEROICONS.CHECK_20_SOLID"
           :unchecked-icon="HEROICONS.X_MARK_20_SOLID"

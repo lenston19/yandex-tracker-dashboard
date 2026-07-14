@@ -14,7 +14,7 @@ const weekTimeWidgetStore = useWeekTimeWidgetStore()
 const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue, weekProgressStatus } =
   storeToRefs(weekTimeWidgetStore)
 
-const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
+const { hoursInDay, isShowWeeklyLoading, isShowWeekProgress } = storeToRefs(useSiteSettingsStore())
 
 const { formatShortDate } = useDateFormatter()
 const title = computed(() => {
@@ -118,20 +118,20 @@ onMounted(async () => {
           v-if="!isLoading"
           class="flex flex-wrap items-center gap-2 text-lg"
           :class="{
-            'text-success': weekProgressStatus === 'ahead',
-            'text-error': weekProgressStatus === 'behind'
+            'text-success': isShowWeekProgress && weekProgressStatus === 'ahead',
+            'text-error': isShowWeekProgress && weekProgressStatus === 'behind'
           }"
         >
           Всего: <span class="font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }}</span>
           <u-badge
-            v-if="weekProgressStatus === 'behind'"
+            v-if="isShowWeekProgress && weekProgressStatus === 'behind'"
             color="error"
             variant="subtle"
             label="Отстаёте"
             size="sm"
           />
           <u-badge
-            v-else-if="weekProgressStatus === 'ahead'"
+            v-else-if="isShowWeekProgress && weekProgressStatus === 'ahead'"
             color="success"
             variant="subtle"
             label="Опережаете"
