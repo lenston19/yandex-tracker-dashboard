@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs'
+import { PREFIX } from './app/core/constants/storage-keys'
 const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
 const appVersion = packageJson.version
 
@@ -85,6 +86,7 @@ export default defineNuxtConfig({
   css: ['~/assets/styles/main.css', 'vue-final-modal/style.css'],
 
   piniaPluginPersistedstate: {
+    key: `${PREFIX}%id`,
     storage: 'localStorage'
   },
 

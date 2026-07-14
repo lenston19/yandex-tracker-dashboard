@@ -6,6 +6,7 @@ export function useWorkTimeSettings() {
   const hoursInDay = ref<number>(8)
   const gold = ref<number>(0)
   const isShowWeeklyLoading = ref<boolean>(false)
+  const isShowWeekProgress = ref<boolean>(true)
   const needHoursInCurrentMonth = ref<number>(0)
   const remainingWorkdays = ref<number>(0)
 
@@ -37,6 +38,7 @@ export function useWorkTimeSettings() {
     hoursInDay,
     gold,
     isShowWeeklyLoading,
+    isShowWeekProgress,
     needHoursInCurrentMonth,
     remainingWorkdays
   }
