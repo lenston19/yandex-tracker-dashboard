@@ -23,6 +23,7 @@ const handleStart = () => startWithConfirm(props.issue)
       size="sm"
       square
       :disabled="isRunning"
+      class="size-fit hover:bg-neutral-500"
       :color="activeIssueKey === issue.key && isRunning ? 'success' : 'neutral'"
       @click="handleStart"
     />

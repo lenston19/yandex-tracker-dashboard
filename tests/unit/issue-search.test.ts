@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildIssueSearchQuery } from '../../app/core/utils/issue-search'
+import { buildIssueSearchQuery, buildIssuesByKeysQuery } from '../../app/core/utils/issue-search'
 
 describe('buildIssueSearchQuery', () => {
   describe('поиск по ключу задачи', () => {
@@ -54,5 +54,19 @@ describe('buildIssueSearchQuery', () => {
     it('экранирует кавычки в поисковом запросе', () => {
       expect(buildIssueSearchQuery('он сказал "да"')).toContain('Summary: "он сказал \\"да\\""')
     })
+  })
+})
+
+describe('buildIssuesByKeysQuery', () => {
+  it('один ключ', () => {
+    expect(buildIssuesByKeysQuery(['HZ-230'])).toBe('Key: "HZ-230"')
+  })
+
+  it('несколько ключей — через запятую', () => {
+    expect(buildIssuesByKeysQuery(['HZ-230', 'HZ-231', 'HZ-232'])).toBe('Key: "HZ-230", "HZ-231", "HZ-232"')
+  })
+
+  it('пустой массив ключей', () => {
+    expect(buildIssuesByKeysQuery([])).toBe('Key: ')
   })
 })

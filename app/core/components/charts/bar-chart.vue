@@ -18,12 +18,17 @@ const { chartHeight, hasData, series, chartOptions, chartWidth } = useApexChart(
   computed(() => props.data),
   computed(() => props.height),
   {
-    type: 'line',
-    widthMultiplier: 50,
-    colorOf: dataset => dataset.borderColor ?? '#1976d2',
+    type: 'bar',
+    widthMultiplier: 80,
+    colorOf: dataset => dataset.backgroundColor ?? '#1976d2',
     fill: props.fill,
     extraOptions: {
-      stroke: { width: 1, curve: 'smooth' }
+      plotOptions: {
+        bar: {
+          borderRadius: 4,
+          columnWidth: '50%'
+        }
+      }
     }
   }
 )
@@ -46,7 +51,7 @@ const { chartHeight, hasData, series, chartOptions, chartWidth } = useApexChart(
           :class="fill ? 'h-full' : undefined"
         >
           <vue-apex-charts
-            type="line"
+            type="bar"
             :height="chartHeight"
             :width="chartWidth"
             :options="chartOptions"
