@@ -1,11 +1,18 @@
 <script setup lang="ts">
-defineProps<{ title?: string }>()
+withDefaults(
+  defineProps<{
+    title?: string
+    fill?: boolean
+  }>(),
+  { fill: false }
+)
 </script>
 
 <template>
   <u-card
     :ui="{
-      root: 'overflow-visible'
+      root: fill ? 'overflow-visible flex h-full flex-col' : 'overflow-visible',
+      body: fill ? 'flex flex-1 flex-col min-h-0' : undefined
     }"
   >
     <template
