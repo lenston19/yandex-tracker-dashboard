@@ -25,6 +25,7 @@ export function useDisplaySettings() {
       reviewer: boolean
       qaEngineer: boolean
       estimation: boolean
+      deadline: boolean
     }
   }>({
     show: true,
@@ -40,7 +41,8 @@ export function useDisplaySettings() {
       assignee: false,
       reviewer: false,
       qaEngineer: false,
-      estimation: false
+      estimation: false,
+      deadline: false
     }
   })
 

@@ -86,6 +86,7 @@ export namespace Yandex {
     summary: string
     description?: string
     estimation?: string
+    deadline?: string
     status: BaseWithKey
     previousStatus?: BaseWithKey
     priority: BaseWithKey
