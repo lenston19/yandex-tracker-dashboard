@@ -51,7 +51,7 @@ onMounted(async () => {
           <u-button
             :icon="HEROICONS.PLUS_CIRCLE"
             variant="ghost"
-            size="sm"
+            size="md"
             square
             @click="openQuickWorklog()"
           />
