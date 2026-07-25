@@ -1,5 +1,20 @@
 # 🧭 Что нового?
 
+### 2026-07-25
+::badge
+**v1.2.7**
+::
+
+::card-group
+::card{icon="i-lucide-calendar-clock" color="primary"}
+- <a href="/my-issues" class="text-primary">Мои задачи</a>: отображение дедлайна задачи (настройка «Дедлайн» в блоке отображения)
+- Виджет «Мои задачи» на <a href="/" class="text-primary">дашборде</a>: сортировка по приоритету или по дедлайну
+::
+::card{icon="i-lucide-bar-chart-3" color="info"}
+- <a href="/monthly-report" class="text-primary">Месячный отчёт</a>: блок переработок по задачам, топ-5 задач по списанным часам, распределение часов по дням недели
+::
+::
+
 ### 2026-07-14
 ::badge
 **v1.2.6**

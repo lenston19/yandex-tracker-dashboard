@@ -18,3 +18,8 @@ export const buildIssueSearchQuery = (q: string, login?: string, statuses?: stri
   const assigneePart = login ? `Assignee: ${login} ` : ''
   return `${assigneePart}Summary: "${escaped}"${statusPart}`
 }
+
+/** Формирует YQL-запрос для получения задач по списку ключей: `Key: "A", "B", "C"` */
+export const buildIssuesByKeysQuery = (keys: string[]): string => {
+  return `Key: ${keys.map(key => `"${key}"`).join(', ')}`
+}

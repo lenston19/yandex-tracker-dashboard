@@ -8,6 +8,8 @@ import { HEROICONS } from '~/core/constants/heroicons'
 import { SITEMAP } from '~/core/utils/router/sitemap'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import IssueItem from '~/core/components/issues/issue-item.vue'
+import { sortByDeadline } from '~/core/utils/my-issues'
+import { MY_ISSUES_SORT_MODE, MY_ISSUES_SORT_OPTIONS, type MyIssuesSortMode } from '../models/constants/my-issues-sort'
 
 const PAGE_SIZE = 5
 
@@ -17,15 +19,20 @@ const { issues, issueSpentHoursMap, isLoading } = storeToRefs(store)
 const { myIssues } = storeToRefs(useSiteSettingsStore())
 
 const page = ref(1)
+const sortMode = ref<MyIssuesSortMode>(MY_ISSUES_SORT_MODE.PRIORITY)
 
-const totalPages = computed(() => Math.ceil(issues.value.length / PAGE_SIZE) || 1)
+const sortedIssues = computed(() =>
+  sortMode.value === MY_ISSUES_SORT_MODE.DEADLINE ? sortByDeadline(issues.value) : issues.value
+)
+
+const totalPages = computed(() => Math.ceil(sortedIssues.value.length / PAGE_SIZE) || 1)
 
 const pagedIssues = computed(() => {
   const start = (page.value - 1) * PAGE_SIZE
-  return issues.value.slice(start, start + PAGE_SIZE)
+  return sortedIssues.value.slice(start, start + PAGE_SIZE)
 })
 
-watch(issues, () => {
+watch([issues, sortMode], () => {
   page.value = 1
 })
 </script>
@@ -36,6 +43,14 @@ watch(issues, () => {
       <div class="flex items-center justify-between">
         <div class="text-lg font-medium">Мои задачи</div>
         <div class="flex items-center gap-2">
+          <u-select
+            v-model="sortMode"
+            :items="MY_ISSUES_SORT_OPTIONS"
+            value-key="value"
+            label-key="label"
+            size="xs"
+            class="w-36 shrink-0"
+          />
           <u-link
             :to="{ name: SITEMAP.myIssues.route.name }"
             class="text-xs text-primary hover:underline"

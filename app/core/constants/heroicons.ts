@@ -22,6 +22,7 @@ export const HEROICONS = {
   USER: 'heroicons:user',
   SWATCH: 'heroicons:swatch',
   CLOCK: 'heroicons:clock',
+  CALENDAR: 'heroicons:calendar',
   EXCLAMATION_TRIANGLE: 'heroicons:exclamation-triangle',
   PLAY: 'heroicons:play',
   PLAY_CIRCLE: 'heroicons:play-circle',

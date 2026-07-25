@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildFetchQuery, groupIssuesByQueue } from '../../app/core/utils/my-issues'
+import { buildFetchQuery, groupIssuesByQueue, sortByDeadline } from '../../app/core/utils/my-issues'
 import type { Yandex } from '../../app/core/types/api/yandex-tracker/yandex-tracker.entity'
 
 const makeIssue = (key: string, queueKey: string, queueDisplay: string): Yandex.Issue => ({
@@ -102,5 +102,37 @@ describe('groupIssuesByQueue', () => {
   it('порядок групп соответствует первому появлению очереди', () => {
     const issues = [makeIssue('C-1', 'C', 'Ц'), makeIssue('A-1', 'A', 'А'), makeIssue('C-2', 'C', 'Ц')]
     expect(Object.keys(groupIssuesByQueue(issues))).toEqual(['C', 'A'])
+  })
+})
+
+describe('sortByDeadline', () => {
+  it('сортирует по возрастанию даты дедлайна', () => {
+    const a = { ...makeIssue('A-1', 'A', 'А'), deadline: '2024-05-10' }
+    const b = { ...makeIssue('A-2', 'A', 'А'), deadline: '2024-05-01' }
+    const c = { ...makeIssue('A-3', 'A', 'А'), deadline: '2024-06-01' }
+    expect(sortByDeadline([a, b, c]).map(i => i.key)).toEqual(['A-2', 'A-1', 'A-3'])
+  })
+
+  it('задачи без дедлайна уходят в конец', () => {
+    const withDeadline = { ...makeIssue('A-1', 'A', 'А'), deadline: '2024-05-10' }
+    const withoutDeadline = makeIssue('A-2', 'A', 'А')
+    expect(sortByDeadline([withoutDeadline, withDeadline]).map(i => i.key)).toEqual(['A-1', 'A-2'])
+  })
+
+  it('пустой массив', () => {
+    expect(sortByDeadline([])).toEqual([])
+  })
+
+  it('все задачи без дедлайна — порядок не меняется', () => {
+    const issues = [makeIssue('A-1', 'A', 'А'), makeIssue('A-2', 'A', 'А')]
+    expect(sortByDeadline(issues).map(i => i.key)).toEqual(['A-1', 'A-2'])
+  })
+
+  it('не мутирует исходный массив', () => {
+    const a = { ...makeIssue('A-1', 'A', 'А'), deadline: '2024-05-10' }
+    const b = { ...makeIssue('A-2', 'A', 'А'), deadline: '2024-05-01' }
+    const issues = [a, b]
+    sortByDeadline(issues)
+    expect(issues.map(i => i.key)).toEqual(['A-1', 'A-2'])
   })
 })

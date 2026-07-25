@@ -4,7 +4,9 @@ import { getPriorityWeight, getStatusColor } from '~/core/utils/my-issues'
 import { highlightText } from '~/core/utils/text'
 import { HEROICONS } from '~/core/constants/heroicons'
 import { useTimerStore } from '~/core/store/use-timer-store'
-import { isoDurationToRu, formatHoursToFixed, calculateDurationInHours } from '~/core/utils/time'
+import { isoDurationToRu, formatHoursToFixed, calculateDurationInHours, parseDateOnly } from '~/core/utils/time'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
+import { useNow } from '@vueuse/core'
 
 const props = withDefaults(
   defineProps<{
@@ -18,6 +20,7 @@ const props = withDefaults(
       reviewer?: boolean
       qaEngineer?: boolean
       estimation?: boolean
+      deadline?: boolean
     }
   }>(),
   {
@@ -29,7 +32,8 @@ const props = withDefaults(
       assignee: false,
       reviewer: false,
       qaEngineer: false,
-      estimation: false
+      estimation: false,
+      deadline: false
     })
   }
 )
@@ -41,6 +45,18 @@ const estimationHours = computed(() => (hasEstimation.value ? calculateDurationI
 
 const spentText = computed(() => (props.spentHours != null ? `${formatHoursToFixed(props.spentHours)}ч` : null))
 const isOverEstimation = computed(() => props.spentHours != null && props.spentHours > estimationHours.value)
+
+const { formatShortDate, formatDayKey } = useDateFormatter()
+const now = useNow()
+
+const hasDeadline = computed(() => Boolean(props.issue.deadline))
+const deadlineText = computed(() => (hasDeadline.value ? formatShortDate(parseDateOnly(props.issue.deadline!)) : ''))
+const isDeadlineOverdue = computed(
+  () => hasDeadline.value && props.issue.deadline!.slice(0, 10) < formatDayKey(now.value)
+)
+const isDeadlineToday = computed(
+  () => hasDeadline.value && props.issue.deadline!.slice(0, 10) === formatDayKey(now.value)
+)
 
 const highlightedKey = computed(() => highlightText(props.issue.key, props.highlightQuery))
 const highlightedSummary = computed(() => highlightText(props.issue.summary, props.highlightQuery))
@@ -131,61 +147,84 @@ const hasMeta = computed(
         v-html="highlightedSummary"
       />
 
-      <div
-        v-if="hasMeta"
-        class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-neutral-500"
-      >
-        <span v-if="display.assignee && issue.assignee">
-          <span class="text-neutral-600">Исп:</span> {{ issue.assignee.display }}
-        </span>
-        <span v-if="display.reviewer && issue.reviewer">
-          <span class="text-neutral-600">Ревью:</span> {{ issue.reviewer.display }}
-        </span>
-        <span v-if="display.qaEngineer && issue.qaEngineer">
-          <span class="text-neutral-600">QA:</span> {{ issue.qaEngineer.display }}
-        </span>
-      </div>
-
-      <div
-        v-if="display.estimation && hasEstimation"
-        class="mt-1 flex items-center gap-1.5 text-xs"
-      >
-        <u-tooltip
-          text="Оценка задачи"
-          :delay-duration="300"
+      <div class="flex flex-wrap gap-4">
+        <div
+          v-if="hasMeta"
+          class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-neutral-500"
         >
-          <span class="flex cursor-help items-center gap-0.5 text-muted">
-            <u-icon
-              :name="HEROICONS.CLOCK"
-              class="size-3 shrink-0"
-            />
-            <span>{{ estimationText }}</span>
+          <span v-if="display.assignee && issue.assignee">
+            <span class="text-neutral-600">Исп:</span> {{ issue.assignee.display }}
           </span>
-        </u-tooltip>
+          <span v-if="display.reviewer && issue.reviewer">
+            <span class="text-neutral-600">Ревью:</span> {{ issue.reviewer.display }}
+          </span>
+          <span v-if="display.qaEngineer && issue.qaEngineer">
+            <span class="text-neutral-600">QA:</span> {{ issue.qaEngineer.display }}
+          </span>
+        </div>
 
-        <template v-if="spentHours !== undefined">
-          <span class="text-neutral-400">/</span>
-          <u-skeleton
-            v-if="spentHours === null"
-            class="h-3 w-10"
-          />
+        <div
+          v-if="display.estimation && hasEstimation"
+          class="mt-1 flex items-center gap-1.5 text-xs"
+        >
           <u-tooltip
-            v-else
-            text="Всего залогировано"
+            text="Оценка задачи"
+            :delay-duration="300"
+          >
+            <span class="flex cursor-help items-center gap-0.5 text-muted">
+              <u-icon
+                :name="HEROICONS.CLOCK"
+                class="size-3 shrink-0"
+              />
+              <span>{{ estimationText }}</span>
+            </span>
+          </u-tooltip>
+
+          <template v-if="spentHours !== undefined">
+            <span class="text-neutral-400">/</span>
+            <u-skeleton
+              v-if="spentHours === null"
+              class="h-3 w-10"
+            />
+            <u-tooltip
+              v-else
+              text="Всего залогировано"
+              :delay-duration="300"
+            >
+              <span
+                class="flex cursor-help items-center gap-0.5"
+                :class="spentHours! > 0 ? (isOverEstimation ? 'text-error' : 'text-success') : 'text-muted'"
+              >
+                <u-icon
+                  :name="isOverEstimation ? HEROICONS.EXCLAMATION_TRIANGLE : HEROICONS.CHECK"
+                  class="size-3 shrink-0"
+                />
+                <span>{{ spentText }}</span>
+              </span>
+            </u-tooltip>
+          </template>
+        </div>
+
+        <div
+          v-if="display.deadline && hasDeadline"
+          class="mt-1 flex items-center gap-1.5 text-xs"
+        >
+          <u-tooltip
+            text="Дедлайн"
             :delay-duration="300"
           >
             <span
               class="flex cursor-help items-center gap-0.5"
-              :class="spentHours! > 0 ? (isOverEstimation ? 'text-error' : 'text-success') : 'text-muted'"
+              :class="isDeadlineOverdue ? 'text-error' : isDeadlineToday ? 'text-warning' : 'text-muted'"
             >
               <u-icon
-                :name="isOverEstimation ? HEROICONS.EXCLAMATION_TRIANGLE : HEROICONS.CHECK"
+                :name="HEROICONS.CALENDAR"
                 class="size-3 shrink-0"
               />
-              <span>{{ spentText }}</span>
+              <span>{{ deadlineText }}</span>
             </span>
           </u-tooltip>
-        </template>
+        </div>
       </div>
     </div>
 

@@ -59,6 +59,14 @@ export const getPriorityWeight = (issue: Yandex.Issue): number => {
 export const sortByPriority = (issues: Yandex.Issue[]): Yandex.Issue[] =>
   [...issues].sort((a, b) => getPriorityWeight(a) - getPriorityWeight(b))
 
+export const sortByDeadline = (issues: Yandex.Issue[]): Yandex.Issue[] =>
+  [...issues].sort((a, b) => {
+    if (!a.deadline && !b.deadline) return 0
+    if (!a.deadline) return 1
+    if (!b.deadline) return -1
+    return a.deadline.localeCompare(b.deadline)
+  })
+
 type BadgeColor = 'primary' | 'info' | 'success' | 'warning' | 'error' | 'secondary' | 'neutral'
 
 export const getStatusColor = (status: Yandex.BaseWithKey): BadgeColor => {
