@@ -16,7 +16,6 @@ export namespace YandexTrackerApi {
     export type Body = {
       filter?: Record<string, string | string[]>
       query?: string
-      order?: string
       fields?: string
     }
   }

@@ -6,29 +6,50 @@ import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import DayLinearProgress from './ui/day-linear-progress.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import { useWorklogBus } from '~/core/composables/use-worklog-bus'
+import { isWorkingDay } from '~/core/composables/use-production-calendar'
+import { useDayTimeWidgetStore } from '../store/use-day-time-widget-store'
+import { pluralize } from '~/core/utils/pluralize'
 
 const worklogsStore = useWorklogsStore('month', 'month-time-widget')
+const dayTimeWidgetStore = useDayTimeWidgetStore()
 
 useWorklogBus('saved', worklogsStore.addWorklog)
 useWorklogBus('deleted', worklogsStore.removeWorklog)
 
 const { totalHours, isLoading } = storeToRefs(worklogsStore)
-const { needHoursInCurrentMonth, remainingWorkdays, gold } = storeToRefs(useSiteSettingsStore())
+const { totalHours: todayHours } = storeToRefs(dayTimeWidgetStore)
+const { needHoursInCurrentMonth, remainingWorkdays, hoursInDay, gold } = storeToRefs(useSiteSettingsStore())
+
+const isTodayWorkingDay = ref(false)
+watchEffect(async () => {
+  isTodayWorkingDay.value = await isWorkingDay(new Date())
+})
 
 const currentRuble = computed(() => totalHours.value * gold.value)
 const maxRuble = computed(() =>
   needHoursInCurrentMonth.value ? needHoursInCurrentMonth.value * gold.value : currentRuble.value
 )
 
+const effectiveRemainingWorkdays = computed(() => {
+  const dailyTarget = hoursInDay.value || 8
+  const isTodayFinished = isTodayWorkingDay.value && (todayHours.value ?? 0) >= dailyTarget
+  return isTodayFinished ? Math.max(remainingWorkdays.value - 1, 0) : remainingWorkdays.value
+})
+
+const remainingWorkdaysText = computed(() => pluralize(effectiveRemainingWorkdays.value, ['день', 'дня', 'дней']))
+
 const hoursPerDayNeeded = computed(() => {
   const remaining = needHoursInCurrentMonth.value - totalHours.value
-  if (remaining <= 0 || !remainingWorkdays.value) return null
-  return +(remaining / remainingWorkdays.value).toFixed(1)
+  if (remaining <= 0 || !effectiveRemainingWorkdays.value) return null
+  return +(remaining / effectiveRemainingWorkdays.value).toFixed(1)
 })
 
 onMounted(async () => {
   if (!totalHours.value) {
     await worklogsStore.refresh()
+  }
+  if (todayHours.value === undefined) {
+    await dayTimeWidgetStore.refresh()
   }
 })
 </script>
@@ -46,7 +67,7 @@ onMounted(async () => {
           <u-tooltip
             v-if="!isLoading && hoursPerDayNeeded"
             :delay-duration="0"
-            :text="`Чтобы выполнить план, нужно отрабатывать по ${hoursPerDayNeeded} ч в день. Осталось ${remainingWorkdays} раб. ${remainingWorkdays === 1 ? 'день' : remainingWorkdays < 5 ? 'дня' : 'дней'}`"
+            :text="`Чтобы выполнить план, нужно отрабатывать по ${hoursPerDayNeeded} ч в день. Осталось ${remainingWorkdaysText} раб.`"
           >
             <div
               class="cursor-help text-right text-sm text-muted italic underline decoration-dashed underline-offset-2"

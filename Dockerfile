@@ -8,8 +8,9 @@ FROM node:${NODE_VERSION}-alpine AS base
 
 WORKDIR /usr/src/app
 
-RUN --mount=type=cache,target=/root/.npm \
-  npm install -g pnpm@${PNPM_VERSION}
+RUN apk add --no-cache python3 make g++
+
+RUN corepack enable && corepack prepare pnpm@${PNPM_VERSION} --activate
 
 ################################################################################
 FROM base AS deps
