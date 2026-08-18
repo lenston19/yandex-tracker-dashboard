@@ -8,33 +8,19 @@ import { HEROICONS } from '~/core/constants/heroicons'
 import { SITEMAP } from '~/core/utils/router/sitemap'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import IssueItem from '~/core/components/issues/issue-item.vue'
-import { sortByDeadline } from '~/core/utils/my-issues'
-import { MY_ISSUES_SORT_MODE, MY_ISSUES_SORT_OPTIONS, type MyIssuesSortMode } from '../models/constants/my-issues-sort'
-
-const PAGE_SIZE = 5
+import { MY_ISSUES_SORT_OPTIONS } from '../models/constants/my-issues-sort'
 
 const store = useMyIssuesWidgetStore()
-const { issues, issueSpentHoursMap, isLoading } = storeToRefs(store)
+const { issues, issueSpentHoursMap, isLoading, page, totalPages, sortMode } = storeToRefs(store)
 
 const { myIssues } = storeToRefs(useSiteSettingsStore())
 
-const page = ref(1)
-const sortMode = ref<MyIssuesSortMode>(MY_ISSUES_SORT_MODE.PRIORITY)
-
-const sortedIssues = computed(() =>
-  sortMode.value === MY_ISSUES_SORT_MODE.DEADLINE ? sortByDeadline(issues.value) : issues.value
-)
-
-const totalPages = computed(() => Math.ceil(sortedIssues.value.length / PAGE_SIZE) || 1)
-
-const pagedIssues = computed(() => {
-  const start = (page.value - 1) * PAGE_SIZE
-  return sortedIssues.value.slice(start, start + PAGE_SIZE)
-})
-
-watch([issues, sortMode], () => {
-  page.value = 1
-})
+const goToPreviousPage = () => {
+  page.value = page.value - 1
+}
+const goToNextPage = () => {
+  page.value = page.value + 1
+}
 </script>
 
 <template>
@@ -66,9 +52,9 @@ watch([issues, sortMode], () => {
       class="flex flex-col gap-2"
     >
       <u-skeleton
-        v-for="i in 3"
+        v-for="i in 5"
         :key="i"
-        class="h-10 w-full rounded-lg"
+        class="h-18 w-full rounded-lg"
       />
     </div>
 
@@ -82,7 +68,7 @@ watch([issues, sortMode], () => {
       class="flex flex-col divide-y divide-neutral-700"
     >
       <issue-item
-        v-for="issue in pagedIssues"
+        v-for="issue in issues"
         :key="issue.key"
         :issue="issue"
         :display="myIssues.display"
@@ -106,7 +92,7 @@ watch([issues, sortMode], () => {
             size="xs"
             square
             :disabled="page === 1"
-            @click="page--"
+            @click="goToPreviousPage"
           />
           <span class="text-xs text-muted">{{ page }} / {{ totalPages }}</span>
           <u-button
@@ -115,7 +101,7 @@ watch([issues, sortMode], () => {
             size="xs"
             square
             :disabled="page >= totalPages"
-            @click="page++"
+            @click="goToNextPage"
           />
         </div>
         <worklog-actions
