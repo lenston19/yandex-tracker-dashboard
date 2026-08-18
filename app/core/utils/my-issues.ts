@@ -1,5 +1,7 @@
 import type { Yandex } from '../types/api/yandex-tracker/yandex-tracker.entity'
 
+export type IssuesSortMode = 'priority' | 'deadline'
+
 export interface IssueFilters {
   statuses: string[]
   priority: string | null
@@ -37,6 +39,13 @@ export const buildFetchQuery = (login: string, filters: IssueFilters, roles?: Is
   return parts.join(' ')
 }
 
+const SORT_CLAUSE_MAP: Record<IssuesSortMode, string> = {
+  priority: '"Sort by": Priority DESC',
+  deadline: '"Sort by": Deadline ASC'
+}
+
+export const getIssuesOrderParam = (sortMode: IssuesSortMode): string => SORT_CLAUSE_MAP[sortMode]
+
 const PRIORITY_WEIGHT: Record<string, number> = {
   critical: 0,
   blocker: 0,
@@ -55,17 +64,6 @@ export const getPriorityWeight = (issue: Yandex.Issue): number => {
   if (display.includes('средн') || display.includes('normal')) return 2
   return 3
 }
-
-export const sortByPriority = (issues: Yandex.Issue[]): Yandex.Issue[] =>
-  [...issues].sort((a, b) => getPriorityWeight(a) - getPriorityWeight(b))
-
-export const sortByDeadline = (issues: Yandex.Issue[]): Yandex.Issue[] =>
-  [...issues].sort((a, b) => {
-    if (!a.deadline && !b.deadline) return 0
-    if (!a.deadline) return 1
-    if (!b.deadline) return -1
-    return a.deadline.localeCompare(b.deadline)
-  })
 
 type BadgeColor = 'primary' | 'info' | 'success' | 'warning' | 'error' | 'secondary' | 'neutral'
 
