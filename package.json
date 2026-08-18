@@ -7,7 +7,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev --host",
     "generate": "nuxt generate",
-    "postinstall": "nuxt prepare",
+    "postinstall": "nuxt prepare || true",
     "prepare": "git config core.hooksPath .githooks || true",
     "preview": "nuxt preview",
     "test": "vitest run",
