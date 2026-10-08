@@ -12,38 +12,22 @@ const MyIssuesWidget = defineAsyncComponent(() => import('../components/my-issue
 const { heatmap, myIssues } = storeToRefs(useSiteSettingsStore())
 
 const layout = computed(() => {
-  const left: Component[] = []
+  const left: Component[] = [DayTimeWidget, MonthTimeWidget]
   const right: Component[] = []
 
-  const top: Component[] = [WeekTimeWidget]
-
   if (myIssues.value.show) {
-    left.push(DayTimeWidget, MonthTimeWidget)
-
-    if (heatmap.value.show) {
-      left.push(ActivityHeatmapWidget)
-    }
-
     right.push(MyIssuesWidget)
-  } else {
-    left.push(DayTimeWidget)
-
-    if (heatmap.value.show) {
-      left.push(ActivityHeatmapWidget)
-    }
-
-    right.push(MonthTimeWidget)
   }
 
-  return { top, left, right }
+  if (heatmap.value.show) {
+    right.push(ActivityHeatmapWidget)
+  }
+
+  return { top: [WeekTimeWidget], left, right }
 })
 
 const mobileOrder = computed(() => {
-  const list: Component[] = []
-
-  list.push(DayTimeWidget)
-  list.push(MonthTimeWidget)
-  list.push(WeekTimeWidget)
+  const list: Component[] = [WeekTimeWidget, DayTimeWidget, MonthTimeWidget]
 
   if (myIssues.value.show) {
     list.push(MyIssuesWidget)
@@ -62,7 +46,7 @@ const isMobile = useIsMobile()
 <template>
   <div
     v-if="isMobile"
-    class="flex flex-col gap-3 md:hidden"
+    class="flex flex-col gap-4 md:hidden"
   >
     <component
       :is="comp"
@@ -73,7 +57,7 @@ const isMobile = useIsMobile()
 
   <div
     v-else
-    class="hidden grid-cols-2 gap-3 md:grid"
+    class="hidden grid-cols-2 gap-4 md:grid"
   >
     <component
       :is="comp"
@@ -82,7 +66,10 @@ const isMobile = useIsMobile()
       class="col-span-2"
     />
 
-    <div class="flex flex-col gap-3">
+    <div
+      class="flex flex-col gap-4"
+      :class="{ 'col-span-2': layout.right.length === 0 }"
+    >
       <component
         :is="comp"
         v-for="(comp, i) in layout.left"
@@ -90,7 +77,10 @@ const isMobile = useIsMobile()
       />
     </div>
 
-    <div class="flex flex-col gap-3">
+    <div
+      v-if="layout.right.length"
+      class="flex flex-col gap-4"
+    >
       <component
         :is="comp"
         v-for="(comp, i) in layout.right"
