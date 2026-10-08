@@ -15,6 +15,7 @@ import { useDayTimeWidgetStore } from '../store/use-day-time-widget-store'
 import { pluralize } from '~/core/utils/pluralize'
 import { calcForecastHours } from '~/core/utils/forecast'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
+import { THEME_CELEBRATION_GLYPH } from '~/core/constants/theme-celebration-glyph'
 
 const worklogsStore = useWorklogsStore('month', 'month-time-widget')
 const dayTimeWidgetStore = useDayTimeWidgetStore()
@@ -59,7 +60,9 @@ const isForecastOnTrack = computed(
   () => forecastHours.value !== null && forecastHours.value >= needHoursInCurrentMonth.value
 )
 
-const celebrationGlyph = computed(() => (seasonalTheme.value.type === 'halloween' ? '🎃' : '❄️'))
+const celebrationGlyph = computed(
+  () => THEME_CELEBRATION_GLYPH[seasonalTheme.value.type as keyof typeof THEME_CELEBRATION_GLYPH]
+)
 
 const forecastTooltip = computed(() => {
   const base = `Прогноз — сколько часов вы отработаете к концу месяца при текущем темпе. Норма месяца — ${needHoursInCurrentMonth.value} ч.`

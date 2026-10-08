@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
 import bat from '~/assets/theme/halloween/bat.gif'
 import ghost from '~/assets/theme/halloween/ghost.gif'
 import pumpkin from '~/assets/theme/halloween/pumpkin.gif'
 import { useSiteSettingsStore } from '~/modules/settings'
+import { useResponsiveCount } from '~/core/composables/use-responsive-count'
+import { useThemeCursor } from '~/core/composables/use-theme-cursor'
+import ThemeBgAccent from './theme-bg-accent.vue'
 
 const { themeEntities } = storeToRefs(useSiteSettingsStore())
 
@@ -29,18 +31,15 @@ const show = ref(false)
 const bats = ref<Flyer[]>([])
 const ghosts = ref<Ghost[]>([])
 
-const { width } = useWindowSize()
+const batCount = useResponsiveCount(
+  [
+    [480, 1],
+    [768, 2]
+  ],
+  4
+)
 
-const batCount = computed(() => {
-  if (width.value < 480) return 1
-  if (width.value < 768) return 2
-  return 4
-})
-
-const ghostCount = computed(() => {
-  if (width.value < 480) return 1
-  return 2
-})
+const ghostCount = useResponsiveCount([[480, 1]], 2)
 
 function rand(min: number, max: number) {
   return Math.random() * (max - min) + min
@@ -75,15 +74,10 @@ onMounted(() => {
   setTimeout(() => (show.value = true), 300)
 })
 
-watch(
-  () => themeEntities.value.cursor,
-  enabled => document.documentElement.classList.toggle('theme-cursor-halloween', enabled),
-  { immediate: true }
+useThemeCursor(
+  computed(() => themeEntities.value.cursor),
+  'theme-cursor-halloween'
 )
-
-onUnmounted(() => {
-  document.documentElement.classList.remove('theme-cursor-halloween')
-})
 </script>
 
 <template>
@@ -93,7 +87,10 @@ onUnmounted(() => {
     aria-hidden="true"
   >
     <template v-if="themeEntities.background">
-      <div class="theme-bg-accent-halloween absolute inset-0" />
+      <theme-bg-accent
+        :light="['rgba(140, 70, 190, 0.14)', 'rgba(255, 140, 26, 0.12)', 'rgba(74, 20, 90, 0.16)']"
+        :dark="['rgba(140, 70, 190, 0.22)', 'rgba(255, 140, 26, 0.16)', 'rgba(74, 20, 90, 0.26)']"
+      />
       <div class="theme-cobweb theme-cobweb--tl absolute top-0 left-0" />
       <div class="theme-cobweb theme-cobweb--tr absolute top-0 right-0" />
       <div class="theme-fog absolute inset-x-0 bottom-0" />
@@ -157,32 +154,17 @@ onUnmounted(() => {
 </template>
 
 <style>
-/* ponytail: глобальный курсор, т.к. должен каскадироваться на всё приложение, а не только на дерево оверлея */
 html.theme-cursor-halloween,
 html.theme-cursor-halloween body,
 html.theme-cursor-halloween *:not(input):not(textarea):not([contenteditable]) {
   cursor:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='13' r='9' fill='%23ff8c1a'/%3E%3Crect x='11' y='2' width='2' height='4' rx='1' fill='%234a7a3c'/%3E%3Cpath d='M8 11 L10.5 14.5 L7.5 14.5 Z' fill='%232a1a05'/%3E%3Cpath d='M16 11 L13.5 14.5 L16.5 14.5 Z' fill='%232a1a05'/%3E%3Cpath d='M8 17.5 Q12 20.5 16 17.5' stroke='%232a1a05' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")
-      12 12,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='13' r='9' fill='%23ff8c1a'/%3E%3Crect x='11' y='2' width='2' height='4' rx='1' fill='%234a7a3c'/%3E%3Cpath d='M8 11 L10.5 14.5 L7.5 14.5 Z' fill='%232a1a05'/%3E%3Cpath d='M16 11 L13.5 14.5 L16.5 14.5 Z' fill='%232a1a05'/%3E%3Cpath d='M8 17.5 Q12 20.5 16 17.5' stroke='%232a1a05' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")
+      16 16,
     auto;
 }
 </style>
 
 <style scoped>
-.theme-bg-accent-halloween {
-  background-image:
-    radial-gradient(ellipse 60% 45% at 0% 0%, rgba(140, 70, 190, 0.14), transparent 70%),
-    radial-gradient(ellipse 60% 45% at 100% 0%, rgba(255, 140, 26, 0.12), transparent 70%),
-    radial-gradient(ellipse 70% 55% at 50% 100%, rgba(74, 20, 90, 0.16), transparent 70%);
-}
-
-html.dark .theme-bg-accent-halloween {
-  background-image:
-    radial-gradient(ellipse 60% 45% at 0% 0%, rgba(140, 70, 190, 0.22), transparent 70%),
-    radial-gradient(ellipse 60% 45% at 100% 0%, rgba(255, 140, 26, 0.16), transparent 70%),
-    radial-gradient(ellipse 70% 55% at 50% 100%, rgba(74, 20, 90, 0.26), transparent 70%);
-}
-
 .theme-cobweb {
   width: 130px;
   height: 130px;

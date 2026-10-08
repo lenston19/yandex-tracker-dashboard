@@ -13,6 +13,7 @@ import { isWorkingDay } from '~/core/composables/use-production-calendar'
 import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { pluralize } from '~/core/utils/pluralize'
 import { getHoursProgressColor } from '~/core/utils/progress-color'
+import { THEME_CELEBRATION_GLYPH } from '~/core/constants/theme-celebration-glyph'
 
 const dayTimeWidgetStore = useDayTimeWidgetStore()
 const { totalHours, isLoading } = storeToRefs(dayTimeWidgetStore)
@@ -34,7 +35,9 @@ const remainingToday = computed(() => {
 const progressColor = computed(() => getHoursProgressColor(totalHours.value ?? 0, hoursInDay.value))
 
 const isDayNormDone = computed(() => remainingToday.value !== null && remainingToday.value <= 0)
-const celebrationGlyph = computed(() => (seasonalTheme.value.type === 'halloween' ? '🎃' : '❄️'))
+const celebrationGlyph = computed(
+  () => THEME_CELEBRATION_GLYPH[seasonalTheme.value.type as keyof typeof THEME_CELEBRATION_GLYPH]
+)
 
 onMounted(async () => {
   if (!totalHours.value) {
