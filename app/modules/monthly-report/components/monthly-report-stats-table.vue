@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import UiCard from '~/core/components/ui/ui-card.vue'
+import WidgetHeroStat from '~/core/components/ui/widget-hero-stat.vue'
+import WidgetHelpIcon from '~/core/components/ui/widget-help-icon.vue'
 import { useMonthlyReportStore } from '../store/use-monthly-report-store'
 import { pluralize } from '~/core/utils/pluralize'
 import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
-import { MONTHLY_REPORT_COLUMNS } from '../constants/columns'
 import { HEROICONS } from '~/core/constants/heroicons'
 import { formatRUB } from '~/core/utils/format-money'
 import type { UiColors } from '~/core/types'
@@ -40,89 +41,70 @@ const ACCURACY_TEXT_COLOR_CLASS: Partial<Record<UiColors, string>> = {
   success: 'text-success'
 }
 
-const data = computed(() => {
-  return [
-    {
-      name: 'Часов за месяц',
-      value: pluralize(totalHours.value, HOURS_PLURALIZE),
-      attrs: {
-        color: 'secondary' as UiColors
-      }
-    },
-    ...(gold.value
-      ? [
-          {
-            name: 'Заработано',
-            value: formatRUB(earnedMoney.value),
-            attrs: {
-              color: 'info' as UiColors
-            }
-          }
-        ]
-      : []),
-    {
-      name: 'Среднее значение часов за месяц',
-      value: pluralize(averageHoursByMonth.value, HOURS_PLURALIZE),
-      helpText:
-        'Часы за все дни / количество дней <br><span class="text-xs text-gray-300">* минимум 15 минут в день</span>',
-      attrs: {
-        color: averageBadgeColor.value
-      }
-    },
-    {
-      name: 'Точность оценки',
-      value: estimationAccuracy.value.total ? `${estimationAccuracy.value.percent}%` : '—',
-      helpText: estimationAccuracy.value.total
-        ? `Доля задач с оценкой, факт по которым не превысил её. <span class="font-semibold ${ACCURACY_TEXT_COLOR_CLASS[accuracyBadgeColor.value] ?? 'text-success'}">${estimationAccuracy.value.withinEstimate} из ${estimationAccuracy.value.total}</span> задач уложились в оценку`
-        : 'Нет задач с оценкой за этот месяц',
-      attrs: {
-        color: accuracyBadgeColor.value
-      }
-    }
-  ]
+const secondaryRows = computed(() => {
+  const rows: { name: string; value: string; color: UiColors; helpText?: string }[] = []
+
+  if (gold.value) {
+    rows.push({ name: 'Заработано', value: formatRUB(earnedMoney.value), color: 'info' })
+  }
+
+  rows.push({
+    name: 'Среднее часов в день',
+    value: pluralize(averageHoursByMonth.value, HOURS_PLURALIZE),
+    color: averageBadgeColor.value,
+    helpText:
+      'Часы за все дни / количество дней <br><span class="text-xs text-gray-300">* минимум 15 минут в день</span>'
+  })
+
+  rows.push({
+    name: 'Точность оценки',
+    value: estimationAccuracy.value.total ? `${estimationAccuracy.value.percent}%` : '—',
+    color: accuracyBadgeColor.value,
+    helpText: estimationAccuracy.value.total
+      ? `Доля задач с оценкой, факт по которым не превысил её. <span class="font-semibold ${ACCURACY_TEXT_COLOR_CLASS[accuracyBadgeColor.value] ?? 'text-success'}">${estimationAccuracy.value.withinEstimate} из ${estimationAccuracy.value.total}</span> задач уложились в оценку`
+      : 'Нет задач с оценкой за этот месяц'
+  })
+
+  return rows
 })
 </script>
 
 <template>
   <ui-card title="Статистика">
-    <div class="flex justify-center">
-      <u-table
-        v-if="!isLoading"
-        :data="data"
-        :columns="MONTHLY_REPORT_COLUMNS"
-        class="w-full"
-      >
-        <template #name-cell="{ row }">
-          <div class="flex items-center gap-2 text-wrap">
-            {{ row.original.name }}
-            <u-popover
-              v-if="row.original.helpText?.length"
-              :ui="{ content: 'h-auto items-start' }"
-            >
-              <u-icon
-                :name="HEROICONS.QUESTION_MARK_CIRCLE"
-                class="size-3.5 shrink-0 cursor-help text-muted"
-              />
-              <template #content>
-                <span
-                  class="block max-w-[226px] p-1 text-xs"
-                  v-html="row.original.helpText"
-                />
-              </template>
-            </u-popover>
-          </div>
-        </template>
-        <template #value-cell="{ row }">
-          <u-badge
-            :label="row.original.value"
-            v-bind="row.original.attrs"
-          />
-        </template>
-      </u-table>
-      <u-skeleton
-        v-else
-        class="h-48 w-full"
+    <u-skeleton
+      v-if="isLoading"
+      class="h-48 w-full"
+    />
+    <div
+      v-else
+      class="space-y-5"
+    >
+      <widget-hero-stat
+        :value="totalHours"
+        unit="ч за месяц"
       />
+
+      <div class="space-y-2">
+        <div
+          v-for="row in secondaryRows"
+          :key="row.name"
+          class="flex items-center justify-between gap-2 text-sm"
+        >
+          <div class="flex items-center gap-1.5 text-muted">
+            {{ row.name }}
+            <widget-help-icon
+              v-if="row.helpText"
+              :text="row.helpText"
+              :icon="HEROICONS.QUESTION_MARK_CIRCLE"
+            />
+          </div>
+          <u-badge
+            :label="row.value"
+            :color="row.color"
+            variant="subtle"
+          />
+        </div>
+      </div>
     </div>
   </ui-card>
 </template>
