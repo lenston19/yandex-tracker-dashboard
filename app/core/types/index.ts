@@ -12,6 +12,7 @@ export interface LineChartData {
     hoverBackgroundColor: string
     hoverBorderColor: string
     data: number[]
+    name?: string
   }[]
 }
 
