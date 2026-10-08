@@ -64,7 +64,11 @@ export default withNuxt(
       ],
 
       'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
-      'better-tailwindcss/no-unregistered-classes': 'off'
+      'better-tailwindcss/no-unregistered-classes': 'off',
+      'better-tailwindcss/no-unknown-classes': [
+        'error',
+        { ignore: ['^animate-(appear|fall|sway)$', '^dot$', '^traveler$', '^svg$'] }
+      ]
     },
     settings: {
       'better-tailwindcss': {
