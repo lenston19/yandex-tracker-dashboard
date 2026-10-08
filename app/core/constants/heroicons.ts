@@ -42,5 +42,6 @@ export const HEROICONS = {
   CHECK_CIRCLE: 'heroicons:check-circle',
   BANKNOTES: 'heroicons:banknotes',
   FIRE: 'heroicons:fire',
-  CALENDAR_DAYS: 'heroicons:calendar-days'
+  CALENDAR_DAYS: 'heroicons:calendar-days',
+  SPARKLES: 'heroicons:sparkles'
 } as const
