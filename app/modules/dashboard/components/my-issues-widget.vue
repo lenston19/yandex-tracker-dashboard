@@ -24,26 +24,23 @@ const goToNextPage = () => {
 </script>
 
 <template>
-  <ui-card>
+  <ui-card title="Мои задачи">
     <template #header>
-      <div class="flex items-center justify-between">
-        <div class="text-lg font-medium">Мои задачи</div>
-        <div class="flex items-center gap-2">
-          <u-select
-            v-model="sortMode"
-            :items="MY_ISSUES_SORT_OPTIONS"
-            value-key="value"
-            label-key="label"
-            size="xs"
-            class="w-36 shrink-0"
-          />
-          <u-link
-            :to="{ name: SITEMAP.myIssues.route.name }"
-            class="text-xs text-primary hover:underline"
-          >
-            Все
-          </u-link>
-        </div>
+      <div class="flex items-center gap-2">
+        <u-select
+          v-model="sortMode"
+          :items="MY_ISSUES_SORT_OPTIONS"
+          value-key="value"
+          label-key="label"
+          size="xs"
+          class="w-36 shrink-0"
+        />
+        <u-link
+          :to="{ name: SITEMAP.myIssues.route.name }"
+          class="text-xs text-primary hover:underline"
+        >
+          Все
+        </u-link>
       </div>
     </template>
 
@@ -65,7 +62,7 @@ const goToNextPage = () => {
 
     <div
       v-else
-      class="flex flex-col divide-y divide-neutral-700"
+      class="flex flex-col divide-y divide-default"
     >
       <issue-item
         v-for="issue in issues"

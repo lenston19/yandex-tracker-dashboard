@@ -3,12 +3,17 @@ import { useWorklogsStore } from '~/core/store/use-worklogs-store'
 import { useSiteSettingsStore } from '~/modules/settings'
 import { formatRUB } from '~/core/utils/format-money'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
-import DayLinearProgress from './ui/day-linear-progress.vue'
+import WidgetHeroStat from '~/core/components/ui/widget-hero-stat.vue'
+import WidgetProgressBar from '~/core/components/ui/widget-progress-bar.vue'
+import WidgetHelpIcon from '~/core/components/ui/widget-help-icon.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
+import { HEROICONS } from '~/core/constants/heroicons'
 import { useWorklogBus } from '~/core/composables/use-worklog-bus'
 import { isWorkingDay } from '~/core/composables/use-production-calendar'
 import { useDayTimeWidgetStore } from '../store/use-day-time-widget-store'
 import { pluralize } from '~/core/utils/pluralize'
+import { calcForecastHours } from '~/core/utils/forecast'
+import { useDateFormatter } from '~/core/composables/use-date-formatter'
 
 const worklogsStore = useWorklogsStore('month', 'month-time-widget')
 const dayTimeWidgetStore = useDayTimeWidgetStore()
@@ -16,9 +21,10 @@ const dayTimeWidgetStore = useDayTimeWidgetStore()
 useWorklogBus('saved', worklogsStore.addWorklog)
 useWorklogBus('deleted', worklogsStore.removeWorklog)
 
-const { totalHours, isLoading } = storeToRefs(worklogsStore)
+const { totalHours, isLoading, worklogsModel } = storeToRefs(worklogsStore)
 const { totalHours: todayHours } = storeToRefs(dayTimeWidgetStore)
 const { needHoursInCurrentMonth, remainingWorkdays, hoursInDay, gold } = storeToRefs(useSiteSettingsStore())
+const { formatDayKey } = useDateFormatter()
 
 const isTodayWorkingDay = ref(false)
 watchEffect(async () => {
@@ -26,9 +32,6 @@ watchEffect(async () => {
 })
 
 const currentRuble = computed(() => totalHours.value * gold.value)
-const maxRuble = computed(() =>
-  needHoursInCurrentMonth.value ? needHoursInCurrentMonth.value * gold.value : currentRuble.value
-)
 
 const effectiveRemainingWorkdays = computed(() => {
   const dailyTarget = hoursInDay.value || 8
@@ -44,6 +47,22 @@ const hoursPerDayNeeded = computed(() => {
   return +(remaining / effectiveRemainingWorkdays.value).toFixed(1)
 })
 
+const workedDaysSoFar = computed(() => new Set(worklogsModel.value.map(w => formatDayKey(w.start))).size)
+
+const forecastHours = computed(() =>
+  calcForecastHours(totalHours.value, workedDaysSoFar.value, effectiveRemainingWorkdays.value)
+)
+
+const isForecastOnTrack = computed(
+  () => forecastHours.value !== null && forecastHours.value >= needHoursInCurrentMonth.value
+)
+
+const forecastTooltip = computed(() => {
+  const base = `Прогноз — сколько часов вы отработаете к концу месяца при текущем темпе. Норма месяца — ${needHoursInCurrentMonth.value} ч.`
+  if (!hoursPerDayNeeded.value) return base
+  return `${base} Чтобы выполнить норму, нужно отрабатывать по ${hoursPerDayNeeded.value} ч в день. Осталось ${remainingWorkdaysText.value} раб.`
+})
+
 onMounted(async () => {
   if (!totalHours.value) {
     await worklogsStore.refresh()
@@ -56,50 +75,39 @@ onMounted(async () => {
 
 <template>
   <ui-card title="Сводка месяца">
-    <div class="space-y-3">
-      <day-linear-progress
-        v-if="!isLoading"
-        :hours="totalHours"
+    <div class="space-y-2">
+      <widget-hero-stat
+        :value="totalHours"
         :max="needHoursInCurrentMonth"
-        show-max
-      >
-        <template #help-text>
-          <u-tooltip
-            v-if="!isLoading && hoursPerDayNeeded"
-            :delay-duration="0"
-            :text="`Чтобы выполнить план, нужно отрабатывать по ${hoursPerDayNeeded} ч в день. Осталось ${remainingWorkdaysText} раб.`"
-          >
-            <div
-              class="cursor-help text-right text-sm text-muted italic underline decoration-dashed underline-offset-2"
-            >
-              нужно {{ hoursPerDayNeeded }} ч/день
-            </div>
-          </u-tooltip>
-        </template>
-      </day-linear-progress>
-      <day-linear-progress
-        v-else
-        :hours="null"
+        :loading="isLoading"
       />
 
-      <template v-if="gold">
-        <u-progress
-          :model-value="currentRuble"
-          :min="0"
-          :max="maxRuble"
-          animation="swing"
+      <widget-progress-bar
+        :value="totalHours"
+        :max="needHoursInCurrentMonth"
+        :loading="isLoading"
+      />
+
+      <div
+        v-if="!isLoading && forecastHours !== null"
+        class="flex items-center gap-1.5 text-sm"
+        :class="isForecastOnTrack ? 'text-success' : 'text-error'"
+      >
+        <span>Прогноз: ~{{ forecastHours }} ч</span>
+        <widget-help-icon :text="forecastTooltip" />
+      </div>
+
+      <div
+        v-if="!isLoading && gold"
+        class="flex items-center gap-1.5 text-sm"
+      >
+        <u-icon
+          :name="HEROICONS.BANKNOTES"
+          class="size-4 text-muted"
         />
-        <div
-          v-if="!isLoading"
-          class="text-right text-sm italic"
-        >
-          {{ formatRUB(currentRuble) }} / {{ formatRUB(maxRuble) }}
-        </div>
-        <u-skeleton
-          v-else
-          class="ml-auto h-6 w-[100px]"
-        />
-      </template>
+        <span class="text-muted">Заработано:</span>
+        <span class="font-semibold text-highlighted">{{ formatRUB(currentRuble) }}</span>
+      </div>
     </div>
 
     <template #footer>
