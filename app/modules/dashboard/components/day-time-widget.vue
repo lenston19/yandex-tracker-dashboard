@@ -4,6 +4,7 @@ import { useSiteSettingsStore } from '~/modules/settings'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import WidgetHeroStat from '~/core/components/ui/widget-hero-stat.vue'
 import WidgetProgressBar from '~/core/components/ui/widget-progress-bar.vue'
+import ThemeCelebration from '~/core/components/theme/theme-celebration.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
 import { useQuickWorklog } from '~/core/composables/use-quick-worklog'
@@ -15,7 +16,7 @@ import { getHoursProgressColor } from '~/core/utils/progress-color'
 
 const dayTimeWidgetStore = useDayTimeWidgetStore()
 const { totalHours, isLoading } = storeToRefs(dayTimeWidgetStore)
-const { hoursInDay } = storeToRefs(useSiteSettingsStore())
+const { hoursInDay, seasonalTheme } = storeToRefs(useSiteSettingsStore())
 
 const { formatFullDate } = useDateFormatter()
 const { openQuickWorklog } = useQuickWorklog()
@@ -32,6 +33,9 @@ const remainingToday = computed(() => {
 
 const progressColor = computed(() => getHoursProgressColor(totalHours.value ?? 0, hoursInDay.value))
 
+const isDayNormDone = computed(() => remainingToday.value !== null && remainingToday.value <= 0)
+const celebrationGlyph = computed(() => (seasonalTheme.value.type === 'halloween' ? '🎃' : '❄️'))
+
 onMounted(async () => {
   if (!totalHours.value) {
     await dayTimeWidgetStore.refresh()
@@ -44,7 +48,13 @@ onMounted(async () => {
     :title="formatFullDate(new Date())"
     :subtitle="isTodayWorkingDay ? undefined : 'выходной'"
   >
-    <div class="space-y-2">
+    <div class="relative space-y-2">
+      <theme-celebration
+        v-if="seasonalTheme.active"
+        :trigger="isDayNormDone"
+        :glyph="celebrationGlyph"
+      />
+
       <widget-hero-stat
         :value="totalHours ?? 0"
         :max="hoursInDay"

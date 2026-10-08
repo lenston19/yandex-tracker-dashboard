@@ -6,6 +6,7 @@ import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import WidgetHeroStat from '~/core/components/ui/widget-hero-stat.vue'
 import WidgetProgressBar from '~/core/components/ui/widget-progress-bar.vue'
 import WidgetHelpIcon from '~/core/components/ui/widget-help-icon.vue'
+import ThemeCelebration from '~/core/components/theme/theme-celebration.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import { HEROICONS } from '~/core/constants/heroicons'
 import { useWorklogBus } from '~/core/composables/use-worklog-bus'
@@ -23,7 +24,8 @@ useWorklogBus('deleted', worklogsStore.removeWorklog)
 
 const { totalHours, isLoading, worklogsModel } = storeToRefs(worklogsStore)
 const { totalHours: todayHours } = storeToRefs(dayTimeWidgetStore)
-const { needHoursInCurrentMonth, remainingWorkdays, hoursInDay, gold } = storeToRefs(useSiteSettingsStore())
+const { needHoursInCurrentMonth, remainingWorkdays, hoursInDay, gold, seasonalTheme } =
+  storeToRefs(useSiteSettingsStore())
 const { formatDayKey } = useDateFormatter()
 
 const isTodayWorkingDay = ref(false)
@@ -57,6 +59,8 @@ const isForecastOnTrack = computed(
   () => forecastHours.value !== null && forecastHours.value >= needHoursInCurrentMonth.value
 )
 
+const celebrationGlyph = computed(() => (seasonalTheme.value.type === 'halloween' ? '🎃' : '❄️'))
+
 const forecastTooltip = computed(() => {
   const base = `Прогноз — сколько часов вы отработаете к концу месяца при текущем темпе. Норма месяца — ${needHoursInCurrentMonth.value} ч.`
   if (!hoursPerDayNeeded.value) return base
@@ -75,7 +79,13 @@ onMounted(async () => {
 
 <template>
   <ui-card title="Сводка месяца">
-    <div class="space-y-2">
+    <div class="relative space-y-2">
+      <theme-celebration
+        v-if="seasonalTheme.active"
+        :trigger="isForecastOnTrack"
+        :glyph="celebrationGlyph"
+      />
+
       <widget-hero-stat
         :value="totalHours"
         :max="needHoursInCurrentMonth"
