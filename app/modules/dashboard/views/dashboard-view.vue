@@ -3,17 +3,23 @@ import { computed, defineAsyncComponent, type Component } from 'vue'
 import WeekTimeWidget from '../components/week-time-widget.vue'
 import DayTimeWidget from '../components/day-time-widget.vue'
 import MonthTimeWidget from '../components/month-time-widget.vue'
+import HolidayWidget from '../components/holiday-widget.vue'
 import { useSiteSettingsStore } from '~/modules/settings'
 import { useIsMobile } from '~/core/composables/use-is-mobile'
 
 const ActivityHeatmapWidget = defineAsyncComponent(() => import('../components/activity-heatmap-widget.vue'))
 const MyIssuesWidget = defineAsyncComponent(() => import('../components/my-issues-widget.vue'))
 
-const { heatmap, myIssues } = storeToRefs(useSiteSettingsStore())
+const { heatmap, myIssues, seasonalTheme } = storeToRefs(useSiteSettingsStore())
 
 const layout = computed(() => {
   const left: Component[] = [DayTimeWidget, MonthTimeWidget]
   const right: Component[] = []
+  const top: Component[] = [WeekTimeWidget]
+
+  if (seasonalTheme.value.active) {
+    left.unshift(HolidayWidget)
+  }
 
   if (myIssues.value.show) {
     right.push(MyIssuesWidget)
@@ -23,11 +29,17 @@ const layout = computed(() => {
     right.push(ActivityHeatmapWidget)
   }
 
-  return { top: [WeekTimeWidget], left, right }
+  return { top, left, right }
 })
 
 const mobileOrder = computed(() => {
-  const list: Component[] = [WeekTimeWidget, DayTimeWidget, MonthTimeWidget]
+  const list: Component[] = [WeekTimeWidget]
+
+  if (seasonalTheme.value.active) {
+    list.push(HolidayWidget)
+  }
+
+  list.push(DayTimeWidget, MonthTimeWidget)
 
   if (myIssues.value.show) {
     list.push(MyIssuesWidget)
