@@ -67,7 +67,7 @@ export default withNuxt(
       'better-tailwindcss/no-unregistered-classes': 'off',
       'better-tailwindcss/no-unknown-classes': [
         'error',
-        { ignore: ['^animate-(appear|fall|sway)$', '^dot$', '^traveler$', '^svg$'] }
+        { ignore: ['^animate-(appear|fall|sway)$', '^dot$', '^traveler$', '^svg$', '^theme-.*$'] }
       ]
     },
     settings: {

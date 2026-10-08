@@ -27,3 +27,10 @@ export interface PieChartData {
 export type UiColors = 'error' | 'secondary' | 'warning' | 'primary' | 'success' | 'info' | 'neutral'
 
 export type ThemeType = 'halloween' | 'new-year'
+
+export interface ThemeEntities {
+  cursor: boolean
+  background: boolean
+  particles: boolean
+  celebrations: boolean
+}

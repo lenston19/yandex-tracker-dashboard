@@ -1,4 +1,4 @@
-import type { ThemeType } from '~/core/types'
+import type { ThemeEntities, ThemeType } from '~/core/types'
 
 export function useThemeSettings() {
   const themeType = ref<ThemeType>(useRuntimeConfig().public.themeType as ThemeType)
@@ -8,9 +8,17 @@ export function useThemeSettings() {
     active: isHaveThemeType.value
   })
 
+  const themeEntities = ref<ThemeEntities>({
+    cursor: true,
+    background: true,
+    particles: true,
+    celebrations: true
+  })
+
   return {
     themeType,
     isHaveThemeType,
-    seasonalTheme
+    seasonalTheme,
+    themeEntities
   }
 }
