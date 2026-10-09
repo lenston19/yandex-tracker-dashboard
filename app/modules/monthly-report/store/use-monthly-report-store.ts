@@ -12,6 +12,7 @@ import { useSiteSettingsStore } from '~/modules/settings'
 import { buildIssuesByKeysQuery } from '~/core/utils/issue-search'
 import yandexTrackerApi from '~/core/api/yandex-tracker.api'
 import { fetchAllPages } from '~/core/utils/fetch-all-pages'
+import { calcAccuracyByQueue } from '~/core/utils/monthly-insights'
 
 const PER_PAGE = 50
 
@@ -97,7 +98,8 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
     isLoadingIssues.value = true
     try {
       const query = buildIssuesByKeysQuery(keys)
-      const response = await yandexTrackerApi.issueSearchRaw({ query, fields: 'summary,estimation' }, PER_PAGE)
+      const fields = 'summary,estimation,queue'
+      const response = await yandexTrackerApi.issueSearchRaw({ query, fields }, PER_PAGE)
 
       if (!response._data) {
         issuesModel.value = []
@@ -111,7 +113,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 
       if (totalPages && totalCount && +totalCount > PER_PAGE) {
         const rest = await fetchAllPages(
-          page => yandexTrackerApi.issueSearchRaw({ query, fields: 'summary,estimation' }, PER_PAGE, page),
+          page => yandexTrackerApi.issueSearchRaw({ query, fields }, PER_PAGE, page),
           +totalPages
         )
         result = [...result, ...rest]
@@ -153,6 +155,17 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
       .map(issue => ({ issue, hours: spentHoursByKey.value.get(issue.key) ?? 0 }))
       .sort((a, b) => b.hours - a.hours)
       .slice(0, 5)
+  })
+
+  const accuracyByQueue = computed(() => {
+    const overEstimatedKeys = new Set(overEstimationIssues.value.map(stat => stat.issue.key))
+    return calcAccuracyByQueue(
+      issuesModel.value.filter(hasEstimation).map(issue => ({
+        queueKey: issue.queue.key,
+        queueName: issue.queue.display,
+        isOverEstimated: overEstimatedKeys.has(issue.key)
+      }))
+    )
   })
 
   const weekdayChartData = computed<LineChartData>(() => {
@@ -226,9 +239,10 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
       const dayItems = worklogsModel.value.filter((item: Yandex.Worklog) =>
         isSameDayInTz(parseISO(item.start), iterateDay)
       )
+      const hours = formatHoursToFixed(calculateTotalHours(dayItems))
 
       labels.push(formatDay(iterateDay))
-      data.push(formatHoursToFixed(calculateTotalHours(dayItems)))
+      data.push(hours)
 
       iterateDay = addDays(iterateDay, 1)
     }
@@ -279,6 +293,7 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
     totalOverageHours,
     estimationAccuracy,
     topIssuesByHours,
-    weekdayChartData
+    weekdayChartData,
+    accuracyByQueue
   }
 })

@@ -55,7 +55,9 @@ describe('buildFetchQuery с roles', () => {
   const filters = { statuses: [], priority: null, queue: '' }
 
   it('только qaEngineer', () => {
-    expect(buildFetchQuery('u', filters, { assignee: false, reviewer: false, qaEngineer: true })).toBe('"QA-Engineer": u')
+    expect(buildFetchQuery('u', filters, { assignee: false, reviewer: false, qaEngineer: true })).toBe(
+      '"QA-Engineer": u'
+    )
   })
 
   it('все три роли', () => {

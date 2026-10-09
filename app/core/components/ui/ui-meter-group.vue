@@ -1,8 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
-import {} from 'module'
-
 const props = defineProps<{
   min?: number
   max?: number
@@ -21,11 +17,11 @@ const total = max - min
 const heightClass = computed(() => {
   switch (props.size) {
     case 'md':
-      return 'h-4'
+      return 'h-3'
     case 'lg':
-      return 'h-6'
+      return 'h-5'
     default:
-      return 'h-2'
+      return 'h-1'
   }
 })
 </script>
@@ -33,7 +29,7 @@ const heightClass = computed(() => {
 <template>
   <div class="flex w-full flex-col gap-2">
     <div
-      class="relative w-full overflow-hidden rounded-xl bg-gray-200 dark:bg-gray-700"
+      class="relative w-full overflow-hidden rounded-full bg-accented"
       :class="heightClass"
     >
       <div
@@ -48,17 +44,17 @@ const heightClass = computed(() => {
       />
     </div>
 
-    <ul class="flex flex-col gap-1 text-sm">
+    <ul class="flex flex-col gap-1 text-xs text-muted">
       <li
         v-for="(item, index) in items"
         :key="index"
-        class="flex items-center gap-2"
+        class="flex items-center gap-1.5"
       >
         <span
-          class="size-3 rounded-full"
+          class="size-2.5 shrink-0 rounded-full"
           :style="{ backgroundColor: item.color }"
         />
-        <span :style="{ color: item.color }">{{ item.label }}</span>
+        <span>{{ item.label }}</span>
       </li>
     </ul>
   </div>

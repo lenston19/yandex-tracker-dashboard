@@ -10,8 +10,9 @@ const props = withDefaults(
     loading: boolean
     height?: number
     fill?: boolean
+    showLegend?: boolean
   }>(),
-  { fill: false }
+  { fill: false, showLegend: false }
 )
 
 const { chartHeight, hasData, series, chartOptions, chartWidth } = useApexChart(
@@ -23,7 +24,8 @@ const { chartHeight, hasData, series, chartOptions, chartWidth } = useApexChart(
     colorOf: dataset => dataset.borderColor ?? '#1976d2',
     fill: props.fill,
     extraOptions: {
-      stroke: { width: 1, curve: 'smooth' }
+      stroke: { width: 1, curve: 'smooth' },
+      legend: { show: props.showLegend }
     }
   }
 )

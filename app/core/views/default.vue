@@ -16,6 +16,10 @@ const seasonalThemeComponent = computed(() => {
       return defineAsyncComponent(() => import('../components/theme/theme-halloween.vue'))
     case 'new-year':
       return defineAsyncComponent(() => import('../components/theme/theme-new-year.vue'))
+    case 'programmer-day':
+      return defineAsyncComponent(() => import('../components/theme/theme-programmer-day.vue'))
+    case '8-march':
+      return defineAsyncComponent(() => import('../components/theme/theme-8-march.vue'))
     default:
       return null
   }

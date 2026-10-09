@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
+@plugin '@tailwindcss/typography';
 
 :root {
   --ui-color-primary-50: #f4f5ff;
