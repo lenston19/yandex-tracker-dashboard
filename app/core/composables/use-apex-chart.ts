@@ -20,7 +20,7 @@ export const useApexChart = (
 
   const series = computed(() =>
     data.value.datasets.map(dataset => ({
-      name: 'Часы',
+      name: dataset.name ?? 'Часы',
       data: dataset.data
     }))
   )

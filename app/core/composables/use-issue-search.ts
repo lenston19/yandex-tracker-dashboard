@@ -34,7 +34,9 @@ export const useIssueSearch = (statuses?: string[]) => {
   const debouncedSearch = useDebounceFn(search, 500)
 
   watch(query, debouncedSearch)
-  watch(myOnly, () => { if (query.value.trim()) search(query.value) })
+  watch(myOnly, () => {
+    if (query.value.trim()) search(query.value)
+  })
 
   const clear = () => {
     query.value = ''

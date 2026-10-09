@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 import AccountSettings from '../../components/account-settings.vue'
-import DisplaySettings from '../../components/display-settings.vue'
+import ThemeSettings from '../../components/theme-settings.vue'
 import WorktimeSettings from '../../components/worktime-settings.vue'
 import HeatmapSettings from '../../components/heatmap-settings.vue'
 import MyIssuesSettings from '../../components/my-issues-settings.vue'
@@ -21,11 +21,11 @@ export const SECTION_ACCOUNT: SettingsSection = {
   component: AccountSettings
 }
 
-export const SECTION_DISPLAY: SettingsSection = {
-  id: 'display',
-  label: 'Отображение',
-  icon: HEROICONS.SWATCH,
-  component: DisplaySettings
+export const SECTION_THEME: SettingsSection = {
+  id: 'theme',
+  label: 'Сезонная тема',
+  icon: HEROICONS.SPARKLES,
+  component: ThemeSettings
 }
 
 export const SECTION_WORKTIME: SettingsSection = {
@@ -60,8 +60,8 @@ export const UNAUTH_SECTIONS = [SECTION_ACCOUNT]
 
 export const AUTH_SECTIONS = [
   SECTION_ACCOUNT,
-  SECTION_DISPLAY,
   SECTION_WORKTIME,
+  SECTION_THEME,
   SECTION_HEATMAP,
   SECTION_MY_ISSUES,
   SECTION_DANGER

@@ -3,21 +3,23 @@ import { HOURS_PLURALIZE } from '~/core/constants/pluralize-array-words'
 import { pluralize } from '~/core/utils/pluralize'
 import { useSiteSettingsStore } from '~/modules/settings'
 import { useWeekTimeWidgetStore } from '../store/use-week-time-widget-store'
-import DayLinearProgress from './ui/day-linear-progress.vue'
+import WidgetProgressBar from '~/core/components/ui/widget-progress-bar.vue'
+import WidgetHeroStat from '~/core/components/ui/widget-hero-stat.vue'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import UiMeterGroup from '~/core/components/ui/ui-meter-group.vue'
 import WorklogActions from '~/core/components/worklogs/worklog-actions.vue'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
 import { parseDateOnly } from '~/core/utils/time'
+import { getHoursProgressColor } from '~/core/utils/progress-color'
 
 const weekTimeWidgetStore = useWeekTimeWidgetStore()
-const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue, weekProgressStatus } =
+const { currentWeek, params, weekTotalHours, isLoading, flatQueueWorklogs, isLoadingQueue } =
   storeToRefs(weekTimeWidgetStore)
 
-const { hoursInDay, isShowWeeklyLoading, isShowWeekProgress } = storeToRefs(useSiteSettingsStore())
+const { hoursInDay, isShowWeeklyLoading } = storeToRefs(useSiteSettingsStore())
 
 const { formatShortDate } = useDateFormatter()
-const title = computed(() => {
+const weekRange = computed(() => {
   const from = parseDateOnly(params.value.from)
   const to = parseDateOnly(params.value.to)
   return `${formatShortDate(from)} - ${formatShortDate(to)}`
@@ -29,10 +31,11 @@ const workingDaysCount = computed(() => {
 })
 
 const maxHoursInWeek = computed(() =>
-  pluralize(hoursInDay.value ? hoursInDay.value * workingDaysCount.value : workingDaysCount.value * 8, HOURS_PLURALIZE)
+  hoursInDay.value ? hoursInDay.value * workingDaysCount.value : workingDaysCount.value * 8
 )
 
-const currentHoursInWeek = computed(() => pluralize(+weekTotalHours.value.toFixed(2), HOURS_PLURALIZE))
+const dayProgressColor = (day: { hours: number; isHoliday: boolean }) =>
+  getHoursProgressColor(day.hours, hoursInDay.value || 8, day.isHoliday)
 
 const meterGroupItems = computed(() =>
   flatQueueWorklogs.value.map(queue => ({
@@ -50,34 +53,34 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ui-card :ui="{ footer: 'w-full' }">
-    <template #header>
-      <div class="flex items-center gap-2">
-        <div class="text-lg font-medium">Неделя</div>
-        <u-badge
-          variant="subtle"
-          color="primary"
-          size="lg"
-        >
-          {{ title }}
-        </u-badge>
-      </div>
-    </template>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 lg:gap-4 xl:grid-cols-5">
+  <ui-card
+    title="Неделя"
+    :subtitle="weekRange"
+    :ui="{ footer: 'w-full' }"
+  >
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       <template v-if="isLoading">
-        <day-linear-progress
+        <div
           v-for="day in 7"
           :key="`day-${day}`"
-          :hours="null"
-        />
+          class="space-y-1.5 p-1.5"
+        >
+          <u-skeleton class="h-5 w-16" />
+          <widget-progress-bar
+            :value="null"
+            :max="1"
+            loading
+          />
+          <u-skeleton class="h-5 w-10" />
+        </div>
       </template>
       <template v-else>
         <div
           v-for="day in currentWeek"
           :key="day.dateKey"
-          class="flex flex-col gap-0 p-1 transition-colors"
+          class="flex flex-col gap-1.5 p-1.5 transition-colors"
           :class="{
-            'cursor-pointer hover:bg-elevated': day.hours > 0,
+            'cursor-pointer hover:bg-accented': day.hours > 0,
             'border-primary max-sm:-mt-2 max-sm:border-t-2 max-sm:pt-2 sm:-ml-2 sm:border-l-2 sm:pl-2': day.isNewMonth
           }"
           @click="weekTimeWidgetStore.openDetailDay(day)"
@@ -95,52 +98,34 @@ onMounted(async () => {
             </span>
             <span class="text-xs text-muted">{{ day.shortDate }}</span>
           </div>
-          <day-linear-progress
-            :hours="day.hours"
-            :max="hoursInDay"
-            :is-holiday="day.isHoliday"
+
+          <widget-progress-bar
+            :value="day.hours"
+            :max="hoursInDay || 8"
+            :color="dayProgressColor(day)"
           />
+          <div class="flex items-center gap-1 text-sm text-muted">
+            <span>{{ pluralize(day.hours, HOURS_PLURALIZE) }}</span>
+            <span v-if="day.isHoliday">· выходной</span>
+          </div>
         </div>
       </template>
     </div>
-    <template v-if="flatQueueWorklogs.length && isShowWeeklyLoading && !isLoadingQueue && !isLoading">
-      <u-separator class="py-4" />
-      <ui-meter-group
-        :min="0"
-        :max="100"
-        :items="meterGroupItems"
-      />
-    </template>
+
+    <ui-meter-group
+      v-if="flatQueueWorklogs.length && isShowWeeklyLoading && !isLoadingQueue && !isLoading"
+      :min="0"
+      :max="100"
+      :items="meterGroupItems"
+      class="mt-5"
+    />
 
     <template #footer>
       <div class="flex w-full items-center justify-between">
-        <div
-          v-if="!isLoading"
-          class="flex flex-wrap items-center gap-2 text-lg"
-          :class="{
-            'text-success': isShowWeekProgress && weekProgressStatus === 'ahead',
-            'text-error': isShowWeekProgress && weekProgressStatus === 'behind'
-          }"
-        >
-          Всего: <span class="font-semibold italic">{{ currentHoursInWeek }} / {{ maxHoursInWeek }}</span>
-          <u-badge
-            v-if="isShowWeekProgress && weekProgressStatus === 'behind'"
-            color="error"
-            variant="subtle"
-            label="Отстаёте"
-            size="sm"
-          />
-          <u-badge
-            v-else-if="isShowWeekProgress && weekProgressStatus === 'ahead'"
-            color="success"
-            variant="subtle"
-            label="Опережаете"
-            size="sm"
-          />
-        </div>
-        <u-skeleton
-          v-else
-          class="h-6 w-40"
+        <widget-hero-stat
+          :value="+weekTotalHours.toFixed(2)"
+          :max="maxHoursInWeek"
+          :loading="isLoading"
         />
         <worklog-actions
           class="ml-auto"

@@ -5,8 +5,7 @@ import MonthlyReportTimeChart from '../components/monthly-report-time-chart.vue'
 import MonthlyReportStatsTable from '../components/monthly-report-stats-table.vue'
 import MonthlyReportQueueChart from '../components/monthly-report-queue-chart.vue'
 import MonthlyReportWeekdayChart from '../components/monthly-report-weekday-chart.vue'
-import MonthlyReportOverEstimationCard from '../components/monthly-report-over-estimation-card.vue'
-import MonthlyReportTopIssuesCard from '../components/monthly-report-top-issues-card.vue'
+import MonthlyReportAttentionCard from '../components/monthly-report-attention-card.vue'
 import { useMonthlyReportStore } from '../store/use-monthly-report-store'
 import { SITEMAP } from '~/core/utils/router/sitemap'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
@@ -27,7 +26,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-5">
+  <div class="flex flex-col gap-6">
     <ui-page-header
       :title="title"
       :loading="isLoading"
@@ -35,17 +34,14 @@ onMounted(() => {
       :prev="monthlyReportStore.prev"
       :refresh="monthlyReportStore.refresh"
     />
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-3">
       <monthly-report-time-chart class="lg:col-span-2" />
       <monthly-report-stats-table class="lg:col-span-1" />
     </div>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
       <monthly-report-queue-chart />
       <monthly-report-weekday-chart />
     </div>
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <monthly-report-top-issues-card />
-      <monthly-report-over-estimation-card />
-    </div>
+    <monthly-report-attention-card />
   </div>
 </template>

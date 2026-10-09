@@ -38,5 +38,10 @@ export const HEROICONS = {
   CHEVRON_UP: 'heroicons:chevron-up',
   CHEVRON_UP_20_SOLID: 'heroicons:chevron-up-20-solid',
   CHEVRON_DOUBLE_UP: 'heroicons:chevron-double-up',
-  CHEVRON_DOWN: 'heroicons:chevron-down'
+  CHEVRON_DOWN: 'heroicons:chevron-down',
+  CHECK_CIRCLE: 'heroicons:check-circle',
+  BANKNOTES: 'heroicons:banknotes',
+  FIRE: 'heroicons:fire',
+  CALENDAR_DAYS: 'heroicons:calendar-days',
+  SPARKLES: 'heroicons:sparkles'
 } as const

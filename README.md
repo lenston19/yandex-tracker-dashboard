@@ -82,7 +82,7 @@ docker run -p 3000:3000 \
 | `NUXT_PUBLIC_YANDEX_TRACKER_API`   | URL API Яндекс Трекера                 |
 | `NUXT_PUBLIC_YANDEX_CLIENT_ID`     | OAuth Client ID                        |
 | `NUXT_PUBLIC_ORGANIZATION_ID_LINK` | Ссылка на получение ID организации     |
-| `NUXT_PUBLIC_THEME_TYPE`           | Сезонная тема: `halloween`, `new-year` |
+| `NUXT_PUBLIC_THEME_TYPE`           | Сезонная тема: `halloween`, `new-year`, `programmer-day`, `8-march` |
 
 ## Стек
 
