@@ -13,7 +13,9 @@ withDefaults(
   <u-card
     :ui="{
       root: fill ? 'overflow-visible flex h-full flex-col' : 'overflow-visible',
-      body: fill ? 'flex flex-1 flex-col min-h-0' : undefined
+      header: 'p-3 sm:px-4 sm:py-3',
+      body: [fill ? 'flex flex-1 flex-col min-h-0' : '', 'p-3 sm:p-4'],
+      footer: 'p-3 sm:px-4 sm:py-3'
     }"
   >
     <template
@@ -23,7 +25,7 @@ withDefaults(
       <div class="flex items-center justify-between gap-2">
         <div
           v-if="title"
-          class="flex items-center gap-2 text-lg font-medium"
+          class="flex items-center gap-2 text-base font-medium"
         >
           {{ title }}
           <span

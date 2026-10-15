@@ -22,12 +22,12 @@ const layout = computed(() => {
     left.unshift(HolidayWidget)
   }
 
-  if (myIssues.value.show) {
-    right.push(MyIssuesWidget)
+  if (accuracyWidget.value.show) {
+    left.push(AccuracyWidget)
   }
 
-  if (accuracyWidget.value.show) {
-    right.push(AccuracyWidget)
+  if (myIssues.value.show) {
+    right.push(MyIssuesWidget)
   }
 
   if (heatmap.value.show) {
@@ -46,12 +46,12 @@ const mobileOrder = computed(() => {
 
   list.push(DayTimeWidget, MonthTimeWidget)
 
-  if (myIssues.value.show) {
-    list.push(MyIssuesWidget)
-  }
-
   if (accuracyWidget.value.show) {
     list.push(AccuracyWidget)
+  }
+
+  if (myIssues.value.show) {
+    list.push(MyIssuesWidget)
   }
 
   if (heatmap.value.show) {
@@ -67,7 +67,7 @@ const isMobile = useIsMobile()
 <template>
   <div
     v-if="isMobile"
-    class="flex flex-col gap-4 md:hidden"
+    class="flex flex-col gap-3 md:hidden"
   >
     <component
       :is="comp"
@@ -78,7 +78,7 @@ const isMobile = useIsMobile()
 
   <div
     v-else
-    class="hidden grid-cols-2 gap-4 md:grid"
+    class="hidden grid-cols-2 gap-3 md:grid"
   >
     <component
       :is="comp"
@@ -88,7 +88,7 @@ const isMobile = useIsMobile()
     />
 
     <div
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-3"
       :class="{ 'col-span-2': layout.right.length === 0 }"
     >
       <component
@@ -100,7 +100,7 @@ const isMobile = useIsMobile()
 
     <div
       v-if="layout.right.length"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-3"
     >
       <component
         :is="comp"
