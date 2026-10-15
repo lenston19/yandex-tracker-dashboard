@@ -71,11 +71,8 @@ const forecastTooltip = computed(() => {
 })
 
 onMounted(async () => {
-  if (!totalHours.value) {
+  if (!totalHours.value && !isLoading.value) {
     await worklogsStore.refresh()
-  }
-  if (todayHours.value === undefined) {
-    await dayTimeWidgetStore.refresh()
   }
 })
 </script>

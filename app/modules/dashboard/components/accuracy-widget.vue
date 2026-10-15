@@ -10,7 +10,7 @@ const store = useAccuracyWidgetStore()
 const { accuracyByQueue, isLoading, totalHours } = storeToRefs(store)
 
 onMounted(async () => {
-  if (!totalHours.value) {
+  if (!totalHours.value && !isLoading.value) {
     await store.refresh()
   }
 })
