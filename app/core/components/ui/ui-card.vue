@@ -1,23 +1,31 @@
 <script setup lang="ts">
-withDefaults(
+interface CardUi {
+  root?: string
+  header?: string
+  body?: string
+  footer?: string
+}
+
+const props = withDefaults(
   defineProps<{
     title?: string
     subtitle?: string
     fill?: boolean
+    ui?: CardUi
   }>(),
   { fill: false }
 )
+
+const cardUi = computed<CardUi>(() => ({
+  root: props.ui?.root ?? (props.fill ? 'overflow-visible flex h-full flex-col' : 'overflow-visible'),
+  header: props.ui?.header ?? 'p-3 sm:px-4 sm:py-3',
+  body: props.ui?.body ?? (props.fill ? 'flex flex-1 flex-col min-h-0 p-3 sm:p-4' : 'p-3 sm:p-4'),
+  footer: props.ui?.footer ?? 'p-3 sm:px-4 sm:py-3'
+}))
 </script>
 
 <template>
-  <u-card
-    :ui="{
-      root: fill ? 'overflow-visible flex h-full flex-col' : 'overflow-visible',
-      header: 'p-3 sm:px-4 sm:py-3',
-      body: [fill ? 'flex flex-1 flex-col min-h-0' : '', 'p-3 sm:p-4'],
-      footer: 'p-3 sm:px-4 sm:py-3'
-    }"
-  >
+  <u-card :ui="cardUi">
     <template
       v-if="title || $slots.header || $slots.actions"
       #header

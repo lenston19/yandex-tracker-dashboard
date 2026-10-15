@@ -43,16 +43,16 @@ const totalTime = computed(() => {
       v-if="title || showTotal"
       #header
     >
-      <div class="flex items-center justify-between">
+      <div class="flex w-full items-center justify-between gap-3">
         <div
           v-if="title"
-          class="text-lg font-bold"
+          class="truncate text-lg font-bold"
         >
           {{ title }}
         </div>
         <div
           v-if="showTotal"
-          class="flex items-center gap-1"
+          class="flex shrink-0 items-center gap-1"
         >
           <div class="text-base font-medium italic">Всего:</div>
           <u-badge
