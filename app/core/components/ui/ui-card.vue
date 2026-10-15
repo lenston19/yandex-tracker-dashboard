@@ -18,9 +18,9 @@ const props = withDefaults(
 
 const cardUi = computed<CardUi>(() => ({
   root: props.ui?.root ?? (props.fill ? 'overflow-visible flex h-full flex-col' : 'overflow-visible'),
-  header: props.ui?.header ?? 'p-3 sm:px-4 sm:py-3',
-  body: props.ui?.body ?? (props.fill ? 'flex flex-1 flex-col min-h-0 p-3 sm:p-4' : 'p-3 sm:p-4'),
-  footer: props.ui?.footer ?? 'p-3 sm:px-4 sm:py-3'
+  header: props.ui?.header,
+  body: props.ui?.body ?? (props.fill ? 'flex flex-1 flex-col min-h-0' : undefined),
+  footer: props.ui?.footer
 }))
 </script>
 

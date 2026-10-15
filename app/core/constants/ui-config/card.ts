@@ -4,9 +4,9 @@ import type * as ui from '#build/ui'
 export const card: TVConfig<typeof ui>['card'] = {
   slots: {
     root: 'flex flex-col',
-    body: 'flex-1 p-2 sm:p-4',
-    header: 'p-2 sm:p-4',
-    footer: 'p-2 sm:p-4'
+    body: 'flex-1 p-2 sm:p-3',
+    header: 'p-2 sm:p-3',
+    footer: 'p-2 sm:p-3'
   },
   variants: {
     variant: {
