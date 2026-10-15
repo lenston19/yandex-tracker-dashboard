@@ -1,20 +1,14 @@
 import { addDays, isAfter, isSameMonth, parseISO } from 'date-fns'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import type { PieChartData, LineChartData } from '~/core/types'
-import type { IssueEstimationStat, TopIssueStat, EstimationAccuracy } from '../types'
 import { calculateTotalHours, formatHoursToFixed, calculateDurationInHours } from '~/core/utils/time'
 import { useWorklogsStore } from '~/core/store/use-worklogs-store'
 import { useQueuesStore } from '~/core/store/use-queues-store'
-import { collectWorklogs, collectWorklogsByQueue } from '~/core/utils/collecting'
+import { collectWorklogsByQueue } from '~/core/utils/collecting'
 import { createPastelColorPicker } from '~/core/utils/colors'
 import { useDateFormatter } from '~/core/composables/use-date-formatter'
 import { useSiteSettingsStore } from '~/modules/settings'
-import { buildIssuesByKeysQuery } from '~/core/utils/issue-search'
-import yandexTrackerApi from '~/core/api/yandex-tracker.api'
-import { fetchAllPages } from '~/core/utils/fetch-all-pages'
-import { calcAccuracyByQueue } from '~/core/utils/monthly-insights'
-
-const PER_PAGE = 50
+import { useIssueAccuracy } from '~/core/composables/use-issue-accuracy'
 
 const WEEKDAYS = [
   { name: 'понедельник', label: 'Пн' },
@@ -34,8 +28,14 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
   const { params, worklogsModel, isLoading: isLoadingWorklog, totalHours } = storeToRefs(worklogsStore)
   const { formatDay, formatWeekday, isSameDayInTz } = useDateFormatter()
 
-  const issuesModel = ref<Yandex.Issue[]>([])
-  const isLoadingIssues = ref(false)
+  const {
+    isLoading: isLoadingAccuracy,
+    overEstimationIssues,
+    totalOverageHours,
+    estimationAccuracy,
+    topIssuesByHours,
+    accuracyByQueue
+  } = useIssueAccuracy(worklogsModel, isLoadingWorklog)
 
   const monthLineChartData = ref<LineChartData>({
     labels: [],
@@ -63,109 +63,16 @@ export const useMonthlyReportStore = defineStore('monthly-report', () => {
 
   const { timeZone, gold } = storeToRefs(useSiteSettingsStore())
 
-  const isLoadingBase = computed(() => isLoadingQueue.value || isLoadingWorklog.value)
-  const isLoading = computed(() => isLoadingBase.value || isLoadingIssues.value)
+  const isLoading = computed(() => isLoadingQueue.value || isLoadingAccuracy.value)
 
-  watch(isLoadingBase, async loading => {
+  watch([isLoadingQueue, isLoadingWorklog], () => {
     calcPieMonthStats()
     calcLineMonthStats()
-    if (!loading) {
-      await fetchIssuesForMonth()
-    }
   })
 
   watch(timeZone, () => {
     calcPieMonthStats()
     calcLineMonthStats()
-  })
-
-  const spentHoursByKey = computed(() => {
-    const { groupedWorklogs } = collectWorklogs(worklogsModel.value)
-    const map = new Map<string, number>()
-    groupedWorklogs.forEach((items, key) => {
-      map.set(key, formatHoursToFixed(calculateTotalHours(items)))
-    })
-    return map
-  })
-
-  const fetchIssuesForMonth = async () => {
-    const keys = Array.from(spentHoursByKey.value.keys())
-    if (!keys.length) {
-      issuesModel.value = []
-      return
-    }
-
-    isLoadingIssues.value = true
-    try {
-      const query = buildIssuesByKeysQuery(keys)
-      const fields = 'summary,estimation,queue'
-      const response = await yandexTrackerApi.issueSearchRaw({ query, fields }, PER_PAGE)
-
-      if (!response._data) {
-        issuesModel.value = []
-        return
-      }
-
-      const totalPages = response.headers.get('X-Total-Pages')
-      const totalCount = response.headers.get('X-Total-Count')
-
-      let result: Yandex.Issue[] = [...response._data]
-
-      if (totalPages && totalCount && +totalCount > PER_PAGE) {
-        const rest = await fetchAllPages(
-          page => yandexTrackerApi.issueSearchRaw({ query, fields }, PER_PAGE, page),
-          +totalPages
-        )
-        result = [...result, ...rest]
-      }
-
-      issuesModel.value = result
-    } finally {
-      isLoadingIssues.value = false
-    }
-  }
-
-  const hasEstimation = (issue: Yandex.Issue) => Boolean(issue.estimation) && issue.estimation !== 'PT0S'
-
-  const overEstimationIssues = computed<IssueEstimationStat[]>(() => {
-    return issuesModel.value
-      .filter(hasEstimation)
-      .map(issue => {
-        const spentHours = spentHoursByKey.value.get(issue.key) ?? 0
-        const estimationHours = calculateDurationInHours(issue.estimation!)
-        return { issue, spentHours, estimationHours, overageHours: formatHoursToFixed(spentHours - estimationHours) }
-      })
-      .filter(stat => stat.overageHours > 0)
-      .sort((a, b) => b.overageHours - a.overageHours)
-  })
-
-  const totalOverageHours = computed(() =>
-    formatHoursToFixed(overEstimationIssues.value.reduce((acc, stat) => acc + stat.overageHours, 0))
-  )
-
-  const estimationAccuracy = computed<EstimationAccuracy>(() => {
-    const total = issuesModel.value.filter(hasEstimation).length
-    const withinEstimate = total - overEstimationIssues.value.length
-    const percent = total > 0 ? Math.round((withinEstimate / total) * 100) : 0
-    return { total, withinEstimate, percent }
-  })
-
-  const topIssuesByHours = computed<TopIssueStat[]>(() => {
-    return issuesModel.value
-      .map(issue => ({ issue, hours: spentHoursByKey.value.get(issue.key) ?? 0 }))
-      .sort((a, b) => b.hours - a.hours)
-      .slice(0, 5)
-  })
-
-  const accuracyByQueue = computed(() => {
-    const overEstimatedKeys = new Set(overEstimationIssues.value.map(stat => stat.issue.key))
-    return calcAccuracyByQueue(
-      issuesModel.value.filter(hasEstimation).map(issue => ({
-        queueKey: issue.queue.key,
-        queueName: issue.queue.display,
-        isOverEstimated: overEstimatedKeys.has(issue.key)
-      }))
-    )
   })
 
   const weekdayChartData = computed<LineChartData>(() => {

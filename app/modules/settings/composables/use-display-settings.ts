@@ -46,8 +46,13 @@ export function useDisplaySettings() {
     }
   })
 
+  const accuracyWidget = reactive<{ show: boolean }>({
+    show: true
+  })
+
   return {
     heatmap,
-    myIssues
+    myIssues,
+    accuracyWidget
   }
 }

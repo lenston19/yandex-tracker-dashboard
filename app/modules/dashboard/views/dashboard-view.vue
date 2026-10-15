@@ -9,8 +9,9 @@ import { useIsMobile } from '~/core/composables/use-is-mobile'
 
 const ActivityHeatmapWidget = defineAsyncComponent(() => import('../components/activity-heatmap-widget.vue'))
 const MyIssuesWidget = defineAsyncComponent(() => import('../components/my-issues-widget.vue'))
+const AccuracyWidget = defineAsyncComponent(() => import('../components/accuracy-widget.vue'))
 
-const { heatmap, myIssues, seasonalTheme } = storeToRefs(useSiteSettingsStore())
+const { heatmap, myIssues, accuracyWidget, seasonalTheme } = storeToRefs(useSiteSettingsStore())
 
 const layout = computed(() => {
   const left: Component[] = [DayTimeWidget, MonthTimeWidget]
@@ -23,6 +24,10 @@ const layout = computed(() => {
 
   if (myIssues.value.show) {
     right.push(MyIssuesWidget)
+  }
+
+  if (accuracyWidget.value.show) {
+    right.push(AccuracyWidget)
   }
 
   if (heatmap.value.show) {
@@ -43,6 +48,10 @@ const mobileOrder = computed(() => {
 
   if (myIssues.value.show) {
     list.push(MyIssuesWidget)
+  }
+
+  if (accuracyWidget.value.show) {
+    list.push(AccuracyWidget)
   }
 
   if (heatmap.value.show) {

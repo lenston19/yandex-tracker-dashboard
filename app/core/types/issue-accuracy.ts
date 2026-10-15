@@ -1,4 +1,4 @@
-import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
+import type { Yandex } from './api/yandex-tracker/yandex-tracker.entity'
 
 export interface IssueEstimationStat {
   issue: Yandex.Issue
