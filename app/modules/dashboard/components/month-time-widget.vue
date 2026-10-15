@@ -65,9 +65,9 @@ const celebrationGlyph = computed(
 )
 
 const forecastTooltip = computed(() => {
-  const base = `Прогноз — сколько часов вы отработаете к концу месяца при текущем темпе. Норма месяца — ${needHoursInCurrentMonth.value} ч.`
+  const base = `Прогноз — сколько часов у вас получится к концу месяца при текущем темпе. Норма месяца — ${needHoursInCurrentMonth.value} ч.`
   if (!hoursPerDayNeeded.value) return base
-  return `${base} Чтобы выполнить норму, нужно отрабатывать по ${hoursPerDayNeeded.value} ч в день. Осталось ${remainingWorkdaysText.value} раб.`
+  return `${base} Для выполнения нормы нужно по ${hoursPerDayNeeded.value} ч в день. Осталось ${remainingWorkdaysText.value} рабочих дней.`
 })
 
 onMounted(async () => {
