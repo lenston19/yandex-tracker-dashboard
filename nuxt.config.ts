@@ -38,7 +38,7 @@ export default defineNuxtConfig({
     }
   },
 
-  plugins: ['~/plugins/version-check', '~/plugins/vue-final-modal', '~/plugins/apexcharts'],
+  plugins: ['~/plugins/version-check', '~/plugins/vue-final-modal'],
 
   runtimeConfig: {
     public: {

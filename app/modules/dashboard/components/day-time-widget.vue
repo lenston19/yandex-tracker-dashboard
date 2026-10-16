@@ -40,7 +40,7 @@ const celebrationGlyph = computed(
 )
 
 onMounted(async () => {
-  if (!totalHours.value) {
+  if (!totalHours.value && !isLoading.value) {
     await dayTimeWidgetStore.refresh()
   }
 })

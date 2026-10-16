@@ -13,13 +13,13 @@ import { useDateFormatter } from '~/core/composables/use-date-formatter'
 useHead({ title: SITEMAP.monthlyReport.name })
 
 const monthlyReportStore = useMonthlyReportStore()
-const { monthLineChartData, monthPieChartData, params, isLoading } = storeToRefs(monthlyReportStore)
+const { totalHours, params, isLoading } = storeToRefs(monthlyReportStore)
 
 const { formatMonthYear } = useDateFormatter()
 const title = computed(() => formatMonthYear(parseISO(params.value.from)))
 
 onMounted(() => {
-  if (!monthLineChartData.value.datasets.length || !monthPieChartData.value.datasets.length) {
+  if (!totalHours.value && !isLoading.value) {
     monthlyReportStore.refresh()
   }
 })

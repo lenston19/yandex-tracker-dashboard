@@ -9,8 +9,9 @@ import { useIsMobile } from '~/core/composables/use-is-mobile'
 
 const ActivityHeatmapWidget = defineAsyncComponent(() => import('../components/activity-heatmap-widget.vue'))
 const MyIssuesWidget = defineAsyncComponent(() => import('../components/my-issues-widget.vue'))
+const AccuracyWidget = defineAsyncComponent(() => import('../components/accuracy-widget.vue'))
 
-const { heatmap, myIssues, seasonalTheme } = storeToRefs(useSiteSettingsStore())
+const { heatmap, myIssues, accuracyWidget, seasonalTheme } = storeToRefs(useSiteSettingsStore())
 
 const layout = computed(() => {
   const left: Component[] = [DayTimeWidget, MonthTimeWidget]
@@ -19,6 +20,10 @@ const layout = computed(() => {
 
   if (seasonalTheme.value.active) {
     left.unshift(HolidayWidget)
+  }
+
+  if (accuracyWidget.value.show) {
+    left.push(AccuracyWidget)
   }
 
   if (myIssues.value.show) {
@@ -41,6 +46,10 @@ const mobileOrder = computed(() => {
 
   list.push(DayTimeWidget, MonthTimeWidget)
 
+  if (accuracyWidget.value.show) {
+    list.push(AccuracyWidget)
+  }
+
   if (myIssues.value.show) {
     list.push(MyIssuesWidget)
   }
@@ -58,7 +67,7 @@ const isMobile = useIsMobile()
 <template>
   <div
     v-if="isMobile"
-    class="flex flex-col gap-4 md:hidden"
+    class="flex flex-col gap-3 md:hidden"
   >
     <component
       :is="comp"
@@ -69,7 +78,7 @@ const isMobile = useIsMobile()
 
   <div
     v-else
-    class="hidden grid-cols-2 gap-4 md:grid"
+    class="hidden grid-cols-2 gap-3 md:grid"
   >
     <component
       :is="comp"
@@ -79,7 +88,7 @@ const isMobile = useIsMobile()
     />
 
     <div
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-3"
       :class="{ 'col-span-2': layout.right.length === 0 }"
     >
       <component
@@ -91,7 +100,7 @@ const isMobile = useIsMobile()
 
     <div
       v-if="layout.right.length"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-3"
     >
       <component
         :is="comp"

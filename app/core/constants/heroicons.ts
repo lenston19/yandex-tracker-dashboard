@@ -43,5 +43,6 @@ export const HEROICONS = {
   BANKNOTES: 'heroicons:banknotes',
   FIRE: 'heroicons:fire',
   CALENDAR_DAYS: 'heroicons:calendar-days',
-  SPARKLES: 'heroicons:sparkles'
+  SPARKLES: 'heroicons:sparkles',
+  SCALE: 'heroicons:scale'
 } as const

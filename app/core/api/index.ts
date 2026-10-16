@@ -2,6 +2,7 @@ import { useSiteSettingsStore } from '~/modules/settings'
 import { useToast } from '#imports'
 
 export const $api = $fetch.create({
+  timeout: 15000,
   onRequest: ({ options }) => {
     const { organizationId, accessToken } = storeToRefs(useSiteSettingsStore())
 
