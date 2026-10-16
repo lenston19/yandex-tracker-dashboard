@@ -43,8 +43,19 @@ const hasEstimation = computed(() => props.issue.estimation && props.issue.estim
 const estimationText = computed(() => (hasEstimation.value ? isoDurationToRu(props.issue.estimation!) : ''))
 const estimationHours = computed(() => (hasEstimation.value ? calculateDurationInHours(props.issue.estimation!) : 0))
 
-const spentText = computed(() => (props.spentHours != null ? `${formatHoursToFixed(props.spentHours)}ч` : null))
 const isOverEstimation = computed(() => props.spentHours != null && props.spentHours > estimationHours.value)
+
+/** Оценка — одна строка "факт/оценка", без факта — просто оценка */
+const estimationLabel = computed(() => {
+  if (props.spentHours === undefined) return estimationText.value
+  if (props.spentHours === null) return null
+  return `${formatHoursToFixed(props.spentHours)}/${estimationHours.value}ч`
+})
+
+const estimationBadgeColor = computed(() => {
+  if (!props.spentHours) return 'neutral' as const
+  return isOverEstimation.value ? ('error' as const) : ('success' as const)
+})
 
 const { formatShortDate, formatDayKey } = useDateFormatter()
 const now = useNow()
@@ -92,139 +103,115 @@ const hasMeta = computed(
 
 <template>
   <div
-    class="flex justify-between gap-3 py-2.5 pr-1.5 pl-2 transition-colors"
+    class="flex justify-between gap-3 py-2 pr-1.5 pl-2 transition-colors"
     :class="{
       'bg-primary/8 ring-primary': isActiveIssue
     }"
   >
     <div class="flex min-w-0 flex-1 flex-col items-start">
-      <div class="flex flex-wrap items-center gap-1.5">
-        <u-tooltip
-          v-if="display.priority !== false"
-          :text="chevrons.tooltip"
-          :delay-duration="200"
-        >
-          <span class="inline-flex cursor-help items-center">
-            <u-icon
-              v-for="n in chevrons.count"
-              :key="n"
-              :name="chevrons.icon"
-              :class="['-mx-0.5 size-3.5', chevrons.color]"
-            />
-          </span>
-        </u-tooltip>
-
-        <u-tooltip
-          v-if="isActiveIssue"
-          text="Активная задача"
-          :delay-duration="200"
-        >
-          <span class="relative inline-flex size-2 shrink-0 cursor-help">
-            <span class="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-75" />
-            <span class="relative inline-flex size-2 rounded-full bg-success" />
-          </span>
-        </u-tooltip>
-
-        <u-link
-          :to="`https://tracker.yandex.ru/${issue.key}`"
-          target="_blank"
-          class="font-mono text-xs text-primary hover:underline"
-        >
-          <span v-html="highlightedKey" />
-        </u-link>
-
-        <u-badge
-          v-if="display.status !== false"
-          :label="issue.status.display"
-          :color="statusColor"
-          variant="subtle"
-          size="sm"
-        />
-      </div>
-
-      <div
-        class="mt-0.5 line-clamp-3 max-w-full truncate text-left text-sm text-wrap"
-        v-html="highlightedSummary"
-      />
-
-      <div class="flex flex-wrap gap-4">
-        <div
-          v-if="hasMeta"
-          class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-neutral-500"
-        >
-          <span v-if="display.assignee && issue.assignee">
-            <span class="text-neutral-600">Исп:</span> {{ issue.assignee.display }}
-          </span>
-          <span v-if="display.reviewer && issue.reviewer">
-            <span class="text-neutral-600">Ревью:</span> {{ issue.reviewer.display }}
-          </span>
-          <span v-if="display.qaEngineer && issue.qaEngineer">
-            <span class="text-neutral-600">QA:</span> {{ issue.qaEngineer.display }}
-          </span>
-        </div>
-
-        <div
-          v-if="display.estimation && hasEstimation"
-          class="mt-1 flex items-center gap-1.5 text-xs"
-        >
+      <div class="flex w-full flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-1.5">
           <u-tooltip
-            text="Оценка задачи"
-            :delay-duration="300"
+            v-if="display.priority !== false"
+            :text="chevrons.tooltip"
+            :delay-duration="200"
           >
-            <span class="flex cursor-help items-center gap-0.5 text-muted">
+            <span class="inline-flex cursor-help items-center">
               <u-icon
-                :name="HEROICONS.CLOCK"
-                class="size-3 shrink-0"
+                v-for="n in chevrons.count"
+                :key="n"
+                :name="chevrons.icon"
+                :class="['-mx-0.5 size-3.5', chevrons.color]"
               />
-              <span>{{ estimationText }}</span>
             </span>
           </u-tooltip>
 
-          <template v-if="spentHours !== undefined">
-            <span class="text-neutral-400">/</span>
-            <u-skeleton
-              v-if="spentHours === null"
-              class="h-3 w-10"
-            />
-            <u-tooltip
-              v-else
-              text="Всего залогировано"
-              :delay-duration="300"
-            >
-              <span
-                class="flex cursor-help items-center gap-0.5"
-                :class="spentHours! > 0 ? (isOverEstimation ? 'text-error' : 'text-success') : 'text-muted'"
-              >
-                <u-icon
-                  :name="isOverEstimation ? HEROICONS.EXCLAMATION_TRIANGLE : HEROICONS.CHECK"
-                  class="size-3 shrink-0"
-                />
-                <span>{{ spentText }}</span>
-              </span>
-            </u-tooltip>
-          </template>
+          <u-tooltip
+            v-if="isActiveIssue"
+            text="Активная задача"
+            :delay-duration="200"
+          >
+            <span class="relative inline-flex size-2 shrink-0 cursor-help">
+              <span class="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-75" />
+              <span class="relative inline-flex size-2 rounded-full bg-success" />
+            </span>
+          </u-tooltip>
+
+          <u-link
+            :to="`https://tracker.yandex.ru/${issue.key}`"
+            target="_blank"
+            class="font-mono text-xs text-primary hover:underline"
+          >
+            <span v-html="highlightedKey" />
+          </u-link>
+
+          <u-badge
+            v-if="display.status !== false"
+            :label="issue.status.display"
+            :color="statusColor"
+            variant="subtle"
+            size="sm"
+          />
         </div>
 
         <div
-          v-if="display.deadline && hasDeadline"
-          class="mt-1 flex items-center gap-1.5 text-xs"
+          v-if="(display.deadline && hasDeadline) || (display.estimation && hasEstimation)"
+          class="flex shrink-0 items-center gap-1.5"
         >
           <u-tooltip
+            v-if="display.deadline && hasDeadline"
             text="Дедлайн"
             :delay-duration="300"
           >
-            <span
-              class="flex cursor-help items-center gap-0.5"
-              :class="isDeadlineOverdue ? 'text-error' : isDeadlineToday ? 'text-warning' : 'text-muted'"
-            >
-              <u-icon
-                :name="HEROICONS.CALENDAR"
-                class="size-3 shrink-0"
-              />
-              <span>{{ deadlineText }}</span>
-            </span>
+            <u-badge
+              :icon="HEROICONS.CALENDAR"
+              :label="deadlineText"
+              :color="isDeadlineOverdue ? 'error' : isDeadlineToday ? 'warning' : 'neutral'"
+              variant="subtle"
+              size="sm"
+            />
           </u-tooltip>
+
+          <template v-if="display.estimation && hasEstimation">
+            <u-skeleton
+              v-if="spentHours === null"
+              class="h-5 w-14"
+            />
+            <u-tooltip
+              v-else
+              :text="spentHours !== undefined ? 'Факт / оценка' : 'Оценка задачи'"
+              :delay-duration="300"
+            >
+              <u-badge
+                :icon="HEROICONS.CLOCK"
+                :label="estimationLabel!"
+                :color="estimationBadgeColor"
+                variant="subtle"
+                size="sm"
+              />
+            </u-tooltip>
+          </template>
         </div>
+      </div>
+
+      <div
+        class="mt-0.5 line-clamp-2 max-w-full truncate text-left text-sm text-wrap"
+        v-html="highlightedSummary"
+      />
+
+      <div
+        v-if="hasMeta"
+        class="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-neutral-500"
+      >
+        <span v-if="display.assignee && issue.assignee">
+          <span class="text-neutral-600">Исп:</span> {{ issue.assignee.display }}
+        </span>
+        <span v-if="display.reviewer && issue.reviewer">
+          <span class="text-neutral-600">Ревью:</span> {{ issue.reviewer.display }}
+        </span>
+        <span v-if="display.qaEngineer && issue.qaEngineer">
+          <span class="text-neutral-600">QA:</span> {{ issue.qaEngineer.display }}
+        </span>
       </div>
     </div>
 

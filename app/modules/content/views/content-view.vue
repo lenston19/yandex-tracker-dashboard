@@ -10,18 +10,16 @@ const { data: page } = await useAsyncData(route.path, () => {
 </script>
 
 <template>
-  <u-container>
-    <content-renderer
-      v-if="page"
-      :value="page"
-      class="prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert"
-    />
+  <content-renderer
+    v-if="page"
+    :value="page"
+    class="prose prose-sm max-w-none sm:prose sm:max-w-none lg:prose-lg lg:max-w-none xl:prose-xl xl:max-w-none dark:prose-invert"
+  />
 
-    <div
-      v-else
-      class="text-2xl"
-    >
-      Документ не найден
-    </div>
-  </u-container>
+  <div
+    v-else
+    class="text-2xl"
+  >
+    Документ не найден
+  </div>
 </template>

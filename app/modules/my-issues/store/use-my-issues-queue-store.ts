@@ -7,8 +7,10 @@ import type { IssueFilters } from '~/core/utils/my-issues'
 import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import { useIssueBus } from '~/core/composables/use-issue-bus'
+import { fetchAllPages } from '~/core/utils/fetch-all-pages'
 
 export const PAGE_SIZE = 20
+const FETCH_PER_PAGE = 200
 
 export const useMyIssuesQueueStore = defineStore('my-issues-queue-page', () => {
   const { login } = storeToRefs(useAuthStore())
@@ -65,8 +67,27 @@ export const useMyIssuesQueueStore = defineStore('my-issues-queue-page', () => {
       allIssues.value = []
       return
     }
-    const data = await yandexTrackerApi.issueSearch({ query: fetchQuery.value }, 200, 1)
-    allIssues.value = data ?? []
+    const response = await yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, FETCH_PER_PAGE)
+
+    if (!response._data) {
+      allIssues.value = []
+      return
+    }
+
+    const totalPages = response.headers.get('X-Total-Pages')
+    const totalCount = response.headers.get('X-Total-Count')
+
+    let result: Yandex.Issue[] = [...response._data]
+
+    if (totalPages && totalCount && +totalCount > FETCH_PER_PAGE) {
+      const rest = await fetchAllPages(
+        page => yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, FETCH_PER_PAGE, page),
+        +totalPages
+      )
+      result = [...result, ...rest]
+    }
+
+    allIssues.value = result
   })
 
   const applyFilters = async () => {

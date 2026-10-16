@@ -4,6 +4,7 @@ import ThemeSettings from '../../components/theme-settings.vue'
 import WorktimeSettings from '../../components/worktime-settings.vue'
 import HeatmapSettings from '../../components/heatmap-settings.vue'
 import MyIssuesSettings from '../../components/my-issues-settings.vue'
+import AccuracyWidgetSettings from '../../components/accuracy-widget-settings.vue'
 import DangerSettings from '../../components/danger-settings.vue'
 import { HEROICONS } from '~/core/constants/heroicons'
 
@@ -49,6 +50,13 @@ export const SECTION_MY_ISSUES: SettingsSection = {
   component: MyIssuesSettings
 }
 
+export const SECTION_ACCURACY_WIDGET: SettingsSection = {
+  id: 'accuracy-widget',
+  label: 'Точность оценок',
+  icon: HEROICONS.SCALE,
+  component: AccuracyWidgetSettings
+}
+
 export const SECTION_DANGER: SettingsSection = {
   id: 'danger',
   label: 'Опасная зона',
@@ -64,5 +72,6 @@ export const AUTH_SECTIONS = [
   SECTION_THEME,
   SECTION_HEATMAP,
   SECTION_MY_ISSUES,
+  SECTION_ACCURACY_WIDGET,
   SECTION_DANGER
 ]

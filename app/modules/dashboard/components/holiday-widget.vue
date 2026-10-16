@@ -16,10 +16,6 @@ const daysLeft = computed(() => {
   return differenceInCalendarDays(getUpcomingHolidayDate(seasonalTheme.value.type, new Date()), new Date())
 })
 
-const hasCountdown = computed(() => seasonalTheme.value.type === 'halloween' || seasonalTheme.value.type === 'new-year')
-
-const showCountdown = computed(() => hasCountdown.value && daysLeft.value > 0)
-
 const glyph = computed(() => (seasonalTheme.value.type ? THEME_CELEBRATION_GLYPH[seasonalTheme.value.type] : ''))
 const name = computed(() => (seasonalTheme.value.type ? THEME_CELEBRATION_NAME[seasonalTheme.value.type] : ''))
 
@@ -43,21 +39,12 @@ const celebrationMessage = computed(() => {
       </span>
 
       <div
-        v-if="showCountdown"
+        v-if="daysLeft > 0"
         class="flex items-baseline gap-1.5"
       >
         <span class="text-2xl font-bold text-highlighted">{{ pluralize(daysLeft, DAYS_PLURALIZE) }}</span>
         <span class="text-sm text-muted">до праздника</span>
       </div>
-
-      <!-- <u-badge
-        v-else-if="daysLeft > 0"
-        color="neutral"
-        variant="subtle"
-        size="lg"
-      >
-        Скоро
-      </u-badge> -->
 
       <span
         v-else
