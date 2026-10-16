@@ -1,5 +1,6 @@
 import { $api } from '~/core/api'
 import type { YandexInfo } from '~/core/types/api/yandex-info/yandex-info.entity'
+import { dedupeRequest } from '~/core/utils/request-dedupe'
 
 export default {
   /**
@@ -8,11 +9,13 @@ export default {
    * @returns YandexInfo.Avatar
    */
   async fetchUser(format: 'json' | 'xml' | 'jwt' = 'json') {
-    return await $api<YandexInfo.Avatar>('/profile/info', {
-      method: 'GET',
-      params: {
-        format
-      }
-    })
+    return await dedupeRequest(`GET:/profile/info:${format}`, () =>
+      $api<YandexInfo.Avatar>('/profile/info', {
+        method: 'GET',
+        params: {
+          format
+        }
+      })
+    )
   }
 }

@@ -1,6 +1,7 @@
 import { $api } from '~/core/api'
 import type { YandexTrackerApi } from '~/core/types/api/yandex-tracker/yandex-tracker.api'
 import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
+import { dedupeRequest } from '~/core/utils/request-dedupe'
 
 export default {
   /**
@@ -21,10 +22,12 @@ export default {
       perPage: countPerPage,
       ...params
     }
-    return await $api.raw<Yandex.Queue[]>('/tracker/queues', {
-      method: 'GET',
-      params: queryParams
-    })
+    return await dedupeRequest(`GET:/tracker/queues:${JSON.stringify(queryParams)}`, () =>
+      $api.raw<Yandex.Queue[]>('/tracker/queues', {
+        method: 'GET',
+        params: queryParams
+      })
+    )
   },
   /**
    * Получение данных о учете времени пользователя из сервиса https://api.tracker.yandex.net/v2
@@ -42,27 +45,39 @@ export default {
       perPage: countPerPage,
       ...params
     }
-    return await $api.raw<Yandex.Worklog[]>('/tracker/worklog/_search', {
-      method: 'POST',
-      params: queryParams,
-      body
-    })
+    return await dedupeRequest(
+      `POST:/tracker/worklog/_search:${JSON.stringify(queryParams)}:${JSON.stringify(body)}`,
+      () =>
+        $api.raw<Yandex.Worklog[]>('/tracker/worklog/_search', {
+          method: 'POST',
+          params: queryParams,
+          body
+        })
+    )
   },
 
   async issueSearch(body: YandexTrackerApi.issueSearch.Body, countPerPage: number = 20, page: number = 1) {
-    return await $api<Yandex.Issue[]>('/tracker/issues/_search', {
-      method: 'POST',
-      params: { perPage: countPerPage, page },
-      body
-    })
+    const params = { perPage: countPerPage, page }
+    return await dedupeRequest(`POST:/tracker/issues/_search:${JSON.stringify(params)}:${JSON.stringify(body)}`, () =>
+      $api<Yandex.Issue[]>('/tracker/issues/_search', {
+        method: 'POST',
+        params,
+        body
+      })
+    )
   },
 
   async issueSearchRaw(body: YandexTrackerApi.issueSearch.Body, countPerPage: number = 50, page: string = '1') {
-    return await $api.raw<Yandex.Issue[]>('/tracker/issues/_search', {
-      method: 'POST',
-      params: { perPage: countPerPage, page },
-      body
-    })
+    const params = { perPage: countPerPage, page }
+    return await dedupeRequest(
+      `POST-raw:/tracker/issues/_search:${JSON.stringify(params)}:${JSON.stringify(body)}`,
+      () =>
+        $api.raw<Yandex.Issue[]>('/tracker/issues/_search', {
+          method: 'POST',
+          params,
+          body
+        })
+    )
   },
 
   async issueGet(issueId: string) {
