@@ -1,5 +1,15 @@
 # 🧭 Что нового?
 
+::badge
+**v1.3.2**
+::
+
+::card-group
+::card{icon="i-lucide-bug" color="warning"}
+- <a href="/settings" class="text-primary">Настройки</a>: отключение сезонной темы теперь сохраняется между сессиями
+::
+::
+
 ### 2026-10-17
 ::badge
 **v1.3.1**
