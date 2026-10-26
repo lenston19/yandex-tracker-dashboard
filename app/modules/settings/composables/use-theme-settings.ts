@@ -5,10 +5,11 @@ export function useThemeSettings() {
   const envThemeType = useRuntimeConfig().public.themeType as ThemeType
   const themeType = ref<ThemeType | undefined>(envThemeType || getActiveSeasonalThemeType())
   const isHaveThemeType = computed(() => !!themeType.value?.length)
-  const seasonalTheme = reactive<{ type: ThemeType | undefined; active: boolean }>({
+  const seasonalThemeActive = ref<boolean>(isHaveThemeType.value)
+  const seasonalTheme = computed(() => ({
     type: themeType.value,
-    active: isHaveThemeType.value
-  })
+    active: seasonalThemeActive.value
+  }))
 
   const themeEntities = ref<ThemeEntities>({
     cursor: true,
@@ -21,6 +22,7 @@ export function useThemeSettings() {
     themeType,
     isHaveThemeType,
     seasonalTheme,
+    seasonalThemeActive,
     themeEntities
   }
 }

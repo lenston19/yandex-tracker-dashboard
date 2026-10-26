@@ -2,7 +2,7 @@
 import UiCard from '~/core/components/ui/ui-card.vue'
 import { useSiteSettingsStore } from '~/modules/settings'
 
-const { seasonalTheme, isHaveThemeType, themeEntities } = storeToRefs(useSiteSettingsStore())
+const { seasonalThemeActive, isHaveThemeType, themeEntities } = storeToRefs(useSiteSettingsStore())
 
 const THEME_ENTITY_OPTIONS = [
   { key: 'cursor', label: 'Курсор', description: 'Тематический курсор мыши' },
@@ -25,7 +25,7 @@ const THEME_ENTITY_OPTIONS = [
         </div>
         <div class="flex shrink-0 items-center gap-2">
           <u-switch
-            v-model="seasonalTheme.active"
+            v-model="seasonalThemeActive"
             :disabled="!isHaveThemeType"
           />
           <span
@@ -38,7 +38,7 @@ const THEME_ENTITY_OPTIONS = [
       </div>
 
       <div
-        v-if="isHaveThemeType && seasonalTheme.active"
+        v-if="isHaveThemeType && seasonalThemeActive"
         class="space-y-1 border-t border-muted px-2 py-1.5 lg:px-4 lg:py-3"
       >
         <div
