@@ -50,6 +50,7 @@ const getQueueRoute = (queueKey: string) => ({
           variant="ghost"
           size="sm"
           square
+          aria-label="Обновить список"
           :loading="isLoading"
           @click="store.refresh()"
         />

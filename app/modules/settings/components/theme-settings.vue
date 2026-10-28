@@ -18,10 +18,15 @@ const THEME_ENTITY_OPTIONS = [
     :ui="{ body: 'sm:p-0 p-0' }"
   >
     <div class="divide-y divide-default">
-      <div class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
+      <label class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
         <div class="min-w-0">
           <p class="text-sm font-medium">Сезонная тема</p>
-          <p class="text-xs text-muted">Праздничное оформление интерфейса</p>
+          <p
+            class="text-xs text-muted"
+            aria-hidden="true"
+          >
+            Праздничное оформление интерфейса
+          </p>
         </div>
         <div class="flex shrink-0 items-center gap-2">
           <u-switch
@@ -35,26 +40,31 @@ const THEME_ENTITY_OPTIONS = [
             {{ isHaveThemeType ? '*Тык*' : 'Пока недоступно ._.' }}
           </span>
         </div>
-      </div>
+      </label>
 
       <div
         v-if="isHaveThemeType && seasonalThemeActive"
         class="space-y-1 border-t border-muted px-2 py-1.5 lg:px-4 lg:py-3"
       >
-        <div
+        <label
           v-for="option in THEME_ENTITY_OPTIONS"
           :key="option.key"
           class="flex items-center justify-between gap-4 py-1"
         >
           <div class="min-w-0">
             <p class="text-sm">{{ option.label }}</p>
-            <p class="text-xs text-muted">{{ option.description }}</p>
+            <p
+              class="text-xs text-muted"
+              aria-hidden="true"
+            >
+              {{ option.description }}
+            </p>
           </div>
           <u-switch
             v-model="themeEntities[option.key]"
             class="shrink-0"
           />
-        </div>
+        </label>
       </div>
     </div>
   </ui-card>

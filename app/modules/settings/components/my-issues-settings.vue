@@ -42,10 +42,15 @@ const selectedStatuses = computed({
     title="Мои задачи"
     :ui="{ body: 'sm:p-0 p-0' }"
   >
-    <div class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
+    <label class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
       <div class="min-w-0">
         <p class="text-sm font-medium">Показывать виджет</p>
-        <p class="text-xs text-muted">Список активных задач на дашборде</p>
+        <p
+          class="text-xs text-muted"
+          aria-hidden="true"
+        >
+          Список активных задач на дашборде
+        </p>
       </div>
       <u-switch
         v-model="myIssues.show"
@@ -53,7 +58,7 @@ const selectedStatuses = computed({
         :checked-icon="HEROICONS.CHECK_20_SOLID"
         :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
       />
-    </div>
+    </label>
     <u-separator />
     <div class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
       <div class="min-w-0">
@@ -72,7 +77,7 @@ const selectedStatuses = computed({
     <div class="px-2 py-1.5 lg:px-4 lg:py-3">
       <p class="mb-2 text-sm font-medium">Искать задачи по роли</p>
       <div class="flex flex-col gap-1.5">
-        <div
+        <label
           v-for="item in ROLE_OPTIONS"
           :key="item.key"
           class="flex items-center justify-between gap-4"
@@ -84,14 +89,14 @@ const selectedStatuses = computed({
             :checked-icon="HEROICONS.CHECK_20_SOLID"
             :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
           />
-        </div>
+        </label>
       </div>
     </div>
     <u-separator />
     <div class="px-2 py-1.5 lg:px-4 lg:py-3">
       <p class="mb-2 text-sm font-medium">Элементы отображения</p>
       <div class="flex flex-col gap-1.5">
-        <div
+        <label
           v-for="item in DISPLAY_OPTIONS"
           :key="item.key"
           class="flex items-center justify-between gap-4"
@@ -103,7 +108,7 @@ const selectedStatuses = computed({
             :checked-icon="HEROICONS.CHECK_20_SOLID"
             :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
           />
-        </div>
+        </label>
       </div>
     </div>
   </ui-card>

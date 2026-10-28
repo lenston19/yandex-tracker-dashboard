@@ -133,6 +133,7 @@ function tooltipOpen(key: string): boolean | undefined {
             <u-skeleton
               v-for="i in weekCount * DAYS_IN_WEEK"
               :key="i"
+              aria-hidden="true"
               class="size-4 rounded-[2px] lg:size-3"
             />
           </template>

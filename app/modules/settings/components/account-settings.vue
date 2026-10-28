@@ -21,6 +21,9 @@ function copyOrgId() {
   toast.add({ title: 'Скопировано', color: 'success' })
 }
 
+const copyLabel = computed(() => (copied.value ? 'Скопировано' : 'Скопировать ID организации'))
+const refreshLabel = 'Обновить данные аккаунта'
+
 const { open: openOrgModal } = useModal({
   component: defineAsyncComponent(() => import('./modals/settings-organization-id-modal.vue'))
 })
@@ -42,11 +45,12 @@ const { open: openOrgModal } = useModal({
             <app-user />
             <u-tooltip
               :delay-duration="0"
-              text="Обновить"
+              :text="refreshLabel"
             >
               <u-button
                 variant="ghost"
                 size="sm"
+                :aria-label="refreshLabel"
                 :icon="HEROICONS.ARROW_PATH"
                 :loading="isAuthLoading"
                 @click="authStore.refreshMySelf()"
@@ -72,15 +76,21 @@ const { open: openOrgModal } = useModal({
           <span class="max-w-[160px] truncate text-sm text-muted">
             {{ organizationId || 'Не указан' }}
           </span>
-          <u-button
+          <u-tooltip
             v-if="organizationId && isClipboardSupported"
-            variant="ghost"
-            size="sm"
-            :color="copied ? 'success' : 'neutral'"
-            :icon="copied ? HEROICONS.CHECK : HEROICONS.CLIPBOARD_DOCUMENT_SOLID"
-            :disabled="copied"
-            @click="copyOrgId"
-          />
+            :delay-duration="0"
+            :text="copyLabel"
+          >
+            <u-button
+              variant="ghost"
+              size="sm"
+              :aria-label="copyLabel"
+              :color="copied ? 'success' : 'neutral'"
+              :icon="copied ? HEROICONS.CHECK : HEROICONS.CLIPBOARD_DOCUMENT_SOLID"
+              :disabled="copied"
+              @click="copyOrgId"
+            />
+          </u-tooltip>
           <u-button
             size="sm"
             :label="organizationId ? 'Изменить' : 'Добавить'"
