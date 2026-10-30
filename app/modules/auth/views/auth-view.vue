@@ -54,10 +54,16 @@ onBeforeMount(async () => {
   overflow: hidden;
   display: inline-block;
   vertical-align: bottom;
-  -webkit-animation: ellipsis steps(3, end) 1.4s infinite;
-  animation: ellipsis steps(3, end) 1.4s infinite;
   content: '\2026';
-  width: 0px;
+  width: 40px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .loading:after {
+    -webkit-animation: ellipsis steps(3, end) 1.4s infinite;
+    animation: ellipsis steps(3, end) 1.4s infinite;
+    width: 0px;
+  }
 }
 
 @keyframes ellipsis {

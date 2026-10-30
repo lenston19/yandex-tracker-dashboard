@@ -22,6 +22,9 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
   const sortMode = ref<MyIssuesSortMode>(MY_ISSUES_SORT_MODE.PRIORITY)
   const { issueSpentHoursMap, fetchSpentHours } = useIssueSpentHours(computed(() => myIssues.value.display.estimation))
 
+  const recentlyExcludedAt = new Map<string, number>()
+  const EXCLUDE_TTL_MS = 10_000
+
   const { runWithLoading: refresh, isLoading } = useTryCatchWithLoading(async () => {
     if (!login.value) {
       issues.value = []
@@ -45,7 +48,16 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
       return
     }
 
-    issues.value = response._data ?? []
+    const now = Date.now()
+    issues.value = (response._data ?? []).filter(issue => {
+      const excludedAt = recentlyExcludedAt.get(issue.key)
+      if (excludedAt === undefined) return true
+      if (now - excludedAt > EXCLUDE_TTL_MS) {
+        recentlyExcludedAt.delete(issue.key)
+        return true
+      }
+      return false
+    })
     await fetchSpentHours(issues.value)
   })
 
@@ -68,6 +80,7 @@ export const useMyIssuesWidgetStore = defineStore('my-issues-widget', () => {
     if (index === -1) return
     const allowedStatuses = myIssues.value.statuses.length ? myIssues.value.statuses : ['open', 'rediscovered']
     if (!allowedStatuses.includes(status.key)) {
+      recentlyExcludedAt.set(key, Date.now())
       issues.value.splice(index, 1)
     } else {
       issues.value[index]!.status = status

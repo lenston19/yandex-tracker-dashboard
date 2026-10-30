@@ -17,10 +17,10 @@ const mergedUI = computed(() => {
       props.ui?.header
     ),
     content: twMerge(
-      'absolute bottom-0 flex max-h-[calc(100svh-40px)] w-full flex-col overflow-y-auto rounded-t-3xl bg-neutral-800',
+      'absolute bottom-0 flex max-h-[calc(100svh-40px)] w-full flex-col overflow-y-auto overscroll-contain rounded-t-3xl bg-neutral-800',
       props.ui?.content
     ),
-    body: twMerge('h-fit grow overflow-y-auto scroll-smooth px-6 pt-3 pb-6', props.ui?.body)
+    body: twMerge('h-fit grow overflow-y-auto overscroll-contain scroll-smooth px-6 pt-3 pb-6', props.ui?.body)
   }
 })
 

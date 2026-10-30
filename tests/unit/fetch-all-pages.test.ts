@@ -67,4 +67,17 @@ describe('fetchAllPages', () => {
     const result = await fetchAllPages<number>(fetchPage, 2)
     expect(result).toEqual([1, 2, 3])
   })
+
+  it('реальный $api.raw реджектит промис на 429 (а не резолвит {status: 429}) — транзиентный сбой страницы не должен терять уже полученные страницы', async () => {
+    const error = Object.assign(new Error('Too Many Requests'), { statusCode: 429 })
+    const fetchPage = vi
+      .fn()
+      .mockResolvedValueOnce(makePage(['page2-item']))
+      .mockRejectedValueOnce(error)
+      .mockResolvedValueOnce(makePage(['page3-item-retried']))
+      .mockResolvedValueOnce(makePage(['page4-item']))
+
+    const result = await fetchAllPages(fetchPage, 4)
+    expect(result).toEqual(['page2-item', 'page3-item-retried', 'page4-item'])
+  })
 })

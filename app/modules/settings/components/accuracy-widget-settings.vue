@@ -11,10 +11,15 @@ const { accuracyWidget } = storeToRefs(useSiteSettingsStore())
     title="Точность оценок"
     :ui="{ body: 'sm:p-0 p-0' }"
   >
-    <div class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
+    <label class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
       <div class="min-w-0">
         <p class="text-sm font-medium">Показывать виджет</p>
-        <p class="text-xs text-muted">Процент задач, уложившихся в оценку, по очередям</p>
+        <p
+          class="text-xs text-muted"
+          aria-hidden="true"
+        >
+          Процент задач, уложившихся в оценку, по очередям
+        </p>
       </div>
       <u-switch
         v-model="accuracyWidget.show"
@@ -22,6 +27,6 @@ const { accuracyWidget } = storeToRefs(useSiteSettingsStore())
         :checked-icon="HEROICONS.CHECK_20_SOLID"
         :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
       />
-    </div>
+    </label>
   </ui-card>
 </template>

@@ -14,7 +14,7 @@ const { open: openLogoutModal } = useModal({
 <template>
   <ui-card :ui="{ body: 'sm:p-0 p-0' }">
     <template #header>
-      <span class="text-base font-semibold text-error">Опасная зона</span>
+      <h2 class="text-base font-semibold text-error">Опасная зона</h2>
     </template>
 
     <div class="divide-y divide-error/20">

@@ -13,7 +13,7 @@ function deferred<T = undefined>() {
 
 describe('runThrottled', () => {
   it('запускает не более лимита задач одновременно для одного ключа', async () => {
-    const MAX_CONCURRENT = 3
+    const MAX_CONCURRENT = 1
     let active = 0
     let maxActive = 0
 
@@ -45,18 +45,22 @@ describe('runThrottled', () => {
 
     await new Promise(r => setTimeout(r, 0))
 
-    expect(order).toEqual([0, 1, 2])
+    expect(order).toEqual([0])
 
     deferreds[0].resolve()
-    await new Promise(r => setTimeout(r, 0))
-    expect(order).toEqual([0, 1, 2, 3])
+    await new Promise(r => setTimeout(r, 360))
+    expect(order).toEqual([0, 1])
 
     deferreds[1].resolve()
-    await new Promise(r => setTimeout(r, 0))
-    expect(order).toEqual([0, 1, 2, 3, 4])
+    await new Promise(r => setTimeout(r, 360))
+    expect(order).toEqual([0, 1, 2])
 
     deferreds[2].resolve()
+    await new Promise(r => setTimeout(r, 360))
+    expect(order).toEqual([0, 1, 2, 3])
     deferreds[3].resolve()
+    await new Promise(r => setTimeout(r, 360))
+    expect(order).toEqual([0, 1, 2, 3, 4])
     deferreds[4].resolve()
     await Promise.all(tasks)
   })
@@ -100,5 +104,19 @@ describe('runThrottled', () => {
 
     expect(results).toContain('failed')
     expect(results).toContain('succeeded')
+  })
+
+  it('делает паузу между запросами после стартового burst', async () => {
+    const startedAt: number[] = []
+    await Promise.all(
+      Array.from({ length: 4 }, () =>
+        runThrottled('token-rate', async () => {
+          startedAt.push(Date.now())
+        })
+      )
+    )
+
+    expect(startedAt).toHaveLength(4)
+    expect(startedAt[3]! - startedAt[0]!).toBeGreaterThanOrEqual(100)
   })
 })

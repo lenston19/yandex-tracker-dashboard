@@ -14,7 +14,7 @@ const text = computed(() => {
       return { prev: 'Предыдущий месяц', next: 'Следующий месяц', refresh: 'Обновить месяц' }
 
     default:
-      return { prev: '', next: '', refresh: '' }
+      return { prev: 'Предыдущий период', next: 'Следующий период', refresh: 'Обновить' }
   }
 })
 </script>
@@ -33,6 +33,7 @@ const text = computed(() => {
         <u-button
           :icon="HEROICONS.ARROW_LEFT"
           variant="link"
+          :aria-label="text.prev"
           :loading="loading"
           @click="prev"
         />
@@ -45,6 +46,7 @@ const text = computed(() => {
         <u-button
           :icon="HEROICONS.ARROW_RIGHT"
           variant="link"
+          :aria-label="text.next"
           :loading="loading"
           @click="next"
         />
@@ -53,6 +55,7 @@ const text = computed(() => {
     <u-tooltip :text="text.refresh">
       <u-button
         :icon="HEROICONS.ARROW_PATH"
+        :aria-label="text.refresh"
         :loading="loading"
         @click="refresh()"
       />

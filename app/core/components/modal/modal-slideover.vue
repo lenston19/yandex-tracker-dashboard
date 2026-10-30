@@ -37,7 +37,7 @@ function closeWindow() {
     content-transition="vfm-slide-left"
   >
     <div
-      class="flex-col overflow-y-auto bg-gray-50"
+      class="flex-col overflow-y-auto overscroll-contain bg-gray-50"
       :class="mergedUI.content"
     >
       <div
@@ -51,7 +51,7 @@ function closeWindow() {
       </div>
 
       <div
-        class="grow overflow-y-auto scroll-smooth [&::-webkit-scrollbar]:hidden"
+        class="grow overflow-y-auto overscroll-contain scroll-smooth [&::-webkit-scrollbar]:hidden"
         :class="mergedUI.body"
       >
         <slot :close="closeWindow" />
