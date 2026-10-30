@@ -1,5 +1,9 @@
 import { useSiteSettingsStore } from '~/modules/settings'
-import { useToast } from '#imports'
+import { useToast, useNuxtApp } from '#imports'
+
+function showErrorToast(toast: { color: 'error'; title: string; description: string }) {
+  useNuxtApp().runWithContext(() => useToast().add(toast))
+}
 
 export const $api = $fetch.create({
   timeout: 15000,
@@ -28,7 +32,7 @@ export const $api = $fetch.create({
         description = response.url
       }
 
-      useToast().add({
+      showErrorToast({
         color: 'error',
         title: `Ошибка! ${response.status}`,
         description
@@ -46,7 +50,7 @@ export const $api = $fetch.create({
       description = error.message
     }
 
-    useToast().add({
+    showErrorToast({
       color: 'error',
       title: 'Ошибка!',
       description
