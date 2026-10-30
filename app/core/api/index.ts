@@ -5,6 +5,19 @@ function showErrorToast(toast: { color: 'error'; title: string; description: str
   useNuxtApp().runWithContext(() => useToast().add(toast))
 }
 
+let rateLimitToastShownUntil = 0
+
+function showRateLimitToast(url: string) {
+  const now = Date.now()
+  if (now < rateLimitToastShownUntil) return
+  rateLimitToastShownUntil = now + 5000
+  showErrorToast({
+    color: 'error',
+    title: 'Слишком много запросов',
+    description: `Сервер временно ограничил запросы. Повторяем загрузку: ${url}`
+  })
+}
+
 export const $api = $fetch.create({
   timeout: 15000,
   onRequest: ({ options }) => {
@@ -19,6 +32,11 @@ export const $api = $fetch.create({
   },
   onResponse: ({ response }) => {
     if (import.meta.server) return
+
+    if (response.status === 429) {
+      showRateLimitToast(response.url)
+      return
+    }
 
     if (response.status >= 400) {
       let description = ''

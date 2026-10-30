@@ -7,10 +7,9 @@ import type { IssueFilters } from '~/core/utils/my-issues'
 import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import { useIssueBus } from '~/core/composables/use-issue-bus'
-import { fetchAllPages } from '~/core/utils/fetch-all-pages'
 
 export const PAGE_SIZE = 20
-const FETCH_PER_PAGE = 200
+const FETCH_PER_PAGE = PAGE_SIZE
 
 export const useMyIssuesQueueStore = defineStore('my-issues-queue-page', () => {
   const { login } = storeToRefs(useAuthStore())
@@ -38,12 +37,13 @@ export const useMyIssuesQueueStore = defineStore('my-issues-queue-page', () => {
     router.replace({
       query: {
         ...(filters.statuses.length ? { statuses: filters.statuses.join(',') } : {}),
-        ...(filters.priority ? { priority: filters.priority } : {})
+        ...(filters.priority ? { priority: filters.priority } : {}),
+        ...(search.value ? { search: search.value } : {})
       }
     })
   }
 
-  const search = ref('')
+  const search = ref((route.query.search as string) || '')
 
   const filteredIssues = computed(() => {
     const q = search.value.trim().toLowerCase()
@@ -51,69 +51,67 @@ export const useMyIssuesQueueStore = defineStore('my-issues-queue-page', () => {
     return allIssues.value.filter(i => i.summary.toLowerCase().includes(q) || i.key.toLowerCase().includes(q))
   })
 
-  const paginatedIssues = computed(() => {
-    const start = (page.value - 1) * PAGE_SIZE
-    return filteredIssues.value.slice(start, start + PAGE_SIZE)
-  })
-
-  const totalIssues = computed(() => filteredIssues.value.length)
+  const totalCount = ref(0)
+  const totalIssues = computed(() => totalCount.value)
 
   const fetchQuery = computed(() =>
-    buildFetchQuery(login.value ?? '', { ...filters, queue: queueKey.value }, myIssues.value.roles)
+    buildFetchQuery(
+      login.value ?? '',
+      { ...filters, queue: queueKey.value, search: search.value },
+      myIssues.value.roles
+    )
   )
 
   const { runWithLoading: fetch, isLoading } = useTryCatchWithLoading(async () => {
     if (!login.value || !queueKey.value) {
       allIssues.value = []
+      totalCount.value = 0
       return
     }
-    const response = await yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, FETCH_PER_PAGE)
+    const response = await yandexTrackerApi.issueSearchRaw(
+      { query: fetchQuery.value },
+      FETCH_PER_PAGE,
+      String(page.value)
+    )
 
     if (!response._data) {
       allIssues.value = []
+      totalCount.value = 0
       return
     }
 
-    const totalPages = response.headers.get('X-Total-Pages')
-    const totalCount = response.headers.get('X-Total-Count')
-
-    let result: Yandex.Issue[] = [...response._data]
-
-    if (totalPages && totalCount && +totalCount > FETCH_PER_PAGE) {
-      const rest = await fetchAllPages(
-        page => yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, FETCH_PER_PAGE, page),
-        +totalPages
-      )
-      result = [...result, ...rest]
-    }
-
-    allIssues.value = result
+    allIssues.value = response._data
+    totalCount.value = Number(response.headers.get('X-Total-Count') ?? allIssues.value.length)
   })
 
-  const applyFilters = async () => {
-    page.value = 1
-    pushFiltersToUrl()
-    await fetch()
+  // page уже 1 → watch(page) не сработает на присвоение того же значения, фетчим сами;
+  // иначе сброс страницы и фетч по новым данным сделает watch(page) один раз.
+  const resetToFirstPage = async () => {
+    if (page.value === 1) await fetch()
+    else page.value = 1
   }
 
-  const refresh = async () => {
-    page.value = 1
-    await fetch()
+  const applyFilters = async () => {
+    pushFiltersToUrl()
+    await resetToFirstPage()
   }
+
+  const refresh = () => resetToFirstPage()
 
   watch(
     queueKey,
     async key => {
-      if (key) {
-        page.value = 1
-        await fetch()
-      }
+      if (key) await resetToFirstPage()
     },
     { immediate: true }
   )
 
   watch(login, async newLogin => {
     if (newLogin) await fetch()
+  })
+
+  watch(page, async () => {
+    if (queueKey.value) await fetch()
   })
 
   useIssueBus(({ key, status }) => {
@@ -127,7 +125,7 @@ export const useMyIssuesQueueStore = defineStore('my-issues-queue-page', () => {
   })
 
   return {
-    paginatedIssues,
+    paginatedIssues: filteredIssues,
     filters,
     search,
     page,

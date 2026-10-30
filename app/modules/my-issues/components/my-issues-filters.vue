@@ -19,7 +19,7 @@ const statusesModel = computed({
 
 const { isLoading } = defineProps<{ isLoading: boolean }>()
 
-const searchInput = ref('')
+const searchInput = ref(search.value)
 const updateSearch = useDebounceFn((val: string) => {
   search.value = val
 }, 300)

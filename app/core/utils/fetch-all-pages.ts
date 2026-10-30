@@ -1,29 +1,21 @@
-// Совпадает с MAX_CONCURRENT_PER_KEY на сервере (server/utils/request-throttle.ts) — без этого
-// ограничения Promise.all открыл бы все страницы разом, а сервер всё равно очередит их по 3.
-const CONCURRENCY = 3
-
-// $api.raw реджектит промис на non-2xx (ofetch бросает FetchError, а не резолвит {status}).
-// Одна страница с транзиентным 429 валила весь Promise.all батча и теряла уже полученные
-// страницы — ретраим такую страницу отдельно, не трогая соседей по батчу.
+// Совпадает с MAX_CONCURRENT_PER_KEY на сервере (server/utils/request-throttle.ts) — Tracker
+// ограничивает частоту запросов, а не только конкуренцию.
+const CONCURRENCY = 1
 const MAX_RETRIES = 2
-const RETRY_DELAY_MS = 500
 
-function getStatus(error: unknown): number | undefined {
+export function getStatus(error: unknown): number | undefined {
   if (typeof error !== 'object' || error === null) return undefined
-  const err = error as { statusCode?: number; response?: { status?: number } }
-  return err.statusCode ?? err.response?.status
+  const err = error as { status?: number; statusCode?: number; response?: { status?: number } }
+  return err.status ?? err.statusCode ?? err.response?.status
 }
 
-async function fetchPageWithRetry<T>(
-  fetchPage: (page: string) => Promise<{ status: number; _data?: T[] }>,
-  page: string
-): Promise<{ status: number; _data?: T[] }> {
+export async function retryOn429<T>(fn: () => Promise<T>, retries: number, delayMs = 1000): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     try {
-      return await fetchPage(page)
+      return await fn()
     } catch (error) {
-      if (attempt >= MAX_RETRIES || getStatus(error) !== 429) throw error
-      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * (attempt + 1)))
+      if (attempt >= retries || getStatus(error) !== 429) throw error
+      await new Promise(resolve => setTimeout(resolve, delayMs * 2 ** attempt))
     }
   }
 }
@@ -37,7 +29,9 @@ export async function fetchAllPages<T>(
 
   for (let i = 0; i < pages.length; i += CONCURRENCY) {
     const batch = pages.slice(i, i + CONCURRENCY)
-    const responses = await Promise.all(batch.map(page => fetchPageWithRetry(fetchPage, page)))
+    // Ретраим страницу отдельно, не трогая соседей по батчу — иначе транзиентный 429 на одной
+    // странице валит весь Promise.all и теряет уже полученные страницы.
+    const responses = await Promise.all(batch.map(page => retryOn429(() => fetchPage(page), MAX_RETRIES)))
     responses.forEach(res => {
       if (res.status === 200 && res._data) results.push(...res._data)
     })
