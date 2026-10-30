@@ -88,6 +88,7 @@ const goToNextPage = () => {
             variant="ghost"
             size="xs"
             square
+            aria-label="Предыдущая страница"
             :disabled="page === 1"
             @click="goToPreviousPage"
           />
@@ -97,6 +98,7 @@ const goToNextPage = () => {
             variant="ghost"
             size="xs"
             square
+            aria-label="Следующая страница"
             :disabled="page >= totalPages"
             @click="goToNextPage"
           />

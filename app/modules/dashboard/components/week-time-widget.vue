@@ -78,9 +78,9 @@ onMounted(async () => {
         <div
           v-for="day in currentWeek"
           :key="day.dateKey"
-          class="flex flex-col gap-1.5 p-1.5 transition-colors"
+          class="flex flex-col gap-1.5 p-1.5 transition-[background-color,transform] duration-150"
           :class="{
-            'cursor-pointer hover:bg-accented': day.hours > 0,
+            'cursor-pointer hover:bg-accented active:scale-[0.98]': day.hours > 0,
             'border-primary max-sm:-mt-2 max-sm:border-t-2 max-sm:pt-2 sm:-ml-2 sm:border-l-2 sm:pl-2': day.isNewMonth
           }"
           @click="weekTimeWidgetStore.openDetailDay(day)"

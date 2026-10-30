@@ -25,3 +25,21 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+  changelog-sync:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Changelog files must change together
+        run: |
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
+          ROOT=$(grep -c '^changelog\.md$' <<< "$CHANGED" || true)
+          CONTENT=$(grep -c '^content/changelog\.md$' <<< "$CHANGED" || true)
+          if [ "$ROOT" != "$CONTENT" ]; then
+            echo "changelog.md и content/changelog.md должны обновляться синхронно в одном PR" >&2
+            exit 1
+          fi

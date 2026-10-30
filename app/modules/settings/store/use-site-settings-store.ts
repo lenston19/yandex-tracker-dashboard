@@ -19,7 +19,7 @@ export const useSiteSettingsStore = defineStore(
   },
   {
     persist: {
-      omit: ['accessToken', 'organizationId', 'seasonalTheme', 'themeType']
+      omit: ['accessToken', 'organizationId', 'themeType']
     }
   }
 )

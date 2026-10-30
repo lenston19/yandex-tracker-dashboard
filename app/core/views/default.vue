@@ -62,6 +62,7 @@ watch(route, () => closeSidebar())
           :icon="HEROICONS.BARS_3"
           size="sm"
           square
+          aria-label="Открыть меню"
           @click="openSidebar()"
         />
       </div>

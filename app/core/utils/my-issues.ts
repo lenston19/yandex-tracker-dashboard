@@ -6,6 +6,7 @@ export interface IssueFilters {
   statuses: string[]
   priority: string | null
   queue: string
+  search?: string
 }
 
 export interface IssueRoles {
@@ -36,6 +37,10 @@ export const buildFetchQuery = (login: string, filters: IssueFilters, roles?: Is
   if (filters.statuses.length) parts.push(`Status: ${filters.statuses.join(', ')}`)
   if (filters.priority) parts.push(`Priority: ${filters.priority}`)
   if (filters.queue) parts.push(`Queue: ${filters.queue}`)
+  if (filters.search?.trim()) {
+    const escapedSearch = filters.search.trim().replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+    parts.push(`Summary: "${escapedSearch}"`)
+  }
   return parts.join(' ')
 }
 
@@ -91,6 +96,9 @@ export const groupIssuesByQueue = (issues: Yandex.Issue[]): Record<string, Yande
 }
 
 export const QUEUE_PREVIEW_SIZE = 5
+
+export const filterQueueItemsWithIssues = <T extends { state: { issues: Yandex.Issue[] } }>(items: T[]): T[] =>
+  items.filter(item => item.state.issues.length > 0)
 
 const STATUS_SORT_ORDER: Record<string, number> = {
   inProgress: 0,

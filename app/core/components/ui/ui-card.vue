@@ -31,7 +31,7 @@ const cardUi = computed<CardUi>(() => ({
       #header
     >
       <div class="flex items-center justify-between gap-2">
-        <div
+        <h2
           v-if="title"
           class="flex items-center gap-2 text-base font-medium"
         >
@@ -42,7 +42,7 @@ const cardUi = computed<CardUi>(() => ({
           >
             <span class="size-1 rounded-full bg-(--ui-text-muted)" /> {{ subtitle }}
           </span>
-        </div>
+        </h2>
         <slot
           v-if="$slots.header"
           name="header"

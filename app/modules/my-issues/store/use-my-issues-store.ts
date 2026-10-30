@@ -7,19 +7,38 @@ import type { IssueFilters } from '~/core/utils/my-issues'
 import { DEFAULT_ISSUE_STATUSES } from '~/core/constants/issues'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
 import { useIssueBus } from '~/core/composables/use-issue-bus'
-import { fetchAllPages } from '~/core/utils/fetch-all-pages'
 import { useIssueSpentHours } from '~/core/composables/use-issue-spent-hours'
+import { useQueuesStore } from '~/core/store/use-queues-store'
+import { retryOn429 } from '~/core/utils/fetch-all-pages'
 
-const PER_PAGE = 50
+// ponytail: один запрос на все выбранные очереди (Queue: Q1, Q2, ...) вместо запроса на каждую —
+// при очень большом суммарном числе совпадений (много очередей + статус "Решён") превью/счётчик
+// отдельной очереди может быть урезан откликом Tracker, но без риска 429. Поднять, если пожалуются.
+const COMBINED_PAGE_SIZE = 200
+const RATE_LIMIT_RETRIES = 2
+
+type QueueState = {
+  issues: Yandex.Issue[]
+  totalCount: number
+}
 
 export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const { login } = storeToRefs(useAuthStore())
   const { myIssues } = storeToRefs(useSiteSettingsStore())
   const route = useRoute()
   const router = useRouter()
+  const { queuesModel } = storeToRefs(useQueuesStore())
 
-  const allIssues = ref<Yandex.Issue[]>([])
+  const selectedQueues = ref<string[]>(parseQueues())
+  const queueStates = reactive(new Map<string, QueueState>())
+  const grandTotal = ref(0)
   const { issueSpentHoursMap, fetchSpentHours } = useIssueSpentHours(computed(() => myIssues.value.display.estimation))
+
+  function parseQueues(): string[] {
+    const raw = route.query.queues ?? route.query.queue
+    if (typeof raw === 'string' && raw) return raw.split(',').filter(Boolean)
+    return []
+  }
 
   const parseStatuses = (): string[] => {
     const raw = route.query.statuses
@@ -30,75 +49,63 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   const filters = reactive<IssueFilters>({
     statuses: parseStatuses(),
     priority: (route.query.priority as string) || null,
-    queue: (route.query.queue as string) || ''
+    queue: ''
   })
 
   const pushFiltersToUrl = () => {
     router.replace({
       query: {
+        ...(selectedQueues.value.length ? { queues: selectedQueues.value.join(',') } : {}),
         ...(filters.statuses.length ? { statuses: filters.statuses.join(',') } : {}),
         ...(filters.priority ? { priority: filters.priority } : {}),
-        ...(filters.queue ? { queue: filters.queue } : {})
+        ...(search.value ? { search: search.value } : {})
       }
     })
   }
 
-  const search = ref('')
+  const search = ref((route.query.search as string) || '')
 
-  const filteredIssues = computed(() => {
-    const q = search.value.trim().toLowerCase()
-    if (!q) return allIssues.value
-    return allIssues.value.filter(i => i.summary.toLowerCase().includes(q) || i.key.toLowerCase().includes(q))
-  })
-
-  const allIssuesByQueue = computed(() => groupIssuesByQueue(filteredIssues.value))
-
-  const issuesByQueue = computed(() =>
-    Object.fromEntries(
-      Object.entries(allIssuesByQueue.value).map(([key, issues]) => [
-        key,
-        sortByStatusPriority(issues).slice(0, QUEUE_PREVIEW_SIZE)
-      ])
-    )
+  const queueItems = computed(() =>
+    selectedQueues.value.map(key => ({
+      key,
+      state: queueStates.get(key) ?? { issues: [], totalCount: 0 }
+    }))
   )
 
-  const issueTotalByQueue = computed(() =>
-    Object.fromEntries(Object.entries(allIssuesByQueue.value).map(([key, issues]) => [key, issues.length]))
-  )
-
-  const totalIssues = computed(() => allIssues.value.length)
-  const filteredTotal = computed(() => filteredIssues.value.length)
-
-  const fetchQuery = computed(() => buildFetchQuery(login.value ?? '', filters, myIssues.value.roles))
+  const totalIssues = computed(() => grandTotal.value)
+  const filteredTotal = computed(() => queueItems.value.reduce((sum, item) => sum + item.state.issues.length, 0))
 
   const { runWithLoading: fetch, isLoading } = useTryCatchWithLoading(async () => {
-    if (!login.value) {
-      allIssues.value = []
+    if (!login.value || !selectedQueues.value.length) {
+      queueStates.clear()
+      grandTotal.value = 0
       return
     }
 
-    const response = await yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, PER_PAGE)
+    const query = buildFetchQuery(
+      login.value,
+      { ...filters, queue: selectedQueues.value.join(', '), search: search.value },
+      myIssues.value.roles
+    )
 
-    if (!response._data) {
-      allIssues.value = []
-      return
-    }
+    const response = await retryOn429(
+      () => yandexTrackerApi.issueSearchRaw({ query }, COMBINED_PAGE_SIZE),
+      RATE_LIMIT_RETRIES
+    )
 
-    const totalPages = response.headers.get('X-Total-Pages')
-    const totalCount = response.headers.get('X-Total-Count')
+    grandTotal.value = Number(response.headers.get('X-Total-Count') ?? response._data?.length ?? 0)
+    const grouped = groupIssuesByQueue(response._data ?? [])
 
-    let result: Yandex.Issue[] = [...response._data]
+    queueStates.clear()
+    selectedQueues.value.forEach(queue => {
+      const issues = grouped[queue] ?? []
+      queueStates.set(queue, {
+        issues: sortByStatusPriority(issues).slice(0, QUEUE_PREVIEW_SIZE),
+        totalCount: issues.length
+      })
+    })
 
-    if (totalPages && totalCount && +totalCount > PER_PAGE) {
-      const rest = await fetchAllPages(
-        page => yandexTrackerApi.issueSearchRaw({ query: fetchQuery.value }, PER_PAGE, page),
-        +totalPages
-      )
-      result = [...result, ...rest]
-    }
-
-    allIssues.value = result
-    await fetchSpentHours(allIssues.value)
+    await fetchSpentHours(queueItems.value.flatMap(item => item.state.issues))
   })
 
   const applyFilters = async () => {
@@ -111,6 +118,16 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   }
 
   watch(
+    queuesModel,
+    async queues => {
+      if (!queues.length || selectedQueues.value.length || route.query.queues || route.query.queue) return
+      selectedQueues.value = queues.map(queue => queue.key)
+      await fetch()
+    },
+    { immediate: true }
+  )
+
+  watch(
     login,
     async newLogin => {
       if (newLogin) await fetch()
@@ -119,19 +136,17 @@ export const useMyIssuesStore = defineStore('my-issues-page', () => {
   )
 
   useIssueBus(({ key, status }) => {
-    const index = allIssues.value.findIndex(i => i.key === key)
-    if (index === -1) return
-    if (!filters.statuses.includes(status.key)) {
-      allIssues.value.splice(index, 1)
-    } else {
-      allIssues.value[index]!.status = status
+    for (const state of queueStates.values()) {
+      const issue = state.issues.find(i => i.key === key)
+      if (!issue) continue
+      if (!filters.statuses.includes(status.key)) state.issues = state.issues.filter(i => i.key !== key)
+      else issue.status = status
     }
   })
 
   return {
-    allIssues,
-    issuesByQueue,
-    issueTotalByQueue,
+    queueItems,
+    selectedQueues,
     issueSpentHoursMap,
     filters,
     search,

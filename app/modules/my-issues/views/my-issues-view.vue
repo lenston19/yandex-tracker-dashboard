@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useMyIssuesStore } from '../store/use-my-issues-store'
 import { useQueuesStore } from '~/core/store/use-queues-store'
-import type { Yandex } from '~/core/types/api/yandex-tracker/yandex-tracker.entity'
 import UiCard from '~/core/components/ui/ui-card.vue'
 import UiEmptyState from '~/core/components/ui/ui-empty-state.vue'
 import IssueTimerButton from '~/core/components/issues/issue-timer-button.vue'
@@ -11,26 +10,34 @@ import { HEROICONS } from '~/core/constants/heroicons'
 import { SITEMAP } from '~/core/utils/router/sitemap'
 import { AppRoutes } from '~/core/utils/router/types'
 import { useSiteSettingsStore } from '~/modules/settings/store/use-site-settings-store'
+import { filterQueueItemsWithIssues } from '~/core/utils/my-issues'
 
 useHead({ title: SITEMAP.myIssues.name })
 
 const store = useMyIssuesStore()
-const { issuesByQueue, issueTotalByQueue, issueSpentHoursMap, filters, search, totalIssues, filteredTotal, isLoading } =
+const { queueItems, selectedQueues, issueSpentHoursMap, filters, search, totalIssues, filteredTotal, isLoading } =
   storeToRefs(store)
 
 const { myIssues } = storeToRefs(useSiteSettingsStore())
 const { queuesModel } = storeToRefs(useQueuesStore())
 
-const queueModel = computed({
-  get: () => queuesModel.value.find(q => q.key === filters.value.queue),
-  set: (q: Yandex.Queue | undefined) => {
-    filters.value.queue = q?.key ?? ''
+const visibleQueueItems = computed(() => filterQueueItemsWithIssues(queueItems.value))
+
+const selectedQueueModels = computed({
+  get: () => queuesModel.value.filter(queue => selectedQueues.value.includes(queue.key)),
+  set: queues => {
+    selectedQueues.value = queues.map(queue => queue.key)
   }
 })
 
 const getQueueRoute = (queueKey: string) => ({
   name: AppRoutes.myIssuesQueue,
-  params: { queue: queueKey }
+  params: { queue: queueKey },
+  query: {
+    ...(filters.value.statuses.length ? { statuses: filters.value.statuses.join(',') } : {}),
+    ...(filters.value.priority ? { priority: filters.value.priority } : {}),
+    ...(search.value ? { search: search.value } : {})
+  }
 })
 </script>
 
@@ -50,6 +57,7 @@ const getQueueRoute = (queueKey: string) => ({
           variant="ghost"
           size="sm"
           square
+          aria-label="Обновить список"
           :loading="isLoading"
           @click="store.refresh()"
         />
@@ -65,26 +73,27 @@ const getQueueRoute = (queueKey: string) => ({
     >
       <template #extra>
         <u-form-field
-          label="Очередь"
+          label="Очереди"
           class="w-full lg:w-56"
         >
           <u-select-menu
-            v-model="queueModel"
+            v-model="selectedQueueModels"
             :items="queuesModel"
             label-key="name"
+            multiple
             class="w-full"
-            placeholder="Все очереди"
+            placeholder="Выберите очереди"
           />
         </u-form-field>
       </template>
       <template #actions>
         <u-button
-          v-if="queueModel"
-          label="Сбросить очередь"
+          v-if="selectedQueues.length"
+          label="Сбросить очереди"
           size="md"
           variant="ghost"
           :disabled="isLoading"
-          @click="queueModel = undefined"
+          @click="selectedQueues = []"
         />
       </template>
     </my-issues-filters>
@@ -101,8 +110,13 @@ const getQueueRoute = (queueKey: string) => ({
     </template>
 
     <ui-empty-state
-      v-else-if="!isLoading && filteredTotal === 0"
-      title="Нет задач"
+      v-else-if="!selectedQueues.length"
+      title="Выберите очереди"
+    />
+
+    <ui-empty-state
+      v-else-if="!visibleQueueItems.length"
+      title="Нет задач по выбранным фильтрам"
     />
 
     <div
@@ -110,15 +124,17 @@ const getQueueRoute = (queueKey: string) => ({
       class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
     >
       <ui-card
-        v-for="(queueIssues, queueKey) in issuesByQueue"
-        :key="queueKey"
+        v-for="item in visibleQueueItems"
+        :key="item.key"
         class="flex flex-col"
       >
         <template #header>
           <div class="flex items-center justify-between gap-2">
-            <span class="text-lg font-bold">{{ queueIssues[0]?.queue.display ?? queueKey }}</span>
+            <span class="text-lg font-bold">{{
+              queuesModel.find(queue => queue.key === item.key)?.name ?? item.key
+            }}</span>
             <u-badge
-              :label="String(issueTotalByQueue[queueKey])"
+              :label="String(item.state.totalCount)"
               color="info"
               variant="subtle"
               size="md"
@@ -126,9 +142,17 @@ const getQueueRoute = (queueKey: string) => ({
           </div>
         </template>
 
-        <div class="flex flex-col">
+        <ui-empty-state
+          v-if="item.state.issues.length === 0"
+          title="Нет задач по выбранным фильтрам"
+        />
+
+        <div
+          v-else
+          class="flex flex-col"
+        >
           <issue-item
-            v-for="issue in queueIssues"
+            v-for="issue in item.state.issues"
             :key="issue.key"
             :issue="issue"
             :display="myIssues.display"
@@ -146,7 +170,7 @@ const getQueueRoute = (queueKey: string) => ({
             label="Все задачи"
             variant="ghost"
             size="sm"
-            :to="getQueueRoute(String(queueKey))"
+            :to="getQueueRoute(item.key)"
             :trailing-icon="HEROICONS.ARROW_RIGHT"
           />
         </template>

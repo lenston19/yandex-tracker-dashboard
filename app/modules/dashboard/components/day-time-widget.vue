@@ -97,6 +97,7 @@ onMounted(async () => {
             variant="ghost"
             size="md"
             square
+            aria-label="Добавить запись"
             @click="openQuickWorklog()"
           />
         </u-tooltip>

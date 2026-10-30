@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { buildFetchQuery, groupIssuesByQueue, getIssuesOrderParam } from '../../app/core/utils/my-issues'
+import {
+  buildFetchQuery,
+  filterQueueItemsWithIssues,
+  groupIssuesByQueue,
+  getIssuesOrderParam
+} from '../../app/core/utils/my-issues'
 import { MY_ISSUES_SORT_MODE } from '../../app/modules/dashboard/models/constants/my-issues-sort'
 import type { Yandex } from '../../app/core/types/api/yandex-tracker/yandex-tracker.entity'
 
@@ -44,6 +49,12 @@ describe('buildFetchQuery', () => {
     expect(buildFetchQuery('user', { statuses: ['open', 'rediscovered'], priority: 'high', queue: 'PROJ' })).toBe(
       'Assignee: user Status: open, rediscovered Priority: high Queue: PROJ'
     )
+  })
+
+  it('добавляет поиск по summary и экранирует кавычки и обратные слеши', () => {
+    expect(
+      buildFetchQuery('user', { statuses: ['open'], priority: null, queue: 'PROJ', search: 'bug "hot" \\ now' })
+    ).toBe('Assignee: user Status: open Queue: PROJ Summary: "bug \\"hot\\" \\\\ now"')
   })
 
   it('один статус', () => {
@@ -105,6 +116,17 @@ describe('groupIssuesByQueue', () => {
   it('порядок групп соответствует первому появлению очереди', () => {
     const issues = [makeIssue('C-1', 'C', 'Ц'), makeIssue('A-1', 'A', 'А'), makeIssue('C-2', 'C', 'Ц')]
     expect(Object.keys(groupIssuesByQueue(issues))).toEqual(['C', 'A'])
+  })
+})
+
+describe('filterQueueItemsWithIssues', () => {
+  it('убирает очереди без задач', () => {
+    const items = [
+      { key: 'EMPTY', state: { issues: [] } },
+      { key: 'FULL', state: { issues: [makeIssue('FULL-1', 'FULL', 'Full')] } }
+    ]
+
+    expect(filterQueueItemsWithIssues(items).map(item => item.key)).toEqual(['FULL'])
   })
 })
 

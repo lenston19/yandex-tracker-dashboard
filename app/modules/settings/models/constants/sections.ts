@@ -64,7 +64,7 @@ export const SECTION_DANGER: SettingsSection = {
   component: DangerSettings
 }
 
-export const UNAUTH_SECTIONS = [SECTION_ACCOUNT]
+export const UNAUTH_SECTIONS = [SECTION_ACCOUNT, SECTION_WORKTIME, SECTION_THEME]
 
 export const AUTH_SECTIONS = [
   SECTION_ACCOUNT,

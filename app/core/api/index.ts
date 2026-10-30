@@ -1,5 +1,22 @@
 import { useSiteSettingsStore } from '~/modules/settings'
-import { useToast } from '#imports'
+import { useToast, useNuxtApp } from '#imports'
+
+function showErrorToast(toast: { color: 'error'; title: string; description: string }) {
+  useNuxtApp().runWithContext(() => useToast().add(toast))
+}
+
+let rateLimitToastShownUntil = 0
+
+function showRateLimitToast(url: string) {
+  const now = Date.now()
+  if (now < rateLimitToastShownUntil) return
+  rateLimitToastShownUntil = now + 5000
+  showErrorToast({
+    color: 'error',
+    title: 'Слишком много запросов',
+    description: `Сервер временно ограничил запросы. Повторяем загрузку: ${url}`
+  })
+}
 
 export const $api = $fetch.create({
   timeout: 15000,
@@ -16,6 +33,11 @@ export const $api = $fetch.create({
   onResponse: ({ response }) => {
     if (import.meta.server) return
 
+    if (response.status === 429) {
+      showRateLimitToast(response.url)
+      return
+    }
+
     if (response.status >= 400) {
       let description = ''
 
@@ -28,7 +50,7 @@ export const $api = $fetch.create({
         description = response.url
       }
 
-      useToast().add({
+      showErrorToast({
         color: 'error',
         title: `Ошибка! ${response.status}`,
         description
@@ -46,7 +68,7 @@ export const $api = $fetch.create({
       description = error.message
     }
 
-    useToast().add({
+    showErrorToast({
       color: 'error',
       title: 'Ошибка!',
       description

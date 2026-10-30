@@ -27,10 +27,15 @@ const selectedRange = computed({
     :ui="{ body: 'sm:p-0 p-0' }"
   >
     <div class="divide-y divide-default">
-      <div class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
+      <label class="flex items-center justify-between gap-4 px-2 py-1.5 lg:px-4 lg:py-3">
         <div class="min-w-0">
           <p class="text-sm font-medium">Показывать график</p>
-          <p class="text-xs text-muted">Heatmap за выбранный период</p>
+          <p
+            class="text-xs text-muted"
+            aria-hidden="true"
+          >
+            Heatmap за выбранный период
+          </p>
         </div>
         <u-switch
           v-model="heatmap.show"
@@ -38,7 +43,7 @@ const selectedRange = computed({
           :checked-icon="HEROICONS.CHECK_20_SOLID"
           :unchecked-icon="HEROICONS.X_MARK_20_SOLID"
         />
-      </div>
+      </label>
 
       <div
         v-if="heatmap.show"
